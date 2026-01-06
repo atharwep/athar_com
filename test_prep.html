@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | الاستعداد للاختبارات والتقييمات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="protection.js"></script>
+    <style>
+        .page-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .input-card {
+            background: var(--glass-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+
+        textarea,
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-family: 'Cairo';
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: #9333ea;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .result-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+            line-height: 1.8;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-card {
+            background: #faf5ff;
+            border: 1px solid #e9d5ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .answer-sample {
+            background: #fff;
+            padding: 10px;
+            border: 1px dashed #9333ea;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <nav>
+        <div class="logo-container">
+            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
+                <div class="logo">أثـــــر</div>
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header style="text-align:center; margin-bottom:40px;">
+            <h1 style="font-weight:900; color:#9333ea; font-size: 2.5rem;">📝 خبير الاختبارات والتقييمات</h1>
+            <p style="color:var(--text-secondary);">استعد للاختبارات الكتابية (Written Tests) والمهام العملية (Technical
+                Tasks) في المنظمات.</p>
+        </header>
+
+        <div class="input-card">
+            <div class="form-group">
+                <label>الوظيفة أو الوصف الوظيفي للمسابقة:</label>
+                <textarea id="jobDesc" rows="4" placeholder="الصق معلومات الوظيفة المعلن عنها..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>مستوى الوظيفة:</label>
+                <select id="jobLevel">
+                    <option value="Intern/Volunteer">متدرب/متطوع</option>
+                    <option value="Assistant/Junior">مساعد / مبتدئ</option>
+                    <option value="Officer">مسؤول (Officer)</option>
+                    <option value="Manager/Senior">مدير / متقدم</option>
+                </select>
+            </div>
+            <button id="getTestsBtn" class="btn-full">توليد نماذج الاختبارات ⚡</button>
+        </div>
+
+        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
+
+        <div id="resultArea" class="result-card">
+            <div id="testContent"></div>
+            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
+                طباعة دليل الاختبار</button>
+        </div>
+    </div>
+
+    <script>
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+
+        document.getElementById('getTestsBtn').onclick = async () => {
+            const desc = document.getElementById('jobDesc').value;
+            const level = document.getElementById('jobLevel').value;
+
+            if (!desc) return alert("يرجى لصق معلومات الوظيفة.");
+
+            const btn = document.getElementById('getTestsBtn');
+            const status = document.getElementById('statusLog');
+            btn.disabled = true;
+            status.innerText = "⏳ جاري تصميم اختبارات مشابهة لاختبارات المنظمات الدولية...";
+
+            const prompt = `
+            أنت خبير تقييم موظفين في المنظمات الدولية.
+            المدخلات: الوظيفة ${desc}, المستوى ${level}.
+            
+            المطلوب (JSON حصراً):
+            {
+                "test_type": "نوع الاختبار المتوقع (كتابي/عملي/تقني)",
+                "assessment_logic": "كيف يتم تقييم هذا النوع من الوظائف؟",
+                "sample_questions": [
+                    {"q": "سؤال محتمل", "logic": "ماذا يقيس هذا السؤال؟", "answer_outline": "عناصر الإجابة النموذجية"}
+                ],
+                "technical_task": "وصف لمهمة عملية (مثلاً: حلل بيانات، اكتب إيميل، صمم خطة)",
+                "common_mistakes": ["خطأ 1", "خطأ 2"],
+                "time_management_tips": "نصائح لإدارة وقت الاختبار"
+            }
+            بالعربية.
+            `;
+
+            try {
+                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.7
+                    })
+                });
+
+                const dataText = await res.text();
+                const json = JSON.parse(dataText.match(/\{[\s\S]*\}/)[0]);
+
+                let html = `
+                    <div style="text-align:center; padding:15px; background:#f5f3ff; border-radius:10px; margin-bottom:20px;">
+                        <h3 style="color:#9333ea; margin:0;">النوع المتوقع: ${json.test_type}</h3>
+                        <p style="margin:5px 0;">${json.assessment_logic}</p>
+                    </div>
+
+                    <h3 style="color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">📝 أسئلة اختبار تدريبية</h3>
+                    ${json.sample_questions.map(q => `
+                        <div class="question-card">
+                            <strong>السؤال: ${q.q}</strong>
+                            <div style="font-size:0.8rem; color:#6b7280; font-style:italic; margin:5px 0;">الهدف: ${q.logic}</div>
+                            <div class="answer-sample"><strong>✅ الإجابة النموذجية يجب أن تتضمن:</strong> ${q.answer_outline}</div>
+                        </div>
+                    `).join('')}
+
+                    <h3 style="color:#9333ea; margin-top:25px;">💻 المهمة التقنية (Technical Task)</h3>
+                    <div style="padding:15px; border:1px solid #ddd; border-radius:10px; background:#fafafa;">
+                        ${json.technical_task}
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <h3 style="color:#e11d48;">⚠️ أخطاء شائعة في الاختبارات</h3>
+                        <ul>${json.common_mistakes.map(m => `<li>${m}</li>`).join('')}</ul>
+                    </div>
+
+                    <div style="background:#fff7ed; padding:15px; border-radius:10px; margin-top:20px;">
+                        <strong>⏱️ نصيحة لإدارة الوقت:</strong> ${json.time_management_tips}
+                    </div>
+                `;
+
+                document.getElementById('testContent').innerHTML = html;
+                document.getElementById('resultArea').style.display = 'block';
+                status.innerText = "✅ اكتمل تصميم دليل الاختبار!";
+            } catch (e) {
+                console.error(e);
+                status.innerText = "❌ حدث خطأ.";
+            } finally {
+                btn.disabled = false;
+            }
+        };
+        document.getElementById('exportBtn').onclick = () => {
+            ProtectionManager.verify(() => window.print());
+        };
+    </script>
+</body>
+
+</html>

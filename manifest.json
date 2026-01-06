@@ -1,0 +1,21 @@
+{
+    "name": "Athar - أثر",
+    "short_name": "Athar",
+    "description": "المنصة الذكية للعاملين في المنظمات",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#6366f1",
+    "icons": [
+        {
+            "src": "تنزيل.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "تنزيل.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ]
+}

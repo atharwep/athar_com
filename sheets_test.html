@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الربط مع Google Sheets - منصة أثر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #059669;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 35px;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: #f9fafb;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .section h2 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .status-badge.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-box strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .info-box code {
+            background: #dbeafe;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #1e3a8a;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #059669;
+        }
+
+        button {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.05rem;
+            transition: 0.3s;
+            margin: 5px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        button:hover {
+            background: #047857;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(5, 150, 105, 0.3);
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result.success {
+            border-color: #10b981;
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .result.error {
+            border-color: #ef4444;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .current-url {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step;
+        }
+
+        .step-list li {
+            counter-increment: step;
+            padding: 12px 0;
+            padding-right: 35px;
+            position: relative;
+            color: #374151;
+            line-height: 1.7;
+        }
+
+        .step-list li::before {
+            content: counter(step);
+            position: absolute;
+            right: 0;
+            top: 10px;
+            background: #059669;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 اختبار الربط مع Google Sheets</h1>
+        <p class="subtitle">تحقق من اتصال موقعك بقاعدة بيانات Google Sheets</p>
+
+        <!-- Current URL -->
+        <div class="section">
+            <h2>🔗 رابط الـ Web App الحالي</h2>
+            <div class="current-url" id="currentUrl">
+                https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec
+            </div>
+            <div class="info-box">
+                <strong>💡 ملاحظة:</strong>
+                هذا هو الرابط المستخدم حالياً في <code>protection.js</code>. إذا كنت تريد تغييره، عدّل السطر 161 في
+                الملف.
+            </div>
+        </div>
+
+        <!-- Test Connection -->
+        <div class="section">
+            <h2>✅ اختبار الاتصال</h2>
+            <div id="connectionStatus" class="status-badge pending">⏳ لم يتم الاختبار بعد</div>
+            <button onclick="testConnection()">اختبار الاتصال الآن</button>
+            <div id="connectionResult"></div>
+        </div>
+
+        <!-- Test Visitor Count -->
+        <div class="section">
+            <h2>📊 اختبار عداد الزوار</h2>
+            <button onclick="testVisitor()">تسجيل زيارة جديدة</button>
+            <div id="visitorResult"></div>
+        </div>
+
+        <!-- Test Code Verification -->
+        <div class="section">
+            <h2>💎 اختبار التحقق من الأكواد</h2>
+            <div class="info-box">
+                <strong>📌 تذكير:</strong>
+                الكود الصحيح = معرف العملية + 2025<br>
+                مثال: إذا كان المعرف 1000، فالكود هو 3025
+            </div>
+            <input type="text" id="testId" placeholder="معرف العملية (مثال: 1000)" value="1000">
+            <input type="text" id="testCode" placeholder="كود التفعيل (مثال: 3025)" value="3025">
+            <button onclick="testCodeVerification()">التحقق من الكود</button>
+            <div id="codeResult"></div>
+        </div>
+
+        <!-- Test Data Retrieval -->
+        <div class="section">
+            <h2>📚 اختبار جلب البيانات</h2>
+            <div class="test-grid">
+                <button onclick="testGetJobs()">جلب الوظائف</button>
+                <button onclick="testGetLibrary()">جلب المكتبة</button>
+            </div>
+            <div id="dataResult"></div>
+        </div>
+
+        <!-- Custom URL Test -->
+        <div class="section">
+            <h2>🔧 اختبار رابط مخصص</h2>
+            <input type="text" id="customUrl" placeholder="ضع رابط Web App الجديد هنا">
+            <button onclick="testCustomUrl()">اختبار الرابط المخصص</button>
+            <div id="customResult"></div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="section">
+            <h2>📖 كيفية الحصول على رابط Web App جديد</h2>
+            <ol class="step-list">
+                <li>اذهب إلى <a href="https://script.google.com/" target="_blank" style="color: #059669;">Google Apps
+                        Script</a></li>
+                <li>افتح مشروعك أو أنشئ مشروعاً جديداً</li>
+                <li>الصق كود <code>bridge_script.js</code> في المحرر</li>
+                <li>انقر على <strong>Deploy</strong> > <strong>New deployment</strong></li>
+                <li>اختر <strong>Web app</strong> وعيّن "Who has access" إلى <strong>Anyone</strong></li>
+                <li>انسخ رابط <strong>Web app URL</strong></li>
+                <li>الصقه في الحقل أعلاه واختبره</li>
+                <li>إذا نجح، عدّل <code>protection.js</code> (السطر 161)</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const CURRENT_BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+
+        // Test Connection
+        async function testConnection() {
+            const statusDiv = document.getElementById('connectionStatus');
+            const resultDiv = document.getElementById('connectionResult');
+
+            statusDiv.className = 'status-badge pending';
+            statusDiv.textContent = '⏳ جاري الاتصال...';
+            resultDiv.innerHTML = '';
+
+            try {
+                const response = await fetch(`${CURRENT_BRIDGE_URL}?action=test`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    statusDiv.className = 'status-badge success';
+                    statusDiv.textContent = '✅ متصل بنجاح!';
+                    resultDiv.innerHTML = `<div class="result success">${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    throw new Error(data.message || 'فشل الاتصال');
+                }
+            } catch (error) {
+                statusDiv.className = 'status-badge error';
+                statusDiv.textContent = '❌ فشل الاتصال';
+                resultDiv.innerHTML = `<div class="result error">خطأ: ${error.message}\n\nتأكد من:\n1. رابط Web App صحيح\n2. تم نشر Web App بشكل صحيح\n3. "Who has access" = Anyone</div>`;
+            }
+        }
+
+        // Test Visitor Count
+        async function testVisitor() {
+            const resultDiv = document.getElementById('visitorResult');
+            resultDiv.innerHTML = '<div class="result">⏳ جاري تسجيل الزيارة...</div>';
+
+            try {
+                const response = await fetch(`${CURRENT_BRIDGE_URL}?action=visitor`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `<div class="result success">✅ تم تسجيل الزيارة!\n\nعدد الزوار الحالي: ${data.count}\n\nالبيانات الكاملة:\n${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    throw new Error(data.message || 'فشل تسجيل الزيارة');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">❌ خطأ: ${error.message}</div>`;
+            }
+        }
+
+        // Test Code Verification
+        async function testCodeVerification() {
+            const id = document.getElementById('testId').value;
+            const code = document.getElementById('testCode').value;
+            const resultDiv = document.getElementById('codeResult');
+
+            if (!id || !code) {
+                resultDiv.innerHTML = '<div class="result error">❌ يرجى ملء جميع الحقول</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="result">⏳ جاري التحقق من الكود...</div>';
+
+            try {
+                const response = await fetch(`${CURRENT_BRIDGE_URL}?action=verifyCode&code=${encodeURIComponent(code)}&id=${encodeURIComponent(id)}&page=test_page`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `<div class="result success">✅ ${data.message}\n\nالبيانات الكاملة:\n${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="result error">❌ ${data.message}\n\nالبيانات الكاملة:\n${JSON.stringify(data, null, 2)}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">❌ خطأ: ${error.message}</div>`;
+            }
+        }
+
+        // Test Get Jobs
+        async function testGetJobs() {
+            const resultDiv = document.getElementById('dataResult');
+            resultDiv.innerHTML = '<div class="result">⏳ جاري جلب الوظائف...</div>';
+
+            try {
+                const response = await fetch(`${CURRENT_BRIDGE_URL}?type=jobs`);
+                const data = await response.json();
+
+                if (Array.isArray(data)) {
+                    resultDiv.innerHTML = `<div class="result success">✅ تم جلب ${data.length} وظيفة\n\nالبيانات:\n${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="result success">البيانات:\n${JSON.stringify(data, null, 2)}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">❌ خطأ: ${error.message}</div>`;
+            }
+        }
+
+        // Test Get Library
+        async function testGetLibrary() {
+            const resultDiv = document.getElementById('dataResult');
+            resultDiv.innerHTML = '<div class="result">⏳ جاري جلب المكتبة...</div>';
+
+            try {
+                const response = await fetch(`${CURRENT_BRIDGE_URL}?type=library`);
+                const data = await response.json();
+
+                if (Array.isArray(data)) {
+                    resultDiv.innerHTML = `<div class="result success">✅ تم جلب ${data.length} مورد\n\nالبيانات:\n${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="result success">البيانات:\n${JSON.stringify(data, null, 2)}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">❌ خطأ: ${error.message}</div>`;
+            }
+        }
+
+        // Test Custom URL
+        async function testCustomUrl() {
+            const customUrl = document.getElementById('customUrl').value;
+            const resultDiv = document.getElementById('customResult');
+
+            if (!customUrl) {
+                resultDiv.innerHTML = '<div class="result error">❌ يرجى إدخال رابط Web App</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="result">⏳ جاري اختبار الرابط...</div>';
+
+            try {
+                const response = await fetch(`${customUrl}?action=test`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `<div class="result success">✅ الرابط يعمل بنجاح!\n\nيمكنك الآن نسخ هذا الرابط واستخدامه في protection.js:\n\nconst BRIDGE_URL = "${customUrl}";\n\nالبيانات الكاملة:\n${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    throw new Error(data.message || 'فشل الاتصال');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">❌ خطأ: ${error.message}\n\nتأكد من:\n1. الرابط صحيح\n2. تم نشر Web App\n3. "Who has access" = Anyone</div>`;
+            }
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 1000);
+        });
+    </script>
+</body>
+
+</html>

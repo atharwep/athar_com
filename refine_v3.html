@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | منقح المقترحات الذكي V3.0 - التحليل التفاعلي</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cairo:wght@400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="protection.js"></script>
+    <script src="https://unpkg.com/docx@7.1.0/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';</script>
+    <script src="language_manager.js"></script>
+
+
+    <style>
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .comparison-panel {
+            background: var(--glass-bg);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid var(--glass-border);
+        }
+
+        .comparison-panel.draft {
+            border-color: #f59e0b;
+        }
+
+        .comparison-panel.requirements {
+            border-color: #2563eb;
+        }
+
+        .gap-analysis {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            border-right: 5px solid #ef4444;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .improvement-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .improvement-card:hover {
+            border-color: var(--primary);
+            transform: translateX(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .improvement-card.selected {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02));
+        }
+
+        .improvement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .improvement-badge {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .improvement-badge.critical {
+            background: #ef4444;
+        }
+
+        .improvement-badge.important {
+            background: #f59e0b;
+        }
+
+        .improvement-badge.optional {
+            background: #6366f1;
+        }
+
+        .interactive-stepper {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .interactive-stepper::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: var(--glass-border);
+            z-index: 0;
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 3px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active .step-circle {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .step-item.completed .step-circle {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .step-label {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .step-item.active .step-label {
+            color: var(--primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--glass-border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.5s ease;
+        }
+
+        .diff-highlight {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .overlay-base {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .preview-toolbar {
+            width: 100%;
+            max-width: 900px;
+            background: #0f172a;
+            padding: 15px 30px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .refine-paper {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            min-height: 800px;
+            padding: 60px;
+            border-radius: 0 0 15px 15px;
+            color: #1e293b;
+            line-height: 2.2;
+            font-family: 'Cairo', sans-serif;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .proposal-section {
+            border-bottom: 2px solid #f1f5f9;
+            padding: 15px 0;
+            margin-bottom: 15px;
+        }
+
+        .proposal-section h3 {
+            color: var(--primary);
+            margin: 0;
+            font-weight: 800;
+            font-size: 1.35rem;
+        }
+
+        .report-card {
+            background: #f8fafc;
+            border-right: 5px solid var(--primary);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .report-card strong {
+            display: block;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <!-- Preview Modal -->
+    <div id="previewModal" class="overlay-base">
+        <div style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="preview-toolbar">
+                <div style="color:white; font-weight:bold;" data-i18n="ai_output">💎 مخرجات ذكاء أثر V3.0</div>
+                <div style="display:flex; gap:12px;">
+                    <button id="exportWordBtn" class="btn btn-primary" style="background:#2563eb; border:none;"
+                        data-i18n="btn_export_word">تحميل
+                        Word 📥</button>
+                    <button onclick="document.getElementById('previewModal').style.display='none'" class="btn btn-ghost"
+                        style="color:white;" data-i18n="btn_close">إغلاق</button>
+                </div>
+            </div>
+            <div id="refineOutput" class="refine-paper" contenteditable="true"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo-container">
+                <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:20px;">
+                    <img src="تنزيل.jpg" alt="Logo" id="mainLogo" style="width:50px; border-radius:8px;">
+                    <div class="logo">أثـــــر</div>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost" data-i18n="nav_home">🏠 الرئيسية</a>
+                <div class="dropdown">
+                    <button class="btn btn-ghost">📂 خدمات التوظيف</button>
+                    <div class="dropdown-content">
+                        <a href="career_path.html">🚀 مسارك المهني</a>
+                        <a href="job_prep.html">🎯 استعداد للمقابلات</a>
+                        <a href="skill_dev.html">🏗️ بناء القدرات</a>
+                        <a href="cv_improved.html">🤖 سيرة ATS الذكية</a>
+                    </div>
+                </div>
+                <a href="refine_v3.html" class="btn btn-ghost" data-i18n="nav_refine">⚡ المنقح الذكي</a>
+                <a href="library_v3.html" class="btn btn-ghost" data-i18n="nav_lib">📚 المكتبة</a>
+                <!-- <a href="whats_new.html" class="btn btn-ghost" data-i18n="nav_new">✨ الجديد</a> -->
+                <button id="globalLangToggle" class="btn btn-ghost" onclick="LangManager.toggleLanguage()">English
+                    🇺🇸</button>
+                <button id="themeToggle" class="btn btn-ghost">🌓</button>
+            </div>
+        </nav>
+
+        <main class="glass-card" style="margin-top:20px; padding:40px;">
+            <h1 style="font-weight:900; color:var(--primary); text-align:center; margin-bottom:15px;"
+                data-i18n="refine_title">✍️ المطور والمنقح
+                التفاعلي V3.0</h1>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:40px;" data-i18n="refine_subtitle">
+                تحليل ذكي للفجوات وتحسينات
+                تفاعلية مخصصة</p>
+
+            <!-- Interactive Stepper -->
+            <div class="interactive-stepper">
+                <div class="step-item active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label" data-i18n="step_upload">رفع الملفات</div>
+                </div>
+                <div class="step-item" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label" data-i18n="step_analysis">التحليل المقارن</div>
+                </div>
+                <div class="step-item" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label" data-i18n="step_improve">اختيار التحسينات</div>
+                </div>
+                <div class="step-item" data-step="4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label" data-i18n="step_review">المراجعة النهائية</div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 25%;"></div>
+            </div>
+
+            <!-- Step 1: Upload Files -->
+            <div id="step1" class="step-content">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:30px;">
+                    <div class="form-group">
+                        <label>📄 مسودة مشروعك</label>
+                        <input type="file" id="f1" accept=".docx,.pdf" style="margin-bottom:10px; width:100%;">
+                        <textarea id="t1" rows="12" placeholder="ضع مسودة مشروعك هنا..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>🎯 معايير المانح</label>
+                        <input type="file" id="f2" accept=".docx,.pdf" style="margin-bottom:10px; width:100%;">
+                        <textarea id="t2" rows="12" placeholder="أدخل شروط أو معايير المانح..."></textarea>
+                    </div>
+                </div>
+                <button id="analyzeBtn" class="btn btn-primary"
+                    style="width:100%; padding:20px; font-size:1.2rem; border-radius:15px;">بدء التحليل المقارن
+                    ⚡</button>
+            </div>
+
+            <!-- Step 2: Comparison Analysis -->
+            <div id="step2" class="step-content" style="display:none;">
+                <h2 style="color:var(--primary); margin-bottom:20px;">📊 التحليل المقارن</h2>
+
+                <div class="comparison-container">
+                    <div class="comparison-panel draft">
+                        <h3 style="color:#f59e0b; margin-bottom:15px;">📄 مسودة المشروع</h3>
+                        <div id="draftSummary"></div>
+                    </div>
+                    <div class="comparison-panel requirements">
+                        <h3 style="color:#2563eb; margin-bottom:15px;">🎯 متطلبات المانح</h3>
+                        <div id="requirementsSummary"></div>
+                    </div>
+                </div>
+
+                <div class="gap-analysis">
+                    <h3 style="color:#ef4444; margin-bottom:15px;">🔍 تحليل الفجوات</h3>
+                    <div id="gapAnalysis"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-ghost" onclick="goToStep(1)">العودة</button>
+                    <button class="btn btn-primary" onclick="goToStep(3)">اختيار التحسينات ➡️</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Select Improvements -->
+            <div id="step3" class="step-content" style="display:none;">
+                <h2 style="color:var(--primary); margin-bottom:20px;">✨ التحسينات المقترحة</h2>
+                <p style="color:var(--text-secondary); margin-bottom:25px;">اختر التحسينات التي تريد تطبيقها على
+                    مشروعك (يمكنك اختيار الكل أو بعضها)</p>
+
+                <div id="improvementsContainer"></div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-ghost" onclick="goToStep(2)">العودة</button>
+                    <button class="btn btn-primary" id="applyImprovementsBtn">تطبيق التحسينات المختارة ⚡</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Final Review -->
+            <div id="step4" class="step-content" style="display:none;">
+                <h2 style="color:var(--primary); margin-bottom:20px;">✅ المراجعة النهائية</h2>
+                <div id="finalReview" style="background:white; padding:30px; border-radius:12px; color:#1e293b;">
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-ghost" onclick="goToStep(3)">العودة للتعديل</button>
+                    <button class="btn btn-primary" id="showPreviewBtn">عرض النتيجة النهائية 🎉</button>
+                    <button class="btn btn-primary" id="saveLocalBtn" style="background:var(--accent);">💾 حفظ
+                        محلياً</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const BRIDGE = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+
+        let state = {
+            currentStep: 1,
+            draftText: '',
+            requirementsText: '',
+            analysis: null,
+            improvements: [],
+            selectedImprovements: [],
+            finalProposal: ''
+        };
+
+        // File reading functions
+        async function readFile(file, targetId) {
+            const area = document.getElementById(targetId);
+            area.value = "⏳ جاري استخراج النص...";
+            try {
+                if (file.name.endsWith('.pdf')) {
+                    const doc = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
+                    let text = "";
+                    for (let i = 1; i <= doc.numPages; i++) {
+                        const pg = await doc.getPage(i);
+                        const content = await pg.getTextContent();
+                        text += content.items.map(s => s.str).join(" ") + "\n";
+                    }
+                    area.value = text;
+                } else {
+                    const res = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+                    area.value = res.value;
+                }
+            } catch (e) {
+                area.value = "❌ خطأ في القراءة";
+            }
+        }
+
+        document.getElementById('f1').onchange = (e) => readFile(e.target.files[0], 't1');
+        document.getElementById('f2').onchange = (e) => readFile(e.target.files[0], 't2');
+
+        // AI Call Function
+        async function callAI(prompt) {
+            const payload = {
+                model: "llama-3.3-70b-versatile",
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.4
+            };
+
+            try {
+                // Send as JSON body, aligned with Universal Bridge expectation
+                const res = await fetch(BRIDGE + "?action=ai", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'text/plain' }, // Using text/plain to avoid CORS preflight issues sometimes
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) return null;
+                const txt = await res.text();
+
+                // Check for common error responses
+                if (txt.includes('"error"')) {
+                    console.error("AI Error:", txt);
+                    return null;
+                }
+
+                return txt;
+            } catch (e) {
+                console.error("Fetch Error:", e);
+                return null;
+            }
+        }
+
+        // Parse AI Response
+        function parseAIResponse(raw) {
+            if (!raw) return null;
+
+            try {
+                // The bridge returns the direct AI response (JSON) or a wrapper.
+                // First, try to parse the raw response as JSON
+                let data;
+                try {
+                    data = JSON.parse(raw);
+                } catch (e) {
+                    // If raw is not JSON, it might be the content string directly ? Unlikely with this bridge.
+                    console.error("Raw is not JSON", raw);
+                    return null;
+                }
+
+                // If it's the standard OpenAI/Groq format
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    const content = data.choices[0].message.content;
+                    // Now parse the *content* which should be our requested JSON
+                    const contentJsonMatch = content.match(/\{[\s\S]*\}/);
+                    if (contentJsonMatch) {
+                        return JSON.parse(contentJsonMatch[0]);
+                    }
+                    return content;
+                }
+
+                // Fallback: maybe the bridge returned the content directly?
+                return data;
+
+            } catch (e) {
+                console.error("Parse error:", e);
+                alert("فشل في قراءة رد الذكاء الاصطناعي. قد يكون الرد غير مكتمل.");
+            }
+
+            return null;
+        }
+
+        // Step Navigation
+        function goToStep(step) {
+            // Hide all steps
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`step${i}`).style.display = 'none';
+                document.querySelector(`.step-item[data-step="${i}"]`).classList.remove('active', 'completed');
+            }
+
+            // Show current step
+            document.getElementById(`step${step}`).style.display = 'block';
+            document.querySelector(`.step-item[data-step="${step}"]`).classList.add('active');
+
+            // Mark previous steps as completed
+            for (let i = 1; i < step; i++) {
+                document.querySelector(`.step-item[data-step="${i}"]`).classList.add('completed');
+            }
+
+            // Update progress bar
+            const progress = (step / 4) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            state.currentStep = step;
+        }
+
+        // Analyze Button
+        document.getElementById('analyzeBtn').onclick = async () => {
+            const draft = document.getElementById('t1').value;
+            const requirements = document.getElementById('t2').value;
+
+            if (draft.length < 30) {
+                alert("يرجى إدخال تفاصيل المشروع.");
+                return;
+            }
+
+            const btn = document.getElementById('analyzeBtn');
+            btn.innerText = "⏳ جاري التحليل المقارن...";
+            btn.disabled = true;
+
+            state.draftText = draft;
+            state.requirementsText = requirements;
+
+            const prompt = `Analyze this project draft against donor requirements. Return JSON:
+{
+  "draftSummary": "Brief summary of the draft in Arabic",
+  "requirementsSummary": "Brief summary of requirements in Arabic",
+  "gaps": ["Gap 1", "Gap 2", "Gap 3"],
+  "improvements": [
+    {
+      "title": "Improvement title in Arabic",
+      "description": "Description in Arabic",
+      "priority": "critical|important|optional",
+      "impact": "High|Medium|Low"
+    }
+  ]
+}
+
+Draft: ${draft.substring(0, 2000)}
+Requirements: ${requirements.substring(0, 2000)}`;
+
+            const response = await callAI(prompt);
+            const analysis = parseAIResponse(response);
+
+            if (analysis) {
+                state.analysis = analysis;
+
+                // Populate comparison
+                document.getElementById('draftSummary').innerHTML = `<p style="line-height:1.8;">${analysis.draftSummary || draft.substring(0, 300) + '...'}</p>`;
+                document.getElementById('requirementsSummary').innerHTML = `<p style="line-height:1.8;">${analysis.requirementsSummary || requirements.substring(0, 300) + '...'}</p>`;
+
+                // Populate gaps
+                const gapsHtml = (analysis.gaps || []).map(gap =>
+                    `<div style="margin:10px 0; padding:10px; background:rgba(255,255,255,0.5); border-radius:8px;">
+                        <strong>•</strong> ${gap}
+                    </div>`
+                ).join('');
+                document.getElementById('gapAnalysis').innerHTML = gapsHtml || '<p>لا توجد فجوات كبيرة</p>';
+
+                // Store improvements
+                state.improvements = analysis.improvements || [];
+
+                goToStep(2);
+            } else {
+                alert("حدث خطأ في التحليل. يرجى المحاولة مرة أخرى.");
+            }
+
+            btn.innerText = "بدء التحليل المقارن ⚡";
+            btn.disabled = false;
+        };
+
+        // When moving to step 3, render improvements
+        const originalGoToStep = goToStep;
+        goToStep = function (step) {
+            if (step === 3 && state.improvements.length > 0) {
+                renderImprovements();
+            }
+            originalGoToStep(step);
+        };
+
+        function renderImprovements() {
+            const container = document.getElementById('improvementsContainer');
+            container.innerHTML = state.improvements.map((imp, idx) => `
+                <div class="improvement-card" data-idx="${idx}" onclick="toggleImprovement(${idx})">
+                    <div class="improvement-header">
+                        <h4 style="margin:0; color:var(--primary);">${imp.title}</h4>
+                        <span class="improvement-badge ${imp.priority}">${getPriorityLabel(imp.priority)}</span>
+                    </div>
+                    <p style="color:#64748b; margin:10px 0;">${imp.description}</p>
+                    <div style="display:flex; gap:10px; font-size:0.85rem;">
+                        <span style="color:var(--text-secondary);">📊 التأثير: <strong>${imp.impact}</strong></span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Select all by default
+            state.selectedImprovements = state.improvements.map((_, idx) => idx);
+            state.selectedImprovements.forEach(idx => {
+                document.querySelector(`.improvement-card[data-idx="${idx}"]`).classList.add('selected');
+            });
+        }
+
+        function getPriorityLabel(priority) {
+            const labels = {
+                'critical': 'حرج',
+                'important': 'مهم',
+                'optional': 'اختياري'
+            };
+            return labels[priority] || 'عادي';
+        }
+
+        function toggleImprovement(idx) {
+            const card = document.querySelector(`.improvement-card[data-idx="${idx}"]`);
+            const isSelected = state.selectedImprovements.includes(idx);
+
+            if (isSelected) {
+                state.selectedImprovements = state.selectedImprovements.filter(i => i !== idx);
+                card.classList.remove('selected');
+            } else {
+                state.selectedImprovements.push(idx);
+                card.classList.add('selected');
+            }
+        }
+
+        // Apply Improvements
+        document.getElementById('applyImprovementsBtn').onclick = async () => {
+            if (state.selectedImprovements.length === 0) {
+                alert("يرجى اختيار تحسين واحد على الأقل");
+                return;
+            }
+
+            const btn = document.getElementById('applyImprovementsBtn');
+            btn.innerText = "⏳ جاري تطبيق التحسينات...";
+            btn.disabled = true;
+
+            const selectedImps = state.selectedImprovements.map(idx => state.improvements[idx]);
+
+            const prompt = `Apply these improvements to the project draft. Return the complete improved proposal in Arabic (500-800 words):
+
+Draft: ${state.draftText.substring(0, 2000)}
+
+Improvements to apply:
+${selectedImps.map(imp => `- ${imp.title}: ${imp.description}`).join('\n')}
+
+Return only the improved proposal text in Arabic.`;
+
+            const response = await callAI(prompt);
+
+            if (response) {
+                // Extract text from response
+                let improvedText = response;
+                try {
+                    const jsonMatch = response.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        const data = JSON.parse(jsonMatch[0]);
+                        if (data.choices && data.choices[0]) {
+                            improvedText = data.choices[0].message.content;
+                        } else if (data.aiResponse) {
+                            improvedText = data.aiResponse;
+                        }
+                    }
+                } catch (e) { }
+
+                state.finalProposal = improvedText;
+                document.getElementById('finalReview').innerHTML = `<div style="line-height:2;">${improvedText.replace(/\n/g, '<br>')}</div>`;
+
+                goToStep(4);
+            } else {
+                alert("حدث خطأ في تطبيق التحسينات. يرجى المحاولة مرة أخرى.");
+            }
+
+            btn.innerText = "تطبيق التحسينات المختارة ⚡";
+            btn.disabled = false;
+        };
+
+        // Show Preview
+        document.getElementById('showPreviewBtn').onclick = () => {
+            document.getElementById('refineOutput').innerHTML = `
+                <h1 style="text-align:center; color:var(--primary); margin-bottom:30px;">المقترح المطور</h1>
+                <div style="line-height:2.2;">${state.finalProposal.replace(/\n/g, '<br>')}</div>
+            `;
+            document.getElementById('previewModal').style.display = 'flex';
+        };
+
+        // Save Locally
+        document.getElementById('saveLocalBtn').onclick = () => {
+            const projectData = {
+                date: new Date().toISOString(),
+                draft: state.draftText,
+                requirements: state.requirementsText,
+                improvements: state.selectedImprovements.map(idx => state.improvements[idx]),
+                finalProposal: state.finalProposal
+            };
+
+            // Save to localStorage
+            const savedProjects = JSON.parse(localStorage.getItem('athar_refined_projects') || '[]');
+            savedProjects.push(projectData);
+            localStorage.setItem('athar_refined_projects', JSON.stringify(savedProjects));
+
+            alert("✅ تم حفظ المشروع محلياً بنجاح!");
+        };
+
+        // Export to Word
+        document.getElementById('exportWordBtn').onclick = async () => {
+            ProtectionManager.verify(async () => {
+                const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = window.docx;
+
+                const doc = new Document({
+                    sections: [{
+                        children: [
+                            new Paragraph({
+                                text: "المقترح المطور - أثر V3.0",
+                                heading: HeadingLevel.HEADING_1,
+                                alignment: AlignmentType.CENTER
+                            }),
+                            new Paragraph({ text: "", spacing: { after: 400 } }),
+                            ...state.finalProposal.split('\n').map(line =>
+                                new Paragraph({
+                                    text: line.trim(),
+                                    spacing: { after: 200 }
+                                })
+                            )
+                        ]
+                    }]
+                });
+
+                const blob = await Packer.toBlob(doc);
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `Athar_Refined_Proposal_${Date.now()}.docx`;
+                a.click();
+            });
+        };
+    </script>
+</body>
+
+</html>

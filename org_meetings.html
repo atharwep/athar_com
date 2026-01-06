@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | مساعد الاجتماعات الذكي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="js/modules/meeting_service.js"></script>
+    <script src="protection.js"></script>
+    <style>
+        :root {
+            --meet-color: #059669;
+            /* Emerald */
+        }
+
+        .meet-header {
+            background: var(--meet-color);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .task-card {
+            background: white;
+            border-right: 4px solid var(--meet-color);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .priority-high {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: #d97706;
+        }
+
+        .priority-low {
+            color: #059669;
+        }
+
+        .decision-box {
+            background: #ecfdf5;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #065f46;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="meet-header">
+        <div class="page-container" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1 style="margin:0;">📅 مساعد الاجتماعات</h1>
+                <p style="margin:5px 0 0; opacity:0.9;">حول النقاشات العشوائية إلى خطة عمل واضحة.</p>
+            </div>
+            <a href="index.html" class="btn btn-ghost" style="color:white; border-color:white;">القائمة الرئيسية</a>
+        </div>
+    </div>
+
+    <div class="page-container">
+
+        <div style="background:white; padding:30px; border-radius:15px; border:1px solid #e5e7eb; margin-bottom:30px;">
+            <label style="font-weight:bold; display:block; margin-bottom:10px;">📝 الصق ملاحظات الاجتماع (أو التفريغ
+                النصي):</label>
+            <textarea id="meetingNotes" rows="10" placeholder="بدأ الاجتماع بنقاش حول الميزانية، واتفقنا على..."
+                style="width:100%; padding:15px; border-radius:10px; border:1px solid #ccc;"></textarea>
+
+            <button id="processBtn" onclick="processMeeting()" class="btn btn-primary"
+                style="width:100%; margin-top:20px; background:var(--meet-color);">تحويل إلى محضر ومهام ⚡</button>
+        </div>
+
+        <div id="minutesResult" style="display:none;">
+            <div style="background:white; padding:30px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                <h2 id="meetTitle"
+                    style="color:var(--meet-color); margin-top:0; border-bottom:2px solid #eee; padding-bottom:15px;">
+                </h2>
+
+                <h3 style="color:#4b5563;">📌 الملخص التنفيذي</h3>
+                <p id="meetSummary" style="line-height:1.7;"></p>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px; margin-top:30px;">
+                    <div>
+                        <h3 style="color:#047857;">✅ القرارات المتخذة</h3>
+                        <div id="decisionsList"></div>
+                    </div>
+                    <div>
+                        <h3 style="color:#b91c1c; display:flex; justify-content:space-between;">
+                            ⚡ المهام المطلوبة (Action Items)
+                        </h3>
+                        <div id="tasksList"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top:30px; background:#f0fdfa; padding:15px; border-radius:10px;">
+                    <strong>⏭️ الاجتماع القادم:</strong> <span id="nextSteps"></span>
+                </div>
+
+                <button onclick="window.print()" class="btn btn-ghost" style="margin-top:20px; width:100%;">🖨️ طباعة
+                    المحضر / إرسال بالإيميل</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const service = new MeetingAssistantService();
+
+        async function processMeeting() {
+            const notes = document.getElementById('meetingNotes').value;
+            if (!notes) return alert("أدخل الملاحظات أولاً");
+
+            const btn = document.getElementById('processBtn');
+            btn.disabled = true;
+            btn.innerText = "جاري التحليل واستخراج المهام...";
+
+            try {
+                const data = await service.processMeetingNotes(notes);
+
+                document.getElementById('meetTitle').innerText = data.title || "محضر اجتماع";
+                document.getElementById('meetSummary').innerText = data.summary;
+
+                document.getElementById('decisionsList').innerHTML = (data.decisions || []).map(d => `<div class="decision-box">📢 ${d}</div>`).join('');
+
+                document.getElementById('tasksList').innerHTML = (data.action_items || []).map(t => `
+                    <div class="task-card">
+                        <div>
+                            <div style="font-weight:bold;">${t.task}</div>
+                            <div style="font-size:0.8rem; color:#666;">👤 ${t.assignee || 'غير محدد'} | 📅 ${t.deadline || 'ASAP'}</div>
+                        </div>
+                        <div class="priority-${(t.priority || 'Medium').toLowerCase()}">${t.priority}</div>
+                    </div>
+                `).join('');
+
+                document.getElementById('nextSteps').innerText = data.next_meeting || "غير محدد";
+
+                document.getElementById('minutesResult').style.display = "block";
+                window.scrollTo({ top: document.getElementById('minutesResult').offsetTop, behavior: 'smooth' });
+
+            } catch (e) {
+                alert("خطأ: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "تحويل إلى محضر ومهام ⚡";
+            }
+        }
+    </script>
+</body>
+
+</html>

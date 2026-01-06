@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | الملف التعريفي للمنظمة (Org CV)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="protection.js"></script>
+    <script src="js/modules/auth_guard.js"></script> <!-- Will create this next -->
+</head>
+
+<body class="light-theme">
+    <div class="org-header"
+        style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 40px 0;">
+        <div class="page-container">
+            <h1>🏢 بناء القدرات المؤسسية (Capability Statement)</h1>
+            <p>أنشئ ملفاً تعريفياً احترافياً لمنظمتك جاهزاً للتقديم للمانحين (USAID, ECHO, UN).</p>
+        </div>
+    </div>
+
+    <div class="page-container" style="margin-top: -30px;">
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+
+            <div class="form-section">
+                <h3>📋 البيانات الأساسية</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <input type="text" id="orgName" placeholder="اسم المنظمة (مثال: أثر للإغاثة)" class="input-field">
+                    <input type="text" id="orgSector" placeholder="القطاعات (مثال: التعليم، الصحة)" class="input-field">
+                </div>
+                <textarea id="orgHistory" rows="4" placeholder="نبذة تاريخية ورؤية المنظمة..." class="input-field"
+                    style="margin-top:15px; width:100%;"></textarea>
+            </div>
+
+            <div class="form-section" style="margin-top:20px;">
+                <h3>🌍 الخبرة والوصول</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <input type="text" id="orgBudget" placeholder="الميزانية السنوية (تقريبية)" class="input-field">
+                    <input type="text" id="orgDonors" placeholder="أبرز المانحين السابقين" class="input-field">
+                </div>
+                <textarea id="orgProjects" rows="4"
+                    placeholder="أهم 3 مشاريع تم تنفيذها (اسم المشروع - الممول - الأثر)..." class="input-field"
+                    style="margin-top:15px; width:100%;"></textarea>
+            </div>
+
+            <button onclick="generateOrgCV()" class="btn btn-primary"
+                style="width:100%; margin-top:30px; padding:15px; font-size:1.2rem;">✨ توليد الملف التعريفي بالذكاء
+                الاصطناعي</button>
+        </div>
+
+        <div id="resultArea"
+            style="display:none; margin-top:40px; background:white; padding:40px; border-radius:15px; border:1px solid #ddd;">
+            <div class="cv-header" style="border-bottom:2px solid #334155; padding-bottom:20px; margin-bottom:20px;">
+                <h2 id="resName" style="color:#1e293b; margin:0;"></h2>
+                <span id="resSlogan" style="color:#64748b; font-style:italic;"></span>
+            </div>
+
+            <div class="cv-grid" style="display:grid; grid-template-columns: 2fr 1fr; gap:30px;">
+                <!-- Main Content -->
+                <div>
+                    <h4 class="section-head">📌 من نحن (Who We Are)</h4>
+                    <p id="resAbout"></p>
+
+                    <h4 class="section-head">🛠️ القدرات التقنية (Technical Expertise)</h4>
+                    <ul id="resExpertise"></ul>
+
+                    <h4 class="section-head">🏆 سوابق الخبرة (Past Performance)</h4>
+                    <div id="resProjects"></div>
+                </div>
+
+                <!-- Sidebar -->
+                <div style="background:#f8fafc; padding:20px; border-radius:10px;">
+                    <h4 class="section-head" style="margin-top:0;">📊 حقائق وأرقام</h4>
+                    <div id="resStats"></div>
+
+                    <h4 class="section-head">🤝 شركاؤنا</h4>
+                    <div id="resPartners"></div>
+                </div>
+            </div>
+
+            <button onclick="window.print()" class="btn btn-ghost" style="margin-top:30px; width:100%;">🖨️ طباعة /
+                تصدير PDF</button>
+        </div>
+    </div>
+
+    <script>
+        async function generateOrgCV() {
+            const name = document.getElementById('orgName').value;
+            const sector = document.getElementById('orgSector').value;
+            const history = document.getElementById('orgHistory').value;
+            const projects = document.getElementById('orgProjects').value;
+
+            if (!name || !history) return alert("يرجى ملء البيانات الأساسية");
+
+            const btn = document.querySelector('button[onclick="generateOrgCV()"]');
+            btn.disabled = true;
+            btn.innerText = "جاري صياغة الملف باحترافية...";
+
+            // AI Logic Simulate (Connecting to same bridge pattern)
+            const prompt = `
+            أنت خبير تطوير مؤسسي (Business Development). قم بصياغة Capability Statement لمنظمة غير ربحية.
+            
+            البيانات:
+            - الاسم: ${name}
+            - القطاع: ${sector}
+            - نبذة: ${history}
+            - مشاريع: ${projects}
+
+            المطلوب (JSON):
+            {
+                "slogan": "شعار مهني مقترح",
+                "about_professional": "صياغة احترافية لقسم من نحن (100 كلمة)",
+                "expertise_points": ["نقطة قوة 1", "نقطة قوة 2", "نقطة 3"],
+                "projects_formatted": [
+                    {"title": "مشروع 1", "desc": "وصف الأثر"}
+                ],
+                "stats_inference": ["إحصائية مستنتجة 1", "إحصائية 2"]
+            }
+            `;
+
+            try {
+                // Using existing bridge pattern
+                const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbyJ0h6WymswhfwgB0-zylCW9YfDknGE7oXR2QQE8QlonM36Tw7qCAH-_szOIE2XpaW0eg/exec";
+                const res = await fetch(`${BRIDGE_URL}?action=ai`, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt + "\n\nIMPORTANT: Return ONLY valid JSON." }]
+                    })
+                });
+
+                const text = await res.text();
+                const json = JSON.parse(text.replace(/```json\s*|```\s*/gi, "").match(/\{[\s\S]*\}/)[0]);
+
+                // Render
+                document.getElementById('resName').innerText = name;
+                document.getElementById('resSlogan').innerText = json.slogan;
+                document.getElementById('resAbout').innerText = json.about_professional;
+
+                document.getElementById('resExpertise').innerHTML = json.expertise_points.map(p => `<li>${p}</li>`).join('');
+                document.getElementById('resProjects').innerHTML = json.projects_formatted.map(p => `<p><strong>${p.title}:</strong> ${p.desc}</p>`).join('');
+                document.getElementById('resStats').innerHTML = json.stats_inference.map(s => `<div style="margin-bottom:10px;">📈 ${s}</div>`).join('');
+                document.getElementById('resPartners').innerText = document.getElementById('orgDonors').value || "غير محدد";
+
+                document.getElementById('resultArea').style.display = 'block';
+
+            } catch (e) {
+                alert("خطأ: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "✨ توليد الملف التعريفي بالذكاء الاصطناعي";
+            }
+        }
+    </script>
+    <style>
+        .input-field {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+            font-family: 'Cairo';
+        }
+
+        .section-head {
+            color: #334155;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</body>
+
+</html>

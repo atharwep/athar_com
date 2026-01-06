@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | تطوير المهارات وبناء القدرات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="protection.js"></script>
+    <style>
+        .page-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .input-card {
+            background: var(--glass-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+
+        textarea,
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-family: 'Cairo';
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: var(--primary);
+            color: white;
+            transition: 0.3s;
+        }
+
+        .result-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+            line-height: 1.8;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            margin: 25px 0 10px;
+            font-weight: 900;
+        }
+
+        .skill-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .skill-item {
+            background: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border-right: 3px solid var(--primary);
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <nav>
+        <div class="logo-container">
+            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
+                <div class="logo">أثـــــر</div>
+            </a>
+        </div>
+        <div class="nav-actions">
+            <a href="index.html" class="btn btn-ghost">الرئيسية</a>
+            <a href="career_path.html" class="btn btn-ghost">مسارك المهني</a>
+            <a href="job_prep.html" class="btn btn-ghost">الاستعداد للمقابلات</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header style="text-align:center; margin-bottom:40px;">
+            <h1 style="font-weight:900; color:var(--primary); font-size: 2.5rem;">🏗️ بناء القدرات وتطوير المهارات</h1>
+            <p style="color:var(--text-secondary);">خريطة طريق علمية لتطوير مهاراتك بما يتناسب مع معايير المنظمات
+                الحديثة.</p>
+        </header>
+
+        <div class="input-card">
+            <div class="form-group">
+                <label>المجال الوظيفي المستهدف:</label>
+                <select id="jobField">
+                    <option value="البرامج والمشاريع">البرامج والمشاريع</option>
+                    <option value="اللوجستيات">اللوجستيات</option>
+                    <option value="الموارد البشرية">الموارد البشرية</option>
+                    <option value="المالية">المالية</option>
+                    <option value="الحماية">الحماية</option>
+                    <option value="المتابعة والتقييم">المتابعة والتقييم (MEAL)</option>
+                    <option value="تكنولوجيا المعلومات">تكنولوجيا المعلومات</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>مستوى الخبرة الحالي:</label>
+                <select id="expLevel">
+                    <option value="مبتدئ">مبتدئ (أبحث عن أول وظيفة)</option>
+                    <option value="متوسط">متوسط (1-3 سنوات خبرة)</option>
+                    <option value="متقدم">متقدم (أكثر من 5 سنوات)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>المهارات التي تمتلكها حالياً (إن وجدت):</label>
+                <textarea id="currentSkills" rows="3"
+                    placeholder="مثال: Excel, اللغة الإنجليزية، مهارات تواصل..."></textarea>
+            </div>
+            <button id="analyzeBtn" class="btn-full">توليد خريطة التطوير ⚡</button>
+        </div>
+
+        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
+
+        <div id="resultArea" class="result-card">
+            <div id="analysisContent"></div>
+            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
+                تحميل خريطة الطريق</button>
+        </div>
+    </div>
+
+    <script>
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+
+        document.getElementById('analyzeBtn').onclick = async () => {
+            const field = document.getElementById('jobField').value;
+            const level = document.getElementById('expLevel').value;
+            const skills = document.getElementById('currentSkills').value;
+
+            const btn = document.getElementById('analyzeBtn');
+            const status = document.getElementById('statusLog');
+            btn.disabled = true;
+            status.innerText = "⏳ جاري بناء خريطة مهاراتك المخصصة...";
+
+            const prompt = `
+            أنت خبير بناء قدرات ومطور مسارات وظيفية (Capacity Building Expert) في المنظمات الدولية.
+            المدخلات: المجال: ${field}, المستوى: ${level}, المهارات: ${skills}.
+
+            المطلوب (JSON حصراً):
+            {
+                "analysis": "تحليل عميق لموقعك الحالي في سوق العمل الإنساني",
+                "core_skills": ["مهارة أساسية 1", "مهارة أساسية 2", "مهارة 3", "مهارة 4", "مهارة 5"],
+                "tech_skills": ["أدوات تقنية 1", "أدوات تقنية 2", "أدوات تقنية 3"],
+                "soft_skills": ["مهارة سلوكية 1", "مهارة سلوكية 2", "مهارة سلوكية 3"],
+                "learning_plan": {
+                    "short_term": "خطة تفصيلية لأول شهر (3 نقاط عمل)",
+                    "medium_term": "خطة 3 أشهر (مشروع عملي)",
+                    "long_term": "خطة 6 أشهر (شهادات احترافية مقترحة)"
+                },
+                "tools": ["قائمة شاملة بالبرامج والأدوات المستخدمة في هذا المجال"],
+                "certifications": ["شهادات معتمدة ينصح بها (PMD Pro, Sphere, etc.)"],
+                "warnings": ["فجوات خطيرة يجب تجنبها"]
+            }
+            تعليمات: اجعل الخريطة واسعة وشاملة جداً، تغطي الجوانب التقنية والإدارية والشخصية.
+            بالعربية.
+            `;
+
+            const tryParse = (str) => {
+                try { return JSON.parse(str); } catch (e) { return null; }
+            };
+
+            const cleanText = (text) => {
+                let clean = text.replace(/```json\s*|```\s*/gi, "").trim();
+                const start = clean.indexOf('{');
+                const end = clean.lastIndexOf('}');
+                if (start !== -1 && end !== -1 && end > start) {
+                    return clean.substring(start, end + 1);
+                }
+                return clean;
+            };
+
+            try {
+                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt + "\n\nIMPORTANT: Return ONLY valid JSON." }],
+                        temperature: 0.3
+                    })
+                });
+
+                const dataText = await res.text();
+                if (!dataText) throw new Error("Empty response");
+
+                let parsed = tryParse(dataText);
+                let content = "";
+
+                if (parsed && parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
+                    content = parsed.choices[0].message.content;
+                } else {
+                    content = dataText;
+                }
+
+                // (Fixed) Removed false positive error check
+                if (content.startsWith("Error:") || content.includes("Rate limit exceeded")) {
+                    status.innerText = "⚠️ عذراً، الخادم مشغول حالياً.";
+                    return;
+                }
+
+                const json = tryParse(cleanText(content));
+                if (!json) throw new Error("JSON Parsing failed");
+
+                let html = `
+                    <p><strong>التحليل:</strong> ${json.analysis || ''}</p>
+                    
+                    <div class="section-title">⭐ المهارات الأساسية (Core Skills)</div>
+                    <div class="skill-list">${(json.core_skills || []).map(s => `<div class="skill-item">${s}</div>`).join('')}</div>
+
+                    <div class="section-title">💻 المهارات الرقمية والتقنية</div>
+                    <div class="skill-list">${(json.tech_skills || []).map(s => `<div class="skill-item">${s}</div>`).join('')}</div>
+
+                    <div class="section-title">🤝 مهارات سلوكية وتواصل</div>
+                    <div class="skill-list">${(json.soft_skills || []).map(s => `<div class="skill-item">${s}</div>`).join('')}</div>
+
+                    <div class="section-title">🛠️ الأدوات المقترحة (Software/Tools)</div>
+                    <p>${(json.tools || []).join(' - ')}</p>
+
+                    <div class="section-title">📜 شهادات احترافية ينصح بها</div>
+                    <ul style="list-style-type:none; padding:0;">${(json.certifications || []).map(c => `<li style="background:#fff; border:1px solid #ddd; padding:8px; margin-bottom:5px; border-radius:5px;">🏅 ${c}</li>`).join('')}</ul>
+
+                    <div class="section-title">📅 خطة التعلم المقترحة</div>
+                    <p><strong>المدى القريب:</strong> ${json.learning_plan?.short_term || ''}</p>
+                    <p><strong>المدى المتوسط:</strong> ${json.learning_plan?.medium_term || ''}</p>
+                    <p><strong>المدى البعيد:</strong> ${json.learning_plan?.long_term || ''}</p>
+
+                    <div class="section-title" style="color:#d32f2f; border-color:#d32f2f;">⚠️ تنبيهات</div>
+                    <ul>${(json.warnings || []).map(w => `<li>${w}</li>`).join('')}</ul>
+                `;
+
+                document.getElementById('analysisContent').innerHTML = html;
+                document.getElementById('resultArea').style.display = 'block';
+                status.innerText = "✅ اكتمل بناء الخطة!";
+                window.scrollTo({ top: document.getElementById('resultArea').offsetTop - 50, behavior: 'smooth' });
+
+            } catch (e) {
+                console.error("AI Error:", e);
+                status.innerText = "❌ حدث خطأ في معالجة البيانات. يرجى إعادة المحاولة.";
+            } finally {
+                btn.disabled = false;
+            }
+        };
+        document.getElementById('exportBtn').onclick = () => {
+            ProtectionManager.verify(() => window.print());
+        };
+    </script>
+</body>
+
+</html>

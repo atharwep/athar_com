@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | بوابة العمليات المؤسسية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .ops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .ops-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .ops-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .ops-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .ops-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+        }
+
+        .ops-desc {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .tag-new {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <nav>
+        <div class="logo-container">
+            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
+                <div class="logo">أثـــــر <span
+                        style="font-size:0.8rem; background:#333; color:white; padding:2px 6px; border-radius:4px;">Ops</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-actions">
+            <a href="index.html" class="btn btn-ghost">بوابة الأفراد</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header style="text-align:center; padding:40px 0;">
+            <h1 style="font-size:2.5rem; font-weight:900; margin-bottom:15px;">مركز العمليات الذكية للمنظمات</h1>
+            <p style="color:#64748b; font-size:1.1rem; max-width:600px; margin:0 auto;">مساعدك الرقمي لإدارة السياسات،
+                الاجتماعات، ومراجعة الجودة، مدعوم بأحدث تقنيات الذكاء الاصطناعي.</p>
+        </header>
+
+        <div class="ops-grid">
+            <!-- Policy Assistant -->
+            <a href="org_policies.html" class="ops-card">
+                <div>
+                    <div class="ops-icon">⚖️</div>
+                    <h3 class="ops-title">مساعد السياسات <span class="tag-new">جديد</span></h3>
+                    <p class="ops-desc">حول ملفات السياسات المعقدة إلى أدلة تنفيذية، قوائم تحقق، وتحليل للمخاطر بضغطة
+                        زر.</p>
+                </div>
+                <div style="margin-top:20px; color:var(--primary); font-weight:bold;">ابدأ التحليل &larr;</div>
+            </a>
+
+            <!-- Internal Review -->
+            <a href="org_review.html" class="ops-card">
+                <div>
+                    <div class="ops-icon">🕵️</div>
+                    <h3 class="ops-title">بوابة التدقيق</h3>
+                    <p class="ops-desc">راجع مسودات المقترحات قبل إرسالها للمانحين. اكتشف الأخطاء القاتلة، التناقضات،
+                        وضعف الصياغة.</p>
+                </div>
+                <div style="margin-top:20px; color:var(--primary); font-weight:bold;">مراجعة مسودة &larr;</div>
+            </a>
+
+            <!-- Meeting Assistant -->
+            <a href="org_meetings.html" class="ops-card">
+                <div>
+                    <div class="ops-icon">📅</div>
+                    <h3 class="ops-title">مساعد الاجتماعات</h3>
+                    <p class="ops-desc">لا تضيع وقتك في صياغة المحاضر. حول الملاحظات الخام إلى قرارات ومهام واضحة
+                        (Action Items).</p>
+                </div>
+                <div style="margin-top:20px; color:var(--primary); font-weight:bold;">معالجة محضر &larr;</div>
+            </a>
+
+            <!-- Org CV -->
+            <a href="org_profile.html" class="ops-card">
+                <div>
+                    <div class="ops-icon">🏢</div>
+                    <h3 class="ops-title">الملف التعريفي (Org CV) <span class="tag-new">جديد</span></h3>
+                    <p class="ops-desc">بناء Capability Statement احترافي للمنظمة جاهز للتقديم للمانحين.</p>
+                </div>
+                <div style="margin-top:20px; color:var(--primary); font-weight:bold;">إنشاء ملف &larr;</div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

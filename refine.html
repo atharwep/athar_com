@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | منقح المقترحات الذكي</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cairo:wght@400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo-container">
+                <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:20px;">
+                    <img src="تنزيل.jpg" alt="Logo" id="mainLogo">
+                    <div>
+                        <div class="logo">أثـــــر</div>
+                        <div class="logo-slogan">منقح المقترحات (Donor Compliance)</div>
+                    </div>
+                </a>
+            </div>
+            <a href="index.html" class="btn btn-ghost">🏠 الرئيسة</a>
+        </nav>
+
+        <main class="glass-card">
+            <h1>✍️ تنقيح وتقييم مقترحات المشاريع</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                قم بلصق نص مقترح المشروع هنا. سنقوم بدرو خبير المانحين (UN/EU/USAID) لمراجعة النصوص، تحسين اللغة، سد
+                الفجوات، وضمان الامتثال للمعايير.
+            </p>
+
+            <div class="form-group">
+                <label>نص مقترح المشروع</label>
+                <textarea id="proposalText" rows="15"
+                    placeholder="ألصق النص الكامل للمقترح هنا (الخلفية، الأهداف، الأنشطة، النتائج...)..."></textarea>
+            </div>
+
+            <button id="refineBtn" class="btn btn-primary" style="width: 100%;">بدء التنقيح والمراجعة ⚡</button>
+
+            <div id="refineResult"
+                style="display: none; margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                <h2 style="color: var(--primary);">النسخة المنقحة والتقرير</h2>
+                <div id="refineOutput"
+                    style="background: #fff; color: #333; padding: 30px; border-radius: 12px; min-height: 400px; white-space: pre-wrap; line-height: 1.6;">
+                    <!-- Result here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_KEY = "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";
+
+        document.getElementById('refineBtn').onclick = async () => {
+            const text = document.getElementById('proposalText').value;
+            if (!text) return alert("الرجاء لصق النص أولاً");
+
+            const btn = document.getElementById('refineBtn');
+            btn.innerText = 'جاري المراجعة والتنقيح...';
+            btn.disabled = true;
+
+            const prompt = `
+            الدور: خبير دولي في كتابة ومراجعة مقترحات المشاريع (UN, EU, USAID).
+            المهمة: تحليل وتنقيح النص التالي ليكون احترافياً ومتوافقاً مع المانحين.
+            
+            النص الأصلي:
+            ${text}
+
+            المتطلبات:
+            1. تنقيح اللغة لتكون رسمية "مانحة" (Donor Language).
+            2. إعادة صياغة الفقرات الضعيفة.
+            3. اقتراح إضافات عند وجود فجوات (حماية، نوع اجتماعي، استدامة).
+            4. الالتزام بفكرة المشروع الأساسية وعدم إضافة ميزانية.
+            
+            المخرجات المطلوبة:
+            1. النسخة المنقحة الكاملة (مع عناوين واضحة).
+            2. قائمة التحسينات التي تمت.
+            3. ملاحظات وتنبيهات نقاط الضعف.
+
+            الرد: نص منسق (يمكن استخدام Markdown للعناوين).
+            `;
+
+            try {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }]
+                    })
+                });
+
+                const json = await res.json();
+                if (json.choices) {
+                    const content = json.choices[0].message.content;
+                    document.getElementById('refineOutput').innerHTML = content
+                        .replace(/\n\n/g, '<br><br>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    document.getElementById('refineResult').style.display = 'block';
+                }
+            } catch (e) {
+                alert("Error connecting to AI");
+                console.error(e);
+            }
+
+            btn.innerText = 'بدء التنقيح والمراجعة ⚡';
+            btn.disabled = false;
+        };
+    </script>
+</body>
+
+</html>
