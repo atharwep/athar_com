@@ -9,7 +9,7 @@ const CONFIG = {
     GEMINI_API_KEY: "AIza...",
 
     // مجلدات Google Drive (اختياري - للبحث في مجلدات محددة)
-    LIBRARY_FOLDER_ID: "", // ضع معرف مجلد المكتبة هنا إذا وجد
+    LIBRARY_FOLDER_ID: "1e_dZ4Y6DL5z3cSLZn-d0oJQu0LbkumGF", // ضع معرف مجلد المكتبة هنا إذا وجد
     JOBS_FOLDER_ID: ""    // ضع معرف مجلد الوظائف هنا إذا وجد
 };
 
