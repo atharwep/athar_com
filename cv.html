@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | صانع السيرة الذاتية الإنساني</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cairo:wght@400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo-container">
+                <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:20px;">
+                    <img src="تنزيل.jpg" alt="Logo" id="mainLogo">
+                    <div>
+                        <div class="logo">أثـــــر</div>
+                        <div class="logo-slogan">صانع السيرة الذاتية الاحترافي (ATS)</div>
+                    </div>
+                </a>
+            </div>
+            <a href="index.html" class="btn btn-ghost">🏠 الرئيسة</a>
+        </nav>
+
+        <main class="glass-card">
+            <h1>📄 بناء سيرة ذاتية للمنظمات الدولية</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                قم بتعبئة بياناتك لإنشاء سيرة ذاتية احترافية متوافقة مع أنظمة ATS ومعايير الأمم المتحدة والمنظمات
+                الدولية.
+            </p>
+
+            <div class="form-grid" id="cvForm">
+                <h3>1. المعلومات الأساسية</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>الاسم الكامل</label>
+                        <input type="text" id="fullName" placeholder="Ex: Ahmed Al-Yemen">
+                    </div>
+                    <div class="form-group">
+                        <label>الموقع (البلد - المدينة)</label>
+                        <input type="text" id="location" placeholder="Ex: Sana'a, Yemen">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>المسمى الوظيفي المستهدف</label>
+                    <input type="text" id="targetJob" placeholder="Ex: Project Manager, MEAL Officer">
+                </div>
+
+                <div class="form-group">
+                    <label>عدد سنوات الخبرة</label>
+                    <input type="number" id="expYears" placeholder="5">
+                </div>
+
+                <h3>2. الخبرات المهنية</h3>
+                <div class="form-group">
+                    <label>المنظمات التي عملت بها (افصل بفاصلة)</label>
+                    <input type="text" id="orgs" placeholder="Ex: UNICEF, Oxfam, Local NGO">
+                </div>
+
+                <div class="form-group">
+                    <label>تفاصيل الوظائف السابقة (المسمى - المنظمة - الفترة - أبرز المهام باختصار)</label>
+                    <textarea id="jobsDetails" rows="5"
+                        placeholder="Succeed in managing... Led a team of..."></textarea>
+                </div>
+
+                <h3>3. المهارات والتعليم</h3>
+                <div class="form-group">
+                    <label>المهارات التقنية والسلوكية</label>
+                    <textarea id="skills" rows="3"
+                        placeholder="Project Management, Data Analysis, Leadership..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>الشهادات والدورات</label>
+                    <textarea id="certs" rows="2" placeholder="PMP, PMD Pro..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>اللغات ومستوى الإتقان</label>
+                    <input type="text" id="languages" placeholder="Arabic (Native), English (Fluent)">
+                </div>
+
+                <div class="form-group">
+                    <label>أبرز الإنجازات (إن وجدت)</label>
+                    <textarea id="achievements" rows="3" placeholder="Managed a budget of $500k..."></textarea>
+                </div>
+
+                <button id="generateCVBtn" class="btn btn-primary" style="width: 100%; margin-top: 20px;">توليد السيرة
+                    الذاتية (AI) ⚡</button>
+            </div>
+
+            <div id="cvResult"
+                style="display: none; margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <h2>النتيجة المهينة</h2>
+                    <button id="downloadPdfBtn" class="btn btn-primary" style="background: #ef4444;">تحميل PDF
+                        📥</button>
+                </div>
+
+                <div id="cvPreview"
+                    style="background: white; color: #000; padding: 40px; border-radius: 4px; font-family: 'Times New Roman', serif; line-height: 1.4;">
+                    <!-- CV Content Here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Use the same key from App.js or hardcode it here since user provided it
+        const API_KEY = "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";
+
+        document.getElementById('generateCVBtn').onclick = async () => {
+            const btn = document.getElementById('generateCVBtn');
+            btn.innerText = 'جاري الكتابة...';
+            btn.disabled = true;
+
+            const data = {
+                name: document.getElementById('fullName').value,
+                location: document.getElementById('location').value,
+                targetJob: document.getElementById('targetJob').value,
+                years: document.getElementById('expYears').value,
+                orgs: document.getElementById('orgs').value,
+                jobs: document.getElementById('jobsDetails').value,
+                skills: document.getElementById('skills').value,
+                certs: document.getElementById('certs').value,
+                langs: document.getElementById('languages').value,
+                achievements: document.getElementById('achievements').value
+            };
+
+            const prompt = `
+            Act as an International Recruitment Expert for UN/INGOs.
+            Create a professional CV for the following candidate info:
+            ${JSON.stringify(data)}
+
+            Tasks:
+            1. Analyze target job: ${data.targetJob}. Connect it to humanitarian standards.
+            2. Use strong action verbs (Implemented, Coordinated, Led...).
+            3. Include ATS keywords.
+            4. Highlight impact and measurable results.
+            
+            Format: HTML suitable for PDF export. Clean, no icons, no tables. 
+            Structure:
+            - Header (Name, Location, Target Title)
+            - Professional Summary (Strong, humanitarian focused)
+            - Experience (Enhanced descriptions)
+            - Education & Certs
+            - Skills (ATS optimized)
+            - Languages
+            
+            Return ONLY the HTML code for the CV content div.
+            Default Language: English.
+            `;
+
+            // استخدام الجسر (Bridge)
+            const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbwIhJM_GeVKTIHKYBLf5qyZT_U-vUD3GMlnQF-mES3MGWoJZiiP0d8ep4GsnmIyakN-/exec";
+
+            try {
+                // إعداد الطلب
+                const payload = {
+                    model: "llama-3.3-70b-versatile",
+                    messages: [{ role: "user", content: prompt }],
+                    temperature: 0.5
+                };
+
+                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                });
+
+                const json = await res.json();
+
+                // التحقق من الاستجابة سواء كانت مباشرة أو عبر الجسر
+                if (json.choices && json.choices[0]) {
+                    const content = json.choices[0].message.content;
+                    // clean and show
+                    const htmlMatch = content.match(/<div[\s\S]*<\/div>/) || content.match(/<body[\s\S]*<\/body>/) || [content];
+                    document.getElementById('cvPreview').innerHTML = htmlMatch[0].replace(/```html/g, '').replace(/```/g, '');
+                    document.getElementById('cvResult').style.display = 'block';
+                } else {
+                    throw new Error("Invalid AI Response");
+                }
+
+            } catch (e) {
+                alert("حدث خطأ في الاتصال بالذكاء الاصطناعي (Bridge Error).");
+                console.error(e);
+            }
+
+            btn.innerText = 'توليد السيرة الذاتية (AI) ⚡';
+            btn.disabled = false;
+        };
+
+        document.getElementById('downloadPdfBtn').onclick = () => {
+            const element = document.getElementById('cvPreview');
+            html2pdf().from(element).save('CV_Athar.pdf');
+        };
+    </script>
+</body>
+
+</html>

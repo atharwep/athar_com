@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>من نحن | منصة أثر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo-container">
+                <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:20px;">
+                    <img src="تنزيل.jpg" alt="Logo" id="mainLogo">
+                    <div>
+                        <div class="logo">أثـــــر</div>
+                        <div class="logo-slogan">لأن التغيير يبدأ بخطة</div>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost">🏠 الرئيسية</a>
+            </div>
+        </nav>
+
+        <main class="glass-card" style="padding: 40px; margin-top: 40px;">
+            <h1 style="text-align: center; color: var(--primary); margin-bottom: 30px;">من نحن</h1>
+
+            <section class="about-content" style="line-height: 2; font-size: 1.1rem; color: var(--text-secondary);">
+                <div style="margin-bottom: 40px;">
+                    <h2 style="color: var(--primary);">قصة أثر</h2>
+                    <p>
+                        بدأت منصة "أثر" من رحم المعاناة والاحتياج في القطاع الإنساني، حيث لاحظنا فجوة كبيرة بين
+                        الاحتياجات الميدانية وبين القدرة على صياغتها في مقترحات احترافية تلبي معايير المانحين الدوليين.
+                        أثر ليست مجرد أداة تقنية، بل هي رفيق ذكي يسعى لتمكين المنظمات والمبادرات من إحداث التغيير
+                        الحقيقي.
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 40px;">
+                    <h2 style="color: var(--primary);">المشكلة التي نعالجها</h2>
+                    <p>
+                        الكثير من الأفكار الإنسانية العظيمة تموت بسبب الصعوبات التقنية في التخطيط، أو ضعف الصياغة، أو
+                        عدم الإلمام بمعايير المانحين المعقدة. نحن هنا لنكسر هذا الحاجز.
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+                    <div class="glass-card" style="padding: 20px; border: 1px solid var(--primary);">
+                        <h3 style="color: var(--primary);">رؤيتنا</h3>
+                        <p>أن نكون المنصة الرائدة عالمياً في تمكين العاملين في القطاع الإنساني من خلال تقنيات الذكاء
+                            الاصطناعي.</p>
+                    </div>
+                    <div class="glass-card" style="padding: 20px; border: 1px solid var(--accent);">
+                        <h3 style="color: var(--accent);">رسالتنا</h3>
+                        <p>تبسيط عمليات تخطيط المشاريع وبناء القدرات المهنية للأفراد والمنظمات لزيادة الأثر الإيجابي في
+                            المجتمعات.</p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 40px;">
+                    <h2 style="color: var(--primary);">قيمنا الأساسية</h2>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✅ <strong>الشفافية:</strong> نؤمن بأن الصدق هو أساس العمل الإنساني.</li>
+                        <li>✅ <strong>الاحتراف:</strong> نلتزم بأعلى المعايير الدولية في كل ما نقدمه.</li>
+                        <li>✅ <strong>الأثر:</strong> غايتنا النهائية هي حياة أفضل للإنسان.</li>
+                        <li>✅ <strong>التمكين:</strong> نساعدك لتبدع وتنجح بنفسك.</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin-top: 50px;">
+                    <a href="index.html" class="btn btn-primary" style="padding: 15px 40px;">ابدأ رحلتك معنا الآن</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="main-footer" style="margin-top: 50px;">
+        <div class="footer-credit">
+            <span>إعداد وتنفيذ : </span>
+            <span class="credit-name">أ. نبيل الحميد</span>
+        </div>
+        <div style="margin-top: 10px; opacity: 0.6; font-size: 0.8rem;">
+            &copy; 2025 منظومة أثر للمشاريع الإنسانية
+        </div>
+    </footer>
+    <script>
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.add('light-theme');
+        }
+    </script>
+</body>
+
+</html>

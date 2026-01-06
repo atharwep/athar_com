@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | لوحة التحكم</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cairo:wght@400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-card {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .dashboard {
+            display: none;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        .status-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="container">
+        <div class="login-card">
+            <h2 style="color:#2c3e50; margin-bottom:20px;">🔐 دخول المسؤول</h2>
+            <input type="text" id="username" placeholder="اسم المستخدم"
+                style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;">
+            <input type="password" id="password" placeholder="كلمة المرور"
+                style="width:100%; padding:12px; margin-bottom:20px; border-radius:8px; border:1px solid #ccc;">
+            <button onclick="attemptLogin()" class="btn btn-primary" style="width:100%;">دخول</button>
+            <p id="loginError" style="color:red; margin-top:10px; display:none;">بيانات خاطئة</p>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="container dashboard">
+        <nav style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1 style="color:white; margin:0;">⚙️ إعدادات القوالب</h1>
+            <button onclick="logout()" class="btn btn-ghost" style="color:white;">تسجيل خروج</button>
+        </nav>
+
+        <div class="glass-card">
+            <h3>📂 إدارة القالب المخصص</h3>
+            <p style="color:#666; margin-bottom:20px;">
+                <strong>النظام يعمل حالياً على:</strong><br>
+                1. البحث عن قالب في المتصفح (مرفوع هنا).<br>
+                2. إذا لم يوجد، يبحث عن ملف <code>00.docx</code> في المجلد.<br>
+                3. إذا لم يوجد، يستخدم PDF الافتراضي.
+            </p>
+
+            <div style="border: 2px dashed #ccc; padding: 40px; text-align: center; border-radius: 10px; cursor: pointer;"
+                onclick="document.getElementById('templateInput').click()">
+                <div style="font-size:3rem;">📄</div>
+                <p>اضغط لاستبدال القالب (تجاوز الملف 00.docx)</p>
+                <input type="file" id="templateInput" accept=".docx" style="display:none;"
+                    onchange="handleFileSelect(this)">
+            </div>
+
+            <div id="uploadStatus" style="display:none;"></div>
+
+            <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                <h4>حالة القالب المخصص (Browser Storage):</h4>
+                <p id="currentTemplateName" style="color:var(--primary); font-weight:bold;">...</p>
+                <button onclick="clearTemplate()" class="btn btn-ghost" style="color:red; font-size:0.9rem;">🗑️ حذف
+                    واستخدام الملف الأصلي (00.docx)</button>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-top:20px;">
+            <a href="cv.html" class="btn btn-primary">الذهاب لصفحة السيرة الذاتية ➡️</a>
+        </div>
+    </div>
+
+    <script>
+        // Auth Logic
+        function attemptLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if (u === 'abo' && p === '0990073618') {
+                sessionStorage.setItem('admin_logged_in', 'true');
+                showDashboard();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            checkCurrentTemplate();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('admin_logged_in');
+            location.reload();
+        }
+
+        if (sessionStorage.getItem('admin_logged_in') === 'true') showDashboard();
+
+        // Template Logic
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (file.size > 4000000) {
+                alert("الملف كبير جداً!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const base64 = e.target.result;
+                    localStorage.setItem('customCvTemplate', base64);
+                    localStorage.setItem('customCvTemplateName', file.name);
+
+                    const status = document.getElementById('uploadStatus');
+                    status.className = 'status-box success';
+                    status.innerText = 'تم تفعيل القالب الجديد بنجاح! ✅';
+                    status.style.display = 'block';
+                    checkCurrentTemplate();
+                } catch (err) {
+                    alert("خطأ في التخزين.");
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function checkCurrentTemplate() {
+            const name = localStorage.getItem('customCvTemplateName');
+            if (name) {
+                document.getElementById('currentTemplateName').innerText = "✅ مفعل: " + name;
+            } else {
+                document.getElementById('currentTemplateName').innerText = "❌ غير مفعل (يستخدم 00.docx إذا وجد)";
+            }
+        }
+
+        function clearTemplate() {
+            if (confirm('هل تريد حذف القالب المرفوع والرجوع لملف 00.docx؟')) {
+                localStorage.removeItem('customCvTemplate');
+                localStorage.removeItem('customCvTemplateName');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+
+</html>

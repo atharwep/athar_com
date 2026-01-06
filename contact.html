@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تواصل معنا | منصة أثر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-3"></div>
+        <div class="blob blob-1"></div>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo-container">
+                <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:20px;">
+                    <img src="تنزيل.jpg" alt="Logo" id="mainLogo">
+                    <div>
+                        <div class="logo">أثـــــر</div>
+                        <div class="logo-slogan">نحن هنا لنسمعك</div>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost">🏠 الرئيسية</a>
+            </div>
+        </nav>
+
+        <main class="glass-card"
+            style="padding: 40px; margin-top: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
+            <h1 style="text-align: center; color: var(--primary); margin-bottom: 10px;">نحن هنا من أجلك</h1>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 40px;">لديك سؤال، اقتراح، أو
+                تواجه مشكلة؟ لا تتردد في مراسلتنا.</p>
+
+            <form id="contactForm" class="contact-form" style="display: grid; gap: 20px;">
+                <div class="form-group">
+                    <label for="name">الاسم بالكامل</label>
+                    <input type="text" id="name" placeholder="أدخل اسمك هنا" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="example@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">سبب التواصل</label>
+                    <select id="subject">
+                        <option value="support">دعم فني</option>
+                        <option value="partnership">شراكة وتطوير</option>
+                        <option value="feedback">اقتراح أو ملاحظة</option>
+                        <option value="other">أمر آخر</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">الرسالة</label>
+                    <textarea id="message" rows="5" placeholder="اكتب رسالتك هنا..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">إرسال الرسالة
+                    🚀</button>
+            </form>
+
+            <div
+                style="margin-top: 50px; border-top: 1px solid var(--glass-border); padding-top: 30px; text-align: center;">
+                <h3 style="margin-bottom: 20px; color: var(--primary);">وسائل تواصل أخرى</h3>
+                <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                    <a href="mailto:support@athar.org"
+                        style="text-decoration:none; color: var(--text-secondary); display:flex; align-items:center; gap:10px;">
+                        <span>📧 atharwep@gmail.com</span>
+                    </a>
+                    <a href="https://wa.me/963936020439" target="_blank"
+                        style="text-decoration:none; color: #10b981; display:flex; align-items:center; gap:10px; font-weight: bold;">
+                        <span>💬 واتساب: +963 936 020 439</span>
+                    </a>
+                </div>
+                <p style="margin-top: 30px; font-size: 0.85rem; color: var(--text-secondary); opacity: 0.7;">
+                    🛡️ نحن نقدر خصوصيتك، ولا نقوم بمشاركة بياناتك مع أي طرف ثالث.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <footer class="main-footer" style="margin-top: 50px;">
+        <div class="footer-credit">
+            <span>إعداد وتنفيذ : </span>
+            <span class="credit-name">أ. نبيل الحميد</span>
+        </div>
+        <div style="margin-top: 10px; opacity: 0.6; font-size: 0.8rem;">
+            &copy; 2025 منظومة أثر للمشاريع الإنسانية
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').onsubmit = (e) => {
+            e.preventDefault();
+            alert('شكراً لتواصلك معنا! سيقوم فريق "أثر" بالرد عليك في أقرب وقت ممكن.');
+            e.target.reset();
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.add('light-theme');
+        }
+    </script>
+</body>
+
+</html>

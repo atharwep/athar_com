@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | الاستدامة والوقاية من الاحتراق</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="protection.js"></script>
+    <style>
+        .page-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .input-card {
+            background: var(--glass-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+
+        textarea,
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-family: 'Cairo';
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: #10b981;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .result-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+            line-height: 1.8;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .burnout-indicator {
+            background: #f0fdf4;
+            border-right: 5px solid #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <nav>
+        <div class="logo-container">
+            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
+                <div class="logo">أثـــــر</div>
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header style="text-align:center; margin-bottom:40px;">
+            <h1 style="font-weight:900; color:#10b981; font-size: 2.5rem;">🧘 الاستدامة المهنية والوقاية</h1>
+            <p style="color:var(--text-secondary);">احمِ نفسك من الاحتراق المهني وبنِ مساراً مستداماً في العمل الإنساني
+                الضاغط.</p>
+        </header>
+
+        <div class="input-card">
+            <div class="form-group">
+                <label>طبيعة عملك الحالي (أو الوظيفة التي تتقدم لها):</label>
+                <input type="text" id="jobNature" placeholder="مثال: منسق استجابة طوارئ، حماية طفولة، محاسب...">
+            </div>
+            <div class="form-group">
+                <label>بيئة العمل وكثافة الضغوط:</label>
+                <textarea id="workEnv" rows="3"
+                    placeholder="مثال: عمل ميداني 12 ساعة، ضغط طلبات المانحين، التعامل مع حالات صدمة..."></textarea>
+            </div>
+            <button id="checkBurnoutBtn" class="btn-full">تقييم الاستدامة المهنية ⚡</button>
+        </div>
+
+        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
+
+        <div id="resultArea" class="result-card">
+            <div id="burnoutContent"></div>
+            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
+                تحميل تقرير الاستدامة الشخصي</button>
+        </div>
+    </div>
+
+    <script>
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+
+        document.getElementById('checkBurnoutBtn').onclick = async () => {
+            const nature = document.getElementById('jobNature').value;
+            const env = document.getElementById('workEnv').value;
+
+            const btn = document.getElementById('checkBurnoutBtn');
+            const status = document.getElementById('statusLog');
+            btn.disabled = true;
+            status.innerText = "⏳ جاري تقليل ضغط العمل... وتحليل مؤشرات الاحتراق...";
+
+            const prompt = `
+            أنت مستشار موارد بشرية مختص بالصحة النفسية والاستدامة في المنظمات.
+            المدخلات: الوظيفة ${nature}, البيئة ${env}.
+            
+            المطلوب (JSON حصراً):
+            {
+                "burnout_risk": "Low|Medium|High",
+                "risk_ar": "منخفض|متوسط|عالي",
+                "markers": ["مؤشر خفي 1", "مؤشر 2"],
+                "analysis": "تحليل واقعي لمستوى الضغط في هذا الدور",
+                "survival_tips": ["نصيحة للبقاء 1", "نصيحة 2"],
+                "long_term_plan": "خطة للاستمرار لسنوات دون احتراق",
+                "wellness_tools": ["أداة 1", "تطبيق 2"]
+            }
+            بالعربية.
+            `;
+
+            try {
+                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.7
+                    })
+                });
+
+                const dataText = await res.text();
+                const json = JSON.parse(dataText.match(/\{[\s\S]*\}/)[0]);
+
+                let riskColor = json.burnout_risk === 'High' ? '#ef4444' : (json.burnout_risk === 'Medium' ? '#f59e0b' : '#10b981');
+
+                let html = `
+                    <div class="burnout-indicator" style="border-right-color:${riskColor};">
+                        <h2 style="color:${riskColor}; margin:0;">مستوى خطر الاحتراق: ${json.risk_ar}</h2>
+                        <p style="margin-top:10px;">${json.analysis}</p>
+                    </div>
+
+                    <h3 style="color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">🚩 مؤشرات يجب الانتباه لها</h3>
+                    <ul>${json.markers.map(m => `<li>${m}</li>`).join('')}</ul>
+
+                    <h3 style="color:#10b981; margin-top:20px;">🛡️ استراتيجيات وقائية فورية</h3>
+                    <ul>${json.survival_tips.map(t => `<li>${t}</li>`).join('')}</ul>
+
+                    <div style="background:#f0fdf4; padding:20px; border-radius:12px; margin-top:20px;">
+                        <h3 style="color:#065f46; margin-top:0;">📅 خطة الاستدامة طويلة الأمد</h3>
+                        <p>${json.long_term_plan}</p>
+                    </div>
+
+                    <p style="margin-top:20px;"><strong>🛠️ أدوات مقترحة للصحة المهنية:</strong> ${json.wellness_tools.join(' - ')}</p>
+                `;
+
+                document.getElementById('burnoutContent').innerHTML = html;
+                document.getElementById('resultArea').style.display = 'block';
+                status.innerText = "✅ اكتمل تحليل الاستدامة!";
+            } catch (e) {
+                console.error(e);
+                status.innerText = "❌ فشل الاتصال.";
+            } finally {
+                btn.disabled = false;
+            }
+        };
+        document.getElementById('exportBtn').onclick = () => {
+            ProtectionManager.verify(() => window.print());
+        };
+    </script>
+</body>
+
+</html>
