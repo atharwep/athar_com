@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | الأخطاء القاتلة في التوظيف</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="protection.js"></script>
+    <style>
+        .page-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .input-card {
+            background: var(--glass-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+
+        textarea,
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-family: 'Cairo';
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: #e11d48;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .result-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+            line-height: 1.8;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-item {
+            background: #fff1f2;
+            border-right: 5px solid #e11d48;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .solution-item {
+            background: #f0fdf4;
+            border-right: 5px solid #10b981;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <nav>
+        <div class="logo-container">
+            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
+                <div class="logo">أثـــــر</div>
+            </a>
+        </div>
+        <div class="nav-actions">
+            <a href="index.html" class="btn btn-ghost">الرئيسية</a>
+            <a href="career_path.html" class="btn btn-ghost">مسارك المهني</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header style="text-align:center; margin-bottom:40px;">
+            <h1 style="font-weight:900; color:#e11d48; font-size: 2.5rem;">⚠️ محلل الأخطاء والرفض الوظيفي</h1>
+            <p style="color:var(--text-secondary);">اكتشف لماذا يتم رفض طلباتك في المنظمات وكيف تصحح المسار فوراً.</p>
+        </header>
+
+        <div class="input-card">
+            <div class="form-group">
+                <label>ارفع سيرتك الذاتية أو الصق محتواها:</label>
+                <textarea id="cvContent" rows="6" placeholder="الصق محتوى الـ CV هنا للتحليل..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>كم مرة قمت بالتقديم ولم يتم الرد عليك؟</label>
+                <input type="number" id="applyCount" placeholder="مثال: 10">
+            </div>
+            <button id="analyzeErrorsBtn" class="btn-full">كشف الأخطاء القاتلة ⚡</button>
+        </div>
+
+        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
+
+        <div id="resultArea" class="result-card">
+            <h3 style="color:#e11d48; border-bottom: 2px solid #eee; padding-bottom:10px;">تقرير الرفض والحلول التصحيحية
+            </h3>
+            <div id="errorsContainer"></div>
+            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
+                حفظ التقرير التصحيحي</button>
+        </div>
+    </div>
+
+    <script>
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+
+        document.getElementById('analyzeErrorsBtn').onclick = async () => {
+            const cv = document.getElementById('cvContent').value;
+            const count = document.getElementById('applyCount').value;
+
+            const btn = document.getElementById('analyzeErrorsBtn');
+            const status = document.getElementById('statusLog');
+            btn.disabled = true;
+            status.innerText = "⏳ جاري تشريح ملفك المهني لكشف الثغرات...";
+
+            const prompt = `
+            أنت مسؤول توظيف خبير (Senior Recruiter) في الأمم المتحدة.
+            المدخلات: CV: ${cv}, عدد مرات الرفض: ${count}.
+            
+            المطلوب (JSON حصراً):
+            {
+                "fatal_errors": [
+                    {"error": "وصف دقيق للخطأ القاتل (50 كلمة)", "reason": "لماذا يسبب الرفض الفوري؟", "fix": "خطوات التصحيح العملي"}
+                ],
+                "hidden_issues": ["مشكلة خفية 1", "مشكلة خفية 2", "مشكلة خفية 3", "مشكلة خفية 4"],
+                "cv_score": "نسبة مئوية",
+                "urgent_advice": "خطة إنقاذ عاجلة (100 كلمة)"
+            }
+
+            ⚠️ تعليمات صارمة:
+            1. استخرج **7 أخطاء قاتلة على الأقل**.
+            2. كن صريحاً وقاسياً في النقد (Brutal Honesty) لمصلحة المرشح.
+            3. ركز على: الـ ATS، الكلمات المفتاحية المفقودة، التنسيق، صياغة الإنجازات.
+            4. المخرجات باللغة العربية.
+            `;
+
+            const tryParse = (str) => {
+                try { return JSON.parse(str); } catch (e) { return null; }
+            };
+
+            const cleanText = (text) => {
+                let clean = text.replace(/```json\s*|```\s*/gi, "").trim();
+                const start = clean.indexOf('{');
+                const end = clean.lastIndexOf('}');
+                if (start !== -1 && end !== -1 && end > start) {
+                    return clean.substring(start, end + 1);
+                }
+                return clean;
+            };
+
+            try {
+                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt + "\n\nIMPORTANT: Return ONLY valid JSON." }],
+                        temperature: 0.3
+                    })
+                });
+
+                const dataText = await res.text();
+                if (!dataText) throw new Error("Empty response");
+
+                let parsed = tryParse(dataText);
+                let content = "";
+
+                if (parsed && parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
+                    content = parsed.choices[0].message.content;
+                } else {
+                    content = dataText;
+                }
+
+                // (REMOVED generic error check to avoid false positives)
+                if (content.startsWith("Error:") || content.includes("Rate limit exceeded")) {
+                    status.innerText = "⚠️ عذراً، الخادم مشغول حالياً. يرجى المحاولة بعد قليل.";
+                    return;
+                }
+
+                const json = tryParse(cleanText(content));
+                if (!json) throw new Error("JSON Parsing failed");
+
+                let html = `<div style="text-align:center; font-size:1.5rem; font-weight:bold; margin-bottom:20px;">درجة جودة ملفك الحالية: <span style="color:#e11d48;">${json.cv_score || '0%'}</span></div>`;
+
+                (json.fatal_errors || []).forEach(e => {
+                    html += `
+                        <div class="error-item">
+                            <strong style="color:#e11d48; font-size:1.1rem;">❌ الخطأ: ${e.error || ''}</strong>
+                            <p style="margin:5px 0;"><strong>السبب:</strong> ${e.reason || ''}</p>
+                            <div class="solution-item"><strong>✅ التصحيح:</strong> ${e.fix || ''}</div>
+                        </div>
+                    `;
+                });
+
+                html += `<div style="margin-top:20px; padding:15px; background:#fff7ed; border-radius:10px;"><strong>💡 مشاكل إضافية:</strong> ${(json.hidden_issues || []).join(' | ')}</div>`;
+                html += `<div style="margin-top:20px; font-weight:bold; color:#1e40af;">📌 نصيحة عاجلة: ${json.urgent_advice || ''}</div>`;
+
+                document.getElementById('errorsContainer').innerHTML = html;
+                document.getElementById('resultArea').style.display = 'block';
+                status.innerText = "✅ اكتمل الفحص!";
+            } catch (e) {
+                console.error("AI Error:", e);
+                status.innerText = "❌ حدث خطأ في استخراج البيانات. يرجى إعادة المحاولة.";
+            } finally {
+                btn.disabled = false;
+            }
+        };
+        document.getElementById('exportBtn').onclick = () => {
+            ProtectionManager.verify(() => window.print());
+        };
+    </script>
+</body>
+
+</html>

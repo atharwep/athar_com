@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | تحويل الخبرات للمنظمات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="protection.js"></script>
+    <style>
+        .page-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .input-card {
+            background: var(--glass-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+
+        textarea,
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-family: 'Cairo';
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: var(--primary);
+            color: white;
+            transition: 0.3s;
+        }
+
+        .result-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+            line-height: 1.8;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            margin: 25px 0 10px;
+            font-weight: 900;
+        }
+
+        .transform-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .transform-table th,
+        .transform-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+
+        .transform-table th {
+            background: #f8fafc;
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <nav>
+        <div class="logo-container">
+            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
+                <div class="logo">أثـــــر</div>
+            </a>
+        </div>
+        <div class="nav-actions">
+            <a href="index.html" class="btn btn-ghost">الرئيسية</a>
+            <a href="career_path.html" class="btn btn-ghost">مسارك المهني</a>
+            <a href="job_prep.html" class="btn btn-ghost">الاستعداد للمقابلات</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header style="text-align:center; margin-bottom:40px;">
+            <h1 style="font-weight:900; color:var(--primary); font-size: 2.5rem;">🔄 تحويل الخبرات للقطاع الإنساني</h1>
+            <p style="color:var(--text-secondary);">حول خبراتك التجارية أو الإدارية إلى صياغة احترافية تقبلها المنظمات
+                الدولية.</p>
+        </header>
+
+        <div class="input-card">
+            <div class="form-group">
+                <label>لصق خبراتك السابقة أو سيرتك الذاتية:</label>
+                <textarea id="rawExperience" rows="8"
+                    placeholder="مثال: عملت مندوب مبيعات، مدير مدرسة، محاسب في شركة خاصة..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>المجال الوظيفي المستهدف في المنظمات:</label>
+                <input type="text" id="targetJob" placeholder="مثال: مسؤول لوجستيات، مسؤول حماية، منسق مشاريع...">
+            </div>
+            <button id="transformBtn" class="btn-full">تحليل وتحويل الخبرات ⚡</button>
+        </div>
+
+        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
+
+        <div id="resultArea" class="result-card">
+            <div id="analysisContent"></div>
+            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
+                تصدير كدليل صياغة</button>
+        </div>
+    </div>
+
+    <script>
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+
+        document.getElementById('transformBtn').onclick = async () => {
+            const exp = document.getElementById('rawExperience').value;
+            const job = document.getElementById('targetJob').value;
+
+            if (!exp) return alert("يرجى إدخال خبراتك السابقة.");
+
+            const btn = document.getElementById('transformBtn');
+            const status = document.getElementById('statusLog');
+            btn.disabled = true;
+            status.innerText = "⏳ جاري إعادة هندسة خبراتك لغوياً...";
+
+            const prompt = `
+            حول الخبرة التالية إلى لغة تتناسب مع المنظمات الدولية (INGO).
+            الخبرة: ${exp}
+            الوظيفة المستهدفة: ${job}
+
+            المطلوب (JSON حصراً):
+            {
+                "mapping": [
+                    {"old": "جملة من الخبرة القديمة", "new": "إعادة صياغة احترافية (Action Verbs)", "skills": "مهارات مستخلصة"}
+                ],
+                "cv_phrases": ["إنجاز 1 مصاغ بـ STAR method", "إنجاز 2"],
+                "suggested_titles": ["مسمى 1", "مسمى 2"],
+                "cv_sections": "نصيحة هيكلية (50 كلمة)",
+                "warnings": ["تجنب ذكر كذا..."],
+                "boosters": ["دورة مقترحة"]
+            }
+            بالعربية.
+            `;
+
+            try {
+                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.7
+                    })
+                });
+
+                const text = await res.text();
+                // Check if response is HTML error page
+                if (text.trim().startsWith("<")) throw new Error("Server Error (HTML Response)");
+
+                // Cleanup JSON
+                const cleanJson = text.replace(/```json\s*|```\s*/gi, "").trim();
+                const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
+
+                if (!jsonMatch) throw new Error("Invalid JSON from AI: " + text.substring(0, 50));
+
+                const json = JSON.parse(jsonMatch[0]);
+
+                let html = `
+                    <div class="section-title">📊 جدول تحويل المهام</div>
+                    <table class="transform-table">
+                        <tr><th>الخبرات السابقة</th><th>الصياغة الإنسانية</th><th>المهارات المكتسبة</th></tr>
+                        ${(json.mapping || []).map(m => `<tr><td>${m.old}</td><td>${m.new}</td><td>${m.skills}</td></tr>`).join('')}
+                    </table>
+
+                    <div class="section-title">✍️ صياغات جاهزة لسيرتك الذاتية</div>
+                    <ul>${(json.cv_phrases || []).map(p => `<li>${p}</li>`).join('')}</ul>
+
+                    <div class="section-title">🏷️ مسميات وظيفية تناسبك</div>
+                    <p>${(json.suggested_titles || []).join(' - ')}</p>
+
+                    <div class="section-title">📂 نصيحة لتنسيق الـ CV</div>
+                    <p>${json.cv_sections || ''}</p>
+
+                    <div class="section-title">⚠️ خبرات يفضل تجنبها/تقليلها</div>
+                    <ul>${(json.warnings || []).map(w => `<li>${w}</li>`).join('')}</ul>
+
+                    <div class="section-title">📈 لتعزيز ملفك فوراً</div>
+                    <p>${(json.boosters || []).join(' - ')}</p>
+                `;
+
+                document.getElementById('analysisContent').innerHTML = html;
+                document.getElementById('resultArea').style.display = 'block';
+                status.innerText = "✅ اكتمل التحويل!";
+            } catch (e) {
+                console.error("Analysis Error:", e);
+                status.innerHTML = `<span style="color:red">❌ فشل التحليل: ${e.message}</span>`;
+            } finally {
+                btn.disabled = false;
+            }
+        };
+        document.getElementById('exportBtn').onclick = () => {
+            ProtectionManager.verify(() => window.print());
+        };
+    </script>
+</body>
+
+</html>

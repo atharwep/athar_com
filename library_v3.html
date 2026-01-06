@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتبة أثر | المكتبة البصرية الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/api/libs/pdf.js/3.4.120/pdf.worker.min.js';</script>
+    <script src="language_manager.js"></script>
+    <style>
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .book-card {
+            background: var(--glass-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-cover-wrapper {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .book-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .book-card:hover .book-cover-img {
+            transform: scale(1.05);
+        }
+
+        .file-type-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .book-info {
+            padding: 15px;
+            background: var(--glass-bg);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .book-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+
+        .book-cat {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Viewer Overlay */
+        #viewerOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .viewer-header {
+            background: #0f172a;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        iframe {
+            flex-grow: 1;
+            border: none;
+            background: white;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20000;
+            display: none;
+        }
+
+        /* Category Shelf Styles */
+        .shelf-section {
+            margin-bottom: 40px;
+        }
+
+        .shelf-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-right: 15px;
+            border-right: 5px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shelf-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: linear-gradient(to left, var(--glass-border), transparent);
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <div class="loading-overlay" id="loader">
+        <img src="تنزيل.jpg" alt="Logo"
+            style="width:100px; border-radius:50%; margin-bottom:20px; animation: pulse 2s infinite;">
+        <p style="margin-top:20px; font-weight:bold; color:var(--primary);">جاري تحميل المكتبة الذكية...</p>
+        <style>
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                    opacity: 0.8;
+                }
+
+                50% {
+                    transform: scale(1.1);
+                    opacity: 1;
+                }
+
+                100% {
+                    transform: scale(1);
+                    opacity: 0.8;
+                }
+            }
+        </style>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo-container">
+                <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:20px;">
+                    <img src="تنزيل.jpg" alt="Logo" id="mainLogo">
+                    <div>
+                        <div class="logo">أثـــــر</div>
+                        <div class="logo-slogan">المكتبة البصرية الذكية</div>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost" data-i18n="nav_home">🏠 الرئيسية</a>
+                <div class="dropdown">
+                    <button class="btn btn-ghost">📂 خدمات التوظيف</button>
+                    <div class="dropdown-content">
+                        <a href="career_path.html">🚀 مسارك المهني</a>
+                        <a href="job_prep.html">🎯 استعداد للمقابلات</a>
+                        <a href="skill_dev.html">🏗️ بناء القدرات</a>
+                        <a href="cv_improved.html">🤖 سيرة ATS الذكية</a>
+                    </div>
+                </div>
+                <a href="refine_v3.html" class="btn btn-ghost" data-i18n="nav_refine">⚡ المنقح الذكي</a>
+                <a href="library_v3.html" class="btn btn-ghost" data-i18n="nav_lib">📚 المكتبة</a>
+                <!-- <a href="whats_new.html" class="btn btn-ghost" data-i18n="nav_new">✨ الجديد</a> -->
+                <button id="globalLangToggle" class="btn btn-ghost" onclick="LangManager.toggleLanguage()">English
+                    🇺🇸</button>
+                <button id="themeToggle" class="btn btn-ghost">🌓</button>
+            </div>
+        </nav>
+
+        <header style="margin-top: 40px; text-align: center;">
+            <h1 style="font-weight: 900; color: var(--primary);">مكتبة أثر الرقمية</h1>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 10px auto;">تصفح وحمل آلاف الموارد والكتب
+                المتخصصة في العمل الإنساني</p>
+
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+                <div class="search-box" style="width: 400px; position: relative;">
+                    <input type="text" id="libSearch" placeholder="ابحث عن كتاب، دليل، أو مورد..."
+                        data-i18n="search_placeholder"
+                        style="width: 100%; padding: 12px 45px 12px 20px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--glass-bg);">
+                    <span style="position: absolute; right: 20px; top: 12px; opacity: 0.5;">🔍</span>
+                </div>
+                <button id="globalLangToggle" class="btn btn-ghost" onclick="LangManager.toggleLanguage()"
+                    style="background:var(--primary); color:white;">English 🇺🇸</button>
+                <div id="syncStatus" style="font-size:0.8rem; color:var(--text-secondary); align-self:center;"></div>
+            </div>
+        </header>
+
+        <main class="library-grid" id="bookGrid">
+            <!-- Books injected here -->
+        </main>
+    </div>
+
+    <!-- Viewer Overlay -->
+    <div id="viewerOverlay">
+        <div class="viewer-header">
+            <div id="viewerTitle" style="font-weight: bold;">اسم الملف</div>
+            <div style="display: flex; gap: 15px;">
+                <div>
+                    <a id="downloadBtn" href="#" target="_blank" class="btn-primary"
+                        style="padding: 5px 15px; text-decoration: none; border-radius: 5px; color: white; background: #2563eb; display: block;">
+                        ⬇️ تحميل مباشر
+                    </a>
+                </div>
+            </div>
+            <button onclick="closeViewer()" class="btn btn-ghost"
+                style="color:white; border:none; font-size: 1.5rem;">✕</button>
+        </div>
+        <iframe id="docViewer"></iframe>
+    </div>
+
+    <script>
+        const BRIDGE_DIRECT = "https://script.google.com/macros/s/AKfycbyJ0h6WymswhfwgB0-zylCW9YfDknGE7oXR2QQE8QlonM36Tw7qCAH-_szOIE2XpaW0eg/exec";
+        // استخدام الرابط المباشر (يتطلب نشر السكريبت كـ Web App بصلاحية وصول "Anyone")
+        const BRIDGE_URL = BRIDGE_DIRECT;
+
+        const DEFAULT_LOGO = "تنزيل.jpg";
+        let allBooks = [];
+
+        async function fetchLibrary(sync = true) {
+            const grid = document.getElementById('bookGrid');
+            const loader = document.getElementById('loader');
+
+            if (allBooks.length === 0) {
+                loader.style.display = 'flex';
+            }
+
+            try {
+                if (sync) {
+                    fetch(`${BRIDGE_URL}?action=sync`).catch(e => console.warn("Background sync failed"));
+                }
+
+                const res = await fetch(`${BRIDGE_URL}?type=library`);
+                const data = await res.json();
+
+                if (Array.isArray(data)) {
+                    allBooks = data.map(row => {
+                        // Support New Format (Object) OR Old Format (Array)
+                        return {
+                            title: row.name || row.title || row[1] || "ملف بدون عنوان",
+                            cat: row.category || row.cat || row[2] || "موارد عامة",
+                            summary: row.description || row.summary || row[3] || "",
+                            id: row.id || row[4],
+                            date: row.date || row[0]
+                        };
+                    });
+
+                    localStorage.setItem('athar_library_cache', JSON.stringify(allBooks));
+
+                    if (allBooks.length > 0) {
+                        try { renderCategorizedBooks(allBooks); } catch (re) { console.error(re); }
+                    }
+                }
+            } catch (e) {
+                console.error("Fetch Error:", e);
+                if (allBooks.length === 0) {
+                    grid.innerHTML = `<div style="text-align:center; padding:50px;">
+                        <p style="color:red;">حدث خطأ أثناء جلب الملفات</p>
+                        <button class="btn btn-primary" onclick="fetchLibrary(true)">إعادة المحاولة</button>
+                    </div>`;
+                }
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        function renderCategorizedBooks(books) {
+            const grid = document.getElementById('bookGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            grid.style.display = 'block';
+
+            const categories = {};
+            books.forEach(b => {
+                const cat = b.cat || "موارد عامة";
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push(b);
+            });
+
+            for (const cat in categories) {
+                const shelf = document.createElement('div');
+                shelf.className = 'shelf-section';
+                shelf.innerHTML = `
+                    <h2 class="shelf-title">📂 ${cat} <span style="font-size:0.9rem; font-weight:normal; opacity:0.7;">(${categories[cat].length} ملف)</span></h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                        ${categories[cat].map(book => `
+                            <div class="book-card" onclick="openViewerById('${book.id}', '${book.title.replace(/'/g, "\\'")}')">
+                                <div class="book-cover-wrapper">
+                                    <img src="https://lh3.googleusercontent.com/d/${book.id}=w400-h600?authuser=0" 
+                                         class="book-cover-img" 
+                                         onerror="this.src='${DEFAULT_LOGO}'; this.style.padding='40px'; this.style.backgroundColor='#fff';">
+                                    <div class="file-type-badge">DRIVE</div>
+                                </div>
+                                <div class="book-info">
+                                    <div class="book-title">${book.title}</div>
+                                    <div class="book-cat">${book.cat}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                grid.appendChild(shelf);
+            }
+        }
+
+        function openViewerById(id, title) { openViewer({ id, title }); }
+        function openViewer(book) {
+            const viewer = document.getElementById('docViewer');
+            const overlay = document.getElementById('viewerOverlay');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            document.getElementById('viewerTitle').innerText = book.title;
+            const previewUrl = `https://drive.google.com/file/d/${book.id}/preview`;
+            viewer.src = previewUrl;
+
+            // رابط التحميل المباشر (Proxy Download)
+            downloadBtn.href = `${BRIDGE_URL}?action=proxy&id=${book.id}`;
+
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeViewer() {
+            document.getElementById('viewerOverlay').style.display = 'none';
+            document.getElementById('docViewer').src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('libSearch').oninput = (e) => {
+            const q = e.target.value.toLowerCase();
+            const filtered = allBooks.filter(b => b.title.toLowerCase().includes(q) || b.cat.toLowerCase().includes(q));
+            renderCategorizedBooks(filtered);
+        };
+
+        // Theme Toggle
+        document.getElementById('themeToggle').onclick = () => {
+            const isDark = document.body.classList.toggle('dark-theme');
+            document.body.classList.toggle('light-theme', !isDark);
+        };
+
+        // --- Caching Logic ---
+        const cached = localStorage.getItem('athar_library_cache');
+        if (cached) {
+            try {
+                allBooks = JSON.parse(cached);
+                renderCategorizedBooks(allBooks);
+            } catch (ce) { console.error("Cache error", ce); }
+            fetchLibrary(true);
+        } else {
+            fetchLibrary(true);
+        }
+    </script>
+</body>
+
+</html>

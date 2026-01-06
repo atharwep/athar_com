@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | الاستعداد للمقابلات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="protection.js"></script>
+    <style>
+        .page-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .input-card {
+            background: var(--glass-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+
+        textarea,
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-family: 'Cairo';
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: var(--primary);
+            color: white;
+            transition: 0.3s;
+        }
+
+        .result-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+            line-height: 1.8;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            margin: 25px 0 10px;
+            font-weight: 900;
+        }
+
+        .question-box {
+            background: #f8fafc;
+            border-right: 4px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .answer-box {
+            font-size: 0.95rem;
+            color: #4b5563;
+            background: #fff;
+            padding: 10px;
+            border: 1px dashed #ddd;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <nav>
+        <div class="logo-container">
+            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
+                <div class="logo">أثـــــر</div>
+            </a>
+        </div>
+        <div class="nav-actions">
+            <a href="index.html" class="btn btn-ghost">الرئيسية</a>
+            <a href="career_path.html" class="btn btn-ghost">مسارك المهني</a>
+            <a href="skill_dev.html" class="btn btn-ghost">تطوير المهارات</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header style="text-align:center; margin-bottom:40px;">
+            <h1 style="font-weight:900; color:var(--primary); font-size: 2.5rem;">🎯 محلل الوظائف والمقابلات</h1>
+            <p style="color:var(--text-secondary);">حلل إعلان الوظيفة، واكتشف الأسئلة المتوقعة مع إجابات نموذجية.</p>
+        </header>
+
+        <div class="input-card">
+            <div class="form-group">
+                <label>أدخل نص إعلان الوظيفة (أو المهام المطلوبة):</label>
+                <textarea id="jobAd" rows="8" placeholder="الصق نص الإعلان هنا..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>سيرتك الذاتية (اختياري لتخصيص الأسئلة):</label>
+                <textarea id="cvText" rows="4" placeholder="الصق نص سيرتك الذاتية هنا..."></textarea>
+            </div>
+            <button id="analyzeBtn" class="btn-full">تحليل الوظيفة والاستعداد ⚡</button>
+        </div>
+
+        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
+
+        <div id="resultArea" class="result-card">
+            <div id="analysisHeader"
+                style="background:#e0f2fe; padding:15px; border-radius:10px; margin-bottom:20px; text-align:center;">
+                <h3 id="jobLevel" style="margin:0; color:#0369a1;"></h3>
+            </div>
+            <div id="analysisContent"></div>
+            <div class="section-title">🎤 أسئلة مقابلة متوقعة مع إجابات نموذجية</div>
+            <div id="questionsArea"></div>
+            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
+                طباعة دليل المقابلة</button>
+        </div>
+    </div>
+
+    <script>
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+
+        document.getElementById('analyzeBtn').onclick = async () => {
+            const ad = document.getElementById('jobAd').value;
+            const cv = document.getElementById('cvText').value;
+
+            if (!ad) return alert("يرجى لصق إعلان الوظيفة.");
+
+            const btn = document.getElementById('analyzeBtn');
+            const status = document.getElementById('statusLog');
+            btn.disabled = true;
+            status.innerText = "⏳ جاري تحليل الإعلان وتوليد الأسئلة...";
+
+            const prompt = `
+            أنت مسؤول توظيف أول (Senior HR) في منظمة دولية.
+            المدخلات:
+            - إعلان الوظيفة: ${ad}
+            - سيرة المستخدم: ${cv || 'لم توفر'}
+
+            المطلوب (JSON حصراً):
+            {
+                "level": "Junior|Officer|Senior",
+                "competencies": ["كفاءة 1", "كفاءة 2", "كفاءة 3", "كفاءة 4"],
+                "keywords": ["كلمة 1", "كلمة 2", "كلمة 3"],
+                "match_score": "80%",
+                "questions": [
+                    {
+                        "type": "Technical|Behavioral|Scenario",
+                        "question": "السؤال",
+                        "answer": "الإجابة النموذجية المفصلة",
+                        "intent": "ماذا يبحث عنه المقابل هنا"
+                    }
+                ],
+                "tips": ["نصيحة 1", "نصيحة 2"]
+            }
+            
+            ⚠️ مهم جداً: يجب أن يحتوي مصفوفة questions على 30 سؤالاً بالضبط (لا أقل ولا أكثر).
+            نوّع الأسئلة بين Technical (تقنية)، Behavioral (سلوكية)، و Scenario (سيناريوهات).
+            اجعل الإجابات مفصلة وشاملة (100-150 كلمة لكل إجابة).
+            المخرجات بالعربية.
+            `;
+
+            const tryParse = (str) => {
+                try { return JSON.parse(str); } catch (e) { return null; }
+            };
+
+            const cleanText = (text) => {
+                let clean = text.replace(/```json\s*|```\s*/gi, "").trim();
+                const start = clean.indexOf('{');
+                const end = clean.lastIndexOf('}');
+                if (start !== -1 && end !== -1 && end > start) {
+                    return clean.substring(start, end + 1);
+                }
+                return clean;
+            };
+
+            try {
+                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt + "\n\nIMPORTANT: Return ONLY valid JSON." }],
+                        temperature: 0.3
+                    })
+                });
+
+                const dataText = await res.text();
+                if (!dataText) throw new Error("Empty response");
+
+                let parsed = tryParse(dataText);
+                let content = "";
+
+                if (parsed && parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
+                    content = parsed.choices[0].message.content;
+                } else {
+                    content = dataText;
+                }
+
+                // (Fixed) Removed false positive error check
+                if (content.startsWith("Error:") || content.includes("Rate limit exceeded")) {
+                    status.innerText = "⚠️ عذراً، الخادم مشغول حالياً.";
+                    return;
+                }
+
+                const json = tryParse(cleanText(content));
+                if (!json) throw new Error("JSON Parsing failed");
+
+                document.getElementById('jobLevel').innerText = `المستوى المتوقع: ${json.level || 'غير محدد'} | نسبة التوافق: ${json.match_score || '0%'}`;
+
+                let contentHtml = `
+                    <div class="section-title">🔍 الكفاءات والكلمات المفتاحية</div>
+                    <p><strong>الكفاءات المطلوبة:</strong> ${(json.competencies || []).join(' - ')}</p>
+                    <p><strong>كلمات مفتاحية للاستخدام:</strong> ${(json.keywords || []).map(k => `<span style="background:#f1f5f9; padding:2px 8px; border-radius:4px; margin-left:5px;">${k}</span>`).join('')}</p>
+                `;
+                document.getElementById('analysisContent').innerHTML = contentHtml;
+
+                let qHtml = '';
+                (json.questions || []).forEach(q => {
+                    qHtml += `
+                        <div class="question-box">
+                            <span style="font-size:0.8rem; background:#3b82f6; color:white; padding:2px 10px; border-radius:10px;">${q.type || 'سؤال'}</span>
+                            <p style="font-weight:bold; margin:10px 0;">${q.question || ''}</p>
+                            <div style="font-size:0.85rem; color:#6b7280; font-style:italic;">الهدف: ${q.intent || ''}</div>
+                            <div class="answer-box"><strong>الإجابة المقترحة:</strong> ${q.answer || ''}</div>
+                        </div>
+                    `;
+                });
+                document.getElementById('questionsArea').innerHTML = qHtml;
+
+                document.getElementById('resultArea').style.display = 'block';
+                status.innerText = "✅ اكتمل التحليل بنجاح!";
+                window.scrollTo({ top: document.getElementById('resultArea').offsetTop - 50, behavior: 'smooth' });
+
+            } catch (e) {
+                console.error("AI Error:", e);
+                status.innerText = "❌ حدث خطأ في استخراج البيانات. يرجى إعادة المحاولة.";
+            } finally {
+                btn.disabled = false;
+            }
+        };
+        document.getElementById('exportBtn').onclick = () => {
+            ProtectionManager.verify(() => window.print());
+        };
+    </script>
+</body>
+
+</html>
