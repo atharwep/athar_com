@@ -4,289 +4,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أثر | مسارك المهني في المنظمات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>أثر | هندسة المسار المهني</title>
     <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&family=Outfit:wght@300;600;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="protection.js"></script>
-    <style>
-        .page-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .input-card {
-            background: var(--glass-bg);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            margin-bottom: 30px;
-        }
-
-        textarea,
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-family: 'Cairo';
-        }
-
-        .btn-full {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            border: none;
-            background: var(--primary);
-            color: white;
-            transition: 0.3s;
-        }
-
-        .btn-full:hover {
-            filter: brightness(1.1);
-            transform: translateY(-2px);
-        }
-
-        .result-card {
-            background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 15px;
-            display: none;
-            line-height: 1.8;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .badge-high {
-            background: #10b981;
-            color: white;
-        }
-
-        .badge-mid {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .badge-low {
-            background: #ef4444;
-            color: white;
-        }
-
-        .section-title {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 5px;
-            margin: 20px 0 10px;
-            font-weight: 900;
-        }
-    </style>
 </head>
 
 <body class="light-theme">
-    <nav>
-        <div class="logo-container">
-            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
-                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
-                <div class="logo">أثـــــر</div>
-            </a>
-        </div>
-        <div class="nav-actions">
-            <a href="index.html" class="btn btn-ghost">الرئيسية</a>
-            <a href="job_prep.html" class="btn btn-ghost">الاستعداد للمقابلات</a>
-            <a href="skill_dev.html" class="btn btn-ghost">تطوير المهارات</a>
-        </div>
-    </nav>
-
-    <div class="page-container">
-        <header style="text-align:center; margin-bottom:40px;">
-            <h1 style="font-weight:900; color:var(--primary); font-size: 2.5rem;">🚀 بوابتك للعمل في المنظمات</h1>
-            <p style="color:var(--text-secondary);">حلل جاهزيتك، وحدد مسارك المهني في القطاع الإنساني بدقة.</p>
-        </header>
-
-        <div class="input-card">
-            <div class="form-group">
-                <label>المؤهل العلمي والتخصص:</label>
-                <input type="text" id="education" placeholder="مثال: بكالوريوس إدارة أعمال، هندسة مدنية...">
-            </div>
-            <div class="form-group">
-                <label>الخبرات السابقة (بشكل مختصر):</label>
-                <textarea id="experience" rows="4"
-                    placeholder="مثال: عملت لمدة سنتين في المحاسبة، متطوع سابق في الهلال الأحمر..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>البلد أو السياق المستهدف:</label>
-                <input type="text" id="targetCountry" placeholder="مثال: شمال غرب سوريا، اليمن، مخيمات الأردن...">
-            </div>
-            <div class="form-group">
-                <label>المجال المرغوب (اختياري):</label>
-                <select id="targetField">
-                    <option value="General">عام / أي مجال</option>
-                    <option value="Logistics">اللوجستيات والإمداد</option>
-                    <option value="HR">الموارد البشرية</option>
-                    <option value="Protection">الحماية</option>
-                    <option value="Education">التعليم</option>
-                    <option value="WASH">المصادر المائية والإصحاح</option>
-                    <option value="Finance">المالية والحسابات</option>
-                    <option value="MEAL">المتابعة والتقييم (MEAL)</option>
-                </select>
-            </div>
-            <button id="analyzeBtn" class="btn-full">تحليل المسار المهني ⚡</button>
-        </div>
-
-        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
-
-        <div id="resultArea" class="result-card">
-            <div id="readinessBadge"></div>
-            <div id="analysisContent"></div>
-            <button id="exportPdf" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
-                تحميل التقرير (PDF/Snapshot)</button>
-        </div>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
-    <script>
-        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+    <div class="container" style="max-width: 950px; padding-bottom: 100px;">
+        <nav class="premium-nav">
+            <div class="logo-container">
+                <div class="ripple-wrapper">
+                    <div class="ripple"></div>
+                    <img src="تنزيل.jpg" id="mainLogo" alt="Athar">
+                </div>
+                <div>
+                    <div class="logo">أثـــــر</div>
+                    <div class="logo-slogan">رؤية مهنية ثاقبة</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost"><i class="fas fa-home"></i> الرئيسية</a>
+            </div>
+        </nav>
 
-        document.getElementById('analyzeBtn').onclick = async () => {
-            const edu = document.getElementById('education').value;
-            const exp = document.getElementById('experience').value;
-            const country = document.getElementById('targetCountry').value;
-            const field = document.getElementById('targetField').value;
+        <main class="anim-fade-in" style="margin-top: 50px;">
+            <div class="glass-card main-input-card">
+                <div class="card-header-icon" style="color: var(--primary);">
+                    <i class="fas fa-route"></i>
+                </div>
+                <h1>خريطة الطريق المهنية</h1>
+                <p class="subtitle">أدخل الوظيفة التي تطمح إليها لنرسم لك مساراً استراتيجياً من 30 خطوة عملية للوصول إلى
+                    هدفك.</p>
 
-            if (!edu || !exp) return alert("يرجى إدخال التعليم والخبرة على الأقل.");
+                <div class="input-wrapper">
+                    <input type="text" id="targetJob" placeholder="مثلاً: مدير مشروع، مسؤول حماية، خبير مالي..."
+                        class="premium-input" oninput="handleAutoTrigger(this)">
+                    <div id="aiPulse" class="ai-pulse" style="display: none;">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
 
-            const btn = document.getElementById('analyzeBtn');
-            const status = document.getElementById('statusLog');
-            btn.disabled = true;
-            status.innerText = "⏳ جاري تحليل بياناتك بعمق...";
+            <div id="loader" class="premium-loader" style="display: none;">
+                <div class="loader-spinner"></div>
+                <h3 id="loaderText">جاري هندسة 30 خطوة استراتيجية لمستقبلك...</h3>
+                <div class="loader-bar">
+                    <div class="loader-progress"></div>
+                </div>
+            </div>
 
-            const prompt = `
-            أنت مستشار توظيف وخبير مسارات مهنية متخصص في العمل الإنساني والمنظمات غير الحكومية.
-            المدخلات:
-            - المؤهل: ${edu}
-            - الخبرة: ${exp}
-            - السياق: ${country}
-            - المجال المرغوب: ${field}
+            <div id="resultArea" style="display: none;" class="anim-slide-up">
+                <div class="glass-card result-card">
+                    <div id="analysisSection" class="premium-banner">
+                        <div class="banner-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="banner-content">
+                            <h3>التحليل الاستراتيجي للفجوة المهنية</h3>
+                            <p id="analysisText"></p>
+                        </div>
+                    </div>
 
-            المطلوب (JSON حصراً):
-            {
-                "readiness": "High|Medium|Low",
-                "readiness_ar": "عالية|متوسطة|منخفضة",
-                "summary": "تحليل موجز للتوافق",
-                "strengths": ["نقطة 1", "نقطة 2"],
-                "gaps": ["فجوة 1", "فجوة 2"],
-                "roles": ["وظيفة 1", "وظيفة 2"],
-                "plan": ["خطوة 1", "خطوة 2"],
-                "tips": ["نصيحة 1", "نصيحة 2"],
-                "errors": ["خطأ 1", "خطأ 2"]
+                    <h3 class="section-title"><i class="fas fa-map-marked-alt"></i> خطوات المسار الموصى بها (30 خطوة):
+                    </h3>
+                    <div id="stepsContainer" class="steps-grid"></div>
+
+                    <button onclick="ProtectionManager.verify(() => window.print())" class="btn btn-primary"
+                        style="width: 100%; margin-top: 50px; justify-content: center; height: 60px; border-radius: 20px;">
+                        <i class="fas fa-file-pdf"></i> تصدير خارطة الطريق المهنية
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-logo">أثر</div>
+            <div class="footer-credit">تطوير فريق <span class="credit-name">Athar Team</span> &copy; 2025</div>
+        </div>
+    </footer>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --accent: #10b981;
+            --bg-body: #f1f5f9;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background: var(--bg-body);
+            font-family: 'Cairo', sans-serif;
+            color: var(--text-main);
+        }
+
+        .premium-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 45px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        }
+
+        .main-input-card {
+            text-align: center;
+            border-top: 8px solid var(--primary);
+        }
+
+        .card-header-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-weight: 900;
+            font-size: 2.5rem;
+        }
+
+        .premium-input {
+            width: 100%;
+            padding: 22px 30px;
+            border-radius: 20px;
+            border: 2px solid var(--glass-border);
+            background: white;
+            font-size: 1.25rem;
+            font-family: 'Cairo';
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .premium-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 5px var(--primary-glow);
+            outline: none;
+        }
+
+        .premium-banner {
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            color: white;
+            padding: 35px;
+            border-radius: 25px;
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .banner-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+
+        .banner-content h3 {
+            margin: 0 0 10px 0;
+            font-weight: 900;
+            font-size: 1.4rem;
+        }
+
+        .banner-content p {
+            margin: 0;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .section-title {
+            font-weight: 900;
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .step-card {
+            display: flex;
+            gap: 20px;
+            padding: 25px;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+            border-right: 6px solid var(--primary);
+        }
+
+        .step-card:hover {
+            transform: translateX(-10px);
+            border-color: var(--primary);
+        }
+
+        .step-num {
+            color: var(--primary);
+            font-weight: 900;
+            font-size: 1.5rem;
+            min-width: 40px;
+            font-family: 'Outfit';
+        }
+
+        .step-title {
+            font-weight: 800;
+            font-size: 1.15rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .premium-loader {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--glass-border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
-            المخرجات تكون باللغة العربية.
-            `;
+        }
 
-            const tryParse = (str) => {
-                try { return JSON.parse(str); } catch (e) { return null; }
-            };
+        .ai-pulse {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 4px;
+        }
 
-            const cleanText = (text) => {
-                let clean = text.replace(/```json\s*|```\s*/gi, "").trim();
-                const start = clean.indexOf('{');
-                const end = clean.lastIndexOf('}');
-                if (start !== -1 && end !== -1 && end > start) {
-                    return clean.substring(start, end + 1);
-                }
-                return clean;
-            };
+        .ai-pulse span {
+            width: 4px;
+            height: 16px;
+            background: var(--primary);
+            animation: ai-pulse 0.8s infinite ease-in-out;
+        }
+    </style>
+
+    <script>
+        let timeout = null;
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
+
+        function handleAutoTrigger(input) {
+            clearTimeout(timeout);
+            const val = input.value.trim();
+            const pulse = document.getElementById('aiPulse');
+            if (val.length < 5) { pulse.style.display = 'none'; return; }
+            pulse.style.display = 'flex';
+            timeout = setTimeout(() => { startCareerDesign(val); }, 1800);
+        }
+
+        async function startCareerDesign(job) {
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('resultArea');
+            const pulse = document.getElementById('aiPulse');
+
+            pulse.style.display = 'none';
+            loader.style.display = 'block';
+            resultArea.style.display = 'none';
+
+            const prompt = `Task: Design a 30-step strategic career roadmap to become a "${job}".
+            Return ONLY a JSON object:
+            {
+                "analysis": "High-level strategic analysis (Arabic)",
+                "steps": [
+                    {"title": "Step title (Arabic)", "desc": "Actionable description (Arabic)"}
+                ]
+            }
+            Ensure exactly 30 sequential steps. Use professional Arabic. No intro text.`;
 
             try {
-                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                const res = await fetch(`${BRIDGE_URL}?action=ai`, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: prompt + "\n\nIMPORTANT: Return ONLY valid JSON." }],
-                        temperature: 0.3
+                        messages: [
+                            { role: "system", content: "You are a career strategist that returns ONLY valid JSON. Output in Arabic." },
+                            { role: "user", content: prompt }
+                        ]
                     })
                 });
 
-                const dataText = await res.text();
-                if (!dataText) throw new Error("Empty response");
+                const bridgeRes = await res.json();
+                if (bridgeRes.status === "error") throw new Error(bridgeRes.message);
 
-                let parsed = tryParse(dataText);
-                let content = "";
+                const aiResponse = bridgeRes.data;
+                const cleanJson = aiResponse.replace(/```json\s*|```\s*/gi, "").trim();
+                const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
 
-                if (parsed && parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
-                    content = parsed.choices[0].message.content;
-                } else {
-                    content = dataText;
-                }
+                if (!jsonMatch) throw new Error("JSON_ERROR");
+                const data = JSON.parse(jsonMatch[0]);
+                if (data.error) throw new Error(data.error.message || "AI_ERROR");
 
-                // (Fixed) Removed false positive error check
-                if (content.startsWith("Error:") || content.includes("Rate limit exceeded")) {
-                    status.innerText = "⚠️ عذراً، الخادم مشغول حالياً.";
-                    return;
-                }
+                document.getElementById('analysisText').innerText = data.analysis || "تحليل المسار المهني المستهدف...";
 
-                const json = tryParse(cleanText(content));
-                if (!json) throw new Error("JSON Parsing failed");
-
-                const resultArea = document.getElementById('resultArea');
-                const analysisContent = document.getElementById('analysisContent');
-                const badge = document.getElementById('readinessBadge');
-
-                badge.innerHTML = `<span class="badge badge-${(json.readiness || 'mid').toLowerCase()}">جاهزية التوظيف: ${json.readiness_ar || 'غير محدد'}</span>`;
-
-                analysisContent.innerHTML = `
-                    <p><strong>الخلاصة:</strong> ${json.summary || ''}</p>
-                    
-                    <div class="section-title">✅ نقاط القوة لديك</div>
-                    <ul>${(json.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul>
-
-                    <div class="section-title">🔍 الفجوات التي تحتاج ردمها</div>
-                    <ul>${(json.gaps || []).map(g => `<li>${g}</li>`).join('')}</ul>
-
-                    <div class="section-title">📂 وظائف بداية مقترحة لك</div>
-                    <ul>${(json.roles || []).map(r => `<li>${r}</li>`).join('')}</ul>
-
-                    <div class="section-title">📅 خطة دخولك للقطاع (3-6 أشهر)</div>
-                    <ol>${(json.plan || []).map(p => `<li>${p}</li>`).join('')}</ol>
-
-                    <div class="section-title">💡 نصائح ذهبية</div>
-                    <ul>${(json.tips || []).map(t => `<li>${t}</li>`).join('')}</ul>
-
-                    <div class="section-title">⚠️ أخطاء شائعة تجنبها</div>
-                    <ul style="color:#d32f2f;">${(json.errors || []).map(e => `<li>${e}</li>`).join('')}</ul>
-                `;
+                const container = document.getElementById('stepsContainer');
+                const steps = data.steps || data.path || data.items || data.modules || [];
+                container.innerHTML = steps.map((s, idx) => `
+                    <div class="step-card anim-slide-up" style="animation-delay: ${idx * 0.05}s">
+                        <span class="step-num">${idx + 1}</span>
+                        <div>
+                            <span class="step-title">${s.title}</span>
+                            <div class="step-desc">${s.desc || s.description}</div>
+                        </div>
+                    </div>
+                `).join('');
 
                 resultArea.style.display = 'block';
-                status.innerText = "✅ اكتمل التحليل بنجاح!";
                 window.scrollTo({ top: resultArea.offsetTop - 50, behavior: 'smooth' });
 
             } catch (e) {
-                console.error("AI Error:", e);
-                status.innerText = "❌ فشل استخراج البيانات. يرجى إعادة المحاولة.";
-            } finally {
-                btn.disabled = false;
-            }
-        };
-
-        document.getElementById('exportPdf').onclick = () => {
-            ProtectionManager.verify(() => window.print());
-        };
+                console.error(e);
+                alert(`تعذر رسم خارطة الطريق حالياً.\n\nالتفاصيل: ${e.message}`);
+            } finally { loader.style.display = 'none'; }
+        }
     </script>
 </body>
 

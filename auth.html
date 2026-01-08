@@ -146,7 +146,7 @@
     </div>
 
     <script>
-        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbyJ0h6WymswhfwgB0-zylCW9YfDknGE7oXR2QQE8QlonM36Tw7qCAH-_szOIE2XpaW0eg/exec";
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
 
         let currentTab = 'login';
 
@@ -207,7 +207,13 @@
                 const data = await res.json();
 
                 if (data.status === "success") {
-                    const userToSave = data.user || { email, name: name || email.split('@')[0] };
+                    // تفضيل البيانات القادمة من السيرفر لأنها تحتوي على الصلاحيات
+                    const userToSave = data.user || {
+                        email,
+                        name: name || email.split('@')[0],
+                        userType: 'individual',
+                        isAdmin: false
+                    };
                     localStorage.setItem('athar_user', JSON.stringify(userToSave));
 
                     alert(currentTab === 'signup' ? "✅ تم إنشاء الحساب بنجاح! جاري تحويلك..." : "✅ أهلاً بك مجدداً في أثر");

@@ -5,211 +5,210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أثر | التخصصات والمسارات الإنسانية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&family=Outfit:wght@300;600;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="protection.js"></script>
-    <style>
-        .page-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .input-card {
-            background: var(--glass-bg);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            margin-bottom: 30px;
-        }
-
-        textarea,
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-family: 'Cairo';
-        }
-
-        .btn-full {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            border: none;
-            background: #0369a1;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .result-card {
-            background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 15px;
-            display: none;
-            line-height: 1.8;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .path-step {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .step-num {
-            background: #0369a1;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-weight: bold;
-        }
-    </style>
 </head>
 
 <body class="light-theme">
-    <nav>
-        <div class="logo-container">
-            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
-                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
-                <div class="logo">أثـــــر</div>
-            </a>
-        </div>
-    </nav>
-
-    <div class="page-container">
-        <header style="text-align:center; margin-bottom:40px;">
-            <h1 style="font-weight:900; color:#0369a1; font-size: 2.5rem;">🌍 التخصصات والمسارات الوظيفية</h1>
-            <p style="color:var(--text-secondary);">اختر تخصصك الإنساني بدقة وابنِ مساراً وظيفياً مستداماً.</p>
-        </header>
-
-        <div class="input-card">
-            <div class="form-group">
-                <label>خلفيتك الأكاديمية ومهاراتك الحالية:</label>
-                <textarea id="userBg" rows="4" placeholder="مثال: هندسة، حقوق، لغة إنجليزية، خبرة إدارية..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>ما هي اهتماماتك الرئيسية في العمل الإنساني؟</label>
-                <textarea id="interests" rows="2"
-                    placeholder="مثال: مساعدة الأطفال، البناء، التخطيط، التعليم..."></textarea>
-            </div>
-            <button id="findPathBtn" class="btn-full">تحديد المسار والوظيفة ⚡</button>
-        </div>
-
-        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
-
-        <div id="resultArea" class="result-card">
-            <div id="pathContent"></div>
-            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
-                تحميل خريطة المسار</button>
-        </div>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
-    <script>
-        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+    <div class="container" style="max-width: 900px; padding-bottom: 80px;">
+        <nav>
+            <div class="logo-container">
+                <div class="ripple-wrapper">
+                    <div class="ripple"></div>
+                    <img src="تنزيل.jpg" id="mainLogo" alt="Athar">
+                </div>
+                <div>
+                    <div class="logo">أثـــــر</div>
+                    <div class="logo-slogan">دليل التخصصات النوعية</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost">🏠 الرئيسية</a>
+            </div>
+        </nav>
 
-        document.getElementById('findPathBtn').onclick = async () => {
+        <main class="anim-fade-in" style="margin-top: 40px;">
+            <div class="glass-card" style="border-top: 5px solid var(--primary); padding: 40px; border-radius: 25px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div class="icon-glow"
+                        style="display:inline-flex; background:var(--primary); color:white; width:70px; height:70px; border-radius:18px; align-items:center; justify-content:center; font-size:2.2rem; margin-bottom:20px; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);">
+                        <i class="fas fa-globe-africa"></i>
+                    </div>
+                    <h1 style="font-weight: 900; color: var(--primary); font-size: 2.2rem; margin-bottom: 10px;">بوصلة
+                        التخصصات الإنسانية</h1>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">أدخل خلفيتك الأكاديمية واهتماماتك لنرسم
+                        لك المسار التخصصي الأنسب.</p>
+                </div>
+
+                <div class="form-group">
+                    <label
+                        style="font-weight: bold; color: var(--primary); margin-bottom: 12px; display: block;">الخلفية
+                        الأكاديمية والمهارات:</label>
+                    <textarea id="userBg"
+                        placeholder="مثلاً: خريج حقوق، مهارات تواصل عالية، لغة إنجليزية مستوى متوسط..."
+                        style="width:100%; min-height:80px;"></textarea>
+                </div>
+                <div class="form-group" style="margin-top:20px;">
+                    <label
+                        style="font-weight: bold; color: var(--primary); margin-bottom: 12px; display: block;">اهتماماتك
+                        الرئيسية:</label>
+                    <input type="text" id="interests"
+                        placeholder="مثلاً: العمل مع الأطفال، التخطيط اللوجستي، التعليم..." class="elegant-input"
+                        oninput="handleAutoSuggest(this)">
+                    <div id="aiMiniLoader"
+                        style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); display: none;">
+                        <div class="loading-spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loader" style="display: none; margin: 40px 0; text-align: center;">
+                <div class="loading-spinner"
+                    style="border: 4px solid var(--glass-border); border-top-color: var(--primary); width: 60px; height: 60px; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;">
+                </div>
+                <h3 style="color: var(--primary); font-weight: 800;">جاري تحليل المسارات التخصصية...</h3>
+            </div>
+
+            <div id="resultArea" style="display: none;" class="anim-slide-up">
+                <div class="glass-card" style="margin-top: 30px; border-radius: 25px; padding: 40px;">
+                    <div id="pathContent"></div>
+                    <button onclick="ProtectionManager.verify(() => window.print())" class="btn btn-ghost"
+                        style="width: 100%; margin-top: 40px; justify-content: center; border: 1px solid var(--glass-border);">
+                        <i class="fas fa-file-pdf"></i> حفظ خريطة المسار
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-credit">تطوير فريق <span class="credit-name">Athar Team</span> &copy; 2025</div>
+    </footer>
+
+    <style>
+        .elegant-input {
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: white;
+            width: 100%;
+            font-family: 'Cairo';
+        }
+
+        .path-banner {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .ladder-step {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+        }
+
+        .ladder-num {
+            font-weight: 900;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <script>
+        let timeout = null;
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
+
+        function handleAutoSuggest(input) {
+            clearTimeout(timeout);
+            const val = input.value.trim();
+            if (val.length < 3) return;
+            timeout = setTimeout(() => { processAI(); }, 1800);
+        }
+
+        async function processAI() {
             const bg = document.getElementById('userBg').value;
             const interests = document.getElementById('interests').value;
+            if (!bg) return;
 
-            const btn = document.getElementById('findPathBtn');
-            const status = document.getElementById('statusLog');
-            btn.disabled = true;
-            status.innerText = "⏳ جاري استكشاف التخصصات المناسبة لملفك...";
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('resultArea');
+            loader.style.display = 'block';
+            resultArea.style.display = 'none';
 
-            const prompt = `
-            أنت مستشار مسارات مهنية في المنظمات.
-            البيانات: الخلفية ${bg}, الاهتمامات ${interests}.
-            
+            const prompt = `أنت مستشار مسارات مهنية. الخلفية: "${bg}"، الاهتمامات: "${interests}".
             المطلوب (JSON حصراً):
             {
-                "suggested_specialization": "التخصص الأنسب",
-                "description": "لماذا هذا التخصص؟ وكيف يعمل؟",
-                "career_ladder": [
-                    {"level": "Entry", "role": "وظيفة البداية"},
-                    {"level": "Mid", "role": "وظيفة الوسط"},
-                    {"level": "Expert", "role": "وظيفة القيادة"}
-                ],
-                "required_skills": ["مهارة 1", "مهارة 2"],
-                "opportunities": "فرص النمو والترقية",
-                "horizontal_moves": "وظائف أخرى قريبة يمكنك الانتقال إليها",
-                "warnings": "تخصصات لا تناسبك بناء على خلفيتك"
+                "suggested_specialization": "اسم التخصص",
+                "description": "نبذة احترافية",
+                "career_ladder": [{"level": "Junior", "role": "وظيفة"}],
+                "required_skills": ["مهارة 1"],
+                "warnings": "نصيحة تحذيرية"
             }
-            بالعربية.
-            `;
+            بالعربية.`;
 
             try {
-                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                const res = await fetch(`${BRIDGE_URL}?action=ai`, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({
-                        model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: prompt }],
-                        temperature: 0.7
-                    })
+                    body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "user", content: prompt }] })
                 });
 
-                const dataText = await res.text();
-                const json = JSON.parse(dataText.match(/\{[\s\S]*\}/)[0]);
+                const bridgeRes = await res.json();
+                if (bridgeRes.status === "error") throw new Error(bridgeRes.message);
 
-                let html = `
-                    <div style="background:#f0f9ff; padding:20px; border-radius:15px; border-right:5px solid #0369a1;">
-                        <h2 style="color:#0369a1; margin:0;">التخصص المقترح: ${json.suggested_specialization}</h2>
-                        <p style="margin-top:10px;">${json.description}</p>
+                const aiResponse = bridgeRes.data;
+                const cleanJson = aiResponse.replace(/```json\s*|```\s*/gi, "").trim();
+                const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
+
+                if (!jsonMatch) throw new Error("JSON_ERROR");
+                const json = JSON.parse(jsonMatch[0]);
+                if (json.error) throw new Error(json.error.message || "AI_ERROR");
+
+                document.getElementById('pathContent').innerHTML = `
+                    <div class="path-banner">
+                        <h2 style="margin:0;">التخصص الأنسب: ${json.suggested_specialization}</h2>
+                        <p style="margin-top:10px; opacity:0.9;">${json.description}</p>
                     </div>
-
-                    <h3 style="color:var(--primary); margin-top:25px; border-bottom:1px solid #ddd; padding-bottom:5px;">🪜 السلم الوظيفي (Career Ladder)</h3>
-                    ${json.career_ladder.map((step, i) => `
-                        <div class="path-step">
-                            <div class="step-num">${i + 1}</div>
-                            <div>
-                                <strong>[${step.level}]</strong> ${step.role}
-                            </div>
+                    <h3 style="color:var(--primary); margin-bottom:20px;"><i class="fas fa-stairs"></i> سلم الصعود المهني:</h3>
+                    ${(json.career_ladder || []).map((step, i) => `
+                        <div class="ladder-step">
+                            <span class="ladder-num">${i + 1}</span>
+                            <span><strong>[${step.level}]</strong> ${step.role}</span>
                         </div>
                     `).join('')}
-
-                    <div style="margin-top:20px;">
-                        <h3 style="color:var(--primary);">🎯 المهارات التي يجب أن تبنيها</h3>
-                        <ul>${json.required_skills.map(s => `<li>${s}</li>`).join('')}</ul>
-                    </div>
-
-                    <p><strong>🚀 فرص الترقية:</strong> ${json.opportunities}</p>
-                    <p><strong>↔️ خيارات جانبية:</strong> ${json.horizontal_moves}</p>
-                    
-                    <div style="background:#fff1f2; padding:15px; border-radius:10px; border-right:5px solid #e11d48; margin-top:20px;">
-                        <strong>⚠️ تخصصات قد لا تناسبك:</strong> ${json.warnings}
+                    <div style="background:#fff1f2; padding:20px; border-radius:15px; border-right:5px solid #e11d48; margin-top:25px; color:#991b1b;">
+                        <strong>⚠️ نصيحة للتجنب:</strong> ${json.warnings}
                     </div>
                 `;
 
-                document.getElementById('pathContent').innerHTML = html;
-                document.getElementById('resultArea').style.display = 'block';
-                status.innerText = "✅ اكتمل تحديد المسار!";
-            } catch (e) {
-                console.error(e);
-                status.innerText = "❌ حدث خطأ.";
-            } finally {
-                btn.disabled = false;
-            }
-        };
-        document.getElementById('exportBtn').onclick = () => {
-            ProtectionManager.verify(() => window.print());
-        };
+                resultArea.style.display = 'block';
+            } catch (e) { console.error(e); }
+            finally { loader.style.display = 'none'; }
+        }
     </script>
 </body>
 

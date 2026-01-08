@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أثر | لوحة التحكم البرمجية</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Outfit:wght@300;600;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="js/modules/auth_guard.js"></script>
+    <style>
+        :root {
+            --admin-primary: #4f46e5;
+            --admin-secondary: #0f172a;
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: var(--admin-secondary);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            color: white;
+            padding: 30px 20px;
+            z-index: 1000;
+        }
+
+        .admin-main {
+            margin-right: 280px;
+            padding: 40px;
+        }
+
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .admin-nav-item:hover,
+        .admin-nav-item.active {
+            background: rgba(79, 70, 229, 0.1);
+            color: white;
+        }
+
+        .admin-nav-item i {
+            width: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-table th,
+        .user-table td {
+            padding: 15px 20px;
+            text-align: right;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .user-table th {
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .badge-institution {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-individual {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .badge-admin {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            font-family: 'Cairo';
+        }
+
+        .config-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            background: white;
+        }
+    </style>
+</head>
+
+<body class="light-theme">
+    <div class="admin-sidebar">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <img src="تنزيل.jpg" style="width: 60px; border-radius: 15px; margin-bottom: 15px;">
+            <h2 style="font-weight: 900; color: var(--primary);">أثر | الإدارة</h2>
+            <p style="color: #64748b; font-size: 0.8rem;">لوحة التحكم الأمنية</p>
+        </div>
+
+        <nav>
+            <div class="admin-nav-item active" onclick="showSection('users')">
+                <i class="fas fa-users"></i> إدارة المستخدمين
+            </div>
+            <div class="admin-nav-item" onclick="showSection('config')">
+                <i class="fas fa-key"></i> مفاتيح الـ API
+            </div>
+            <div class="admin-nav-item" onclick="showSection('logs')">
+                <i class="fas fa-history"></i> السجلات والنشاط
+            </div>
+            <a href="index.html" class="admin-nav-item" style="margin-top: 50px; color: #f87171;">
+                <i class="fas fa-arrow-left"></i> العودة للموقع
+            </a>
+        </nav>
+    </div>
+
+    <main class="admin-main">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div>
+                <h1 id="sectionTitle" style="font-weight: 900; margin: 0;">إدارة المستخدمين</h1>
+                <p id="sectionSub" style="color: #64748b; margin-top: 5px;">تحكم في صلاحيات الوصول وأنواع الحسابات</p>
+            </div>
+            <div id="adminInfo" style="display: flex; align-items: center; gap: 15px;">
+                <div style="text-align: left;">
+                    <div id="adminName" style="font-weight: bold;">المطور</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Super Admin</div>
+                </div>
+                <div
+                    style="width: 50px; height: 50px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section: Users -->
+        <section id="usersSection">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="userSearch" placeholder="ابحث عن مستخدم بالاسم أو البريد الإلكتروني..."
+                    oninput="filterUsers()">
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #eef2ff; color: #4f46e5;"><i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <div id="totalUsersCount" style="font-size: 1.5rem; font-weight: 900;">0</div>
+                        <div style="color: #64748b; font-size: 0.9rem;">إجمالي المستخدمين</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-building"></i>
+                    </div>
+                    <div>
+                        <div id="institutionCount" style="font-size: 1.5rem; font-weight: 900;">0</div>
+                        <div style="color: #64748b; font-size: 0.9rem;">حسابات المؤسسات</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff7ed; color: #f59e0b;"><i
+                            class="fas fa-user-clock"></i></div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 900;">اليوم</div>
+                        <div style="color: #64748b; font-size: 0.9rem;">المسجلين الجدد</div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>المستخدم</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>تاريخ التسجيل</th>
+                        <th>نوع الحساب</th>
+                        <th>الصلاحيات</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="usersList">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #94a3b8;">
+                            <i class="fas fa-spinner fa-spin"></i> جاري جلب البيانات...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section: Config -->
+        <section id="configSection" style="display: none;">
+            <div class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 40px;">
+                <h3 style="margin-bottom: 25px;"><i class="fas fa-cog"></i> إعدادات الربط البرمجي (Bridge)</h3>
+
+                <div class="form-group">
+                    <label>مفتاح GROQ API الحالي:</label>
+                    <input type="password" id="groqKeyInput" class="config-input" placeholder="gsk_...">
+                    <p style="font-size: 0.8rem; color: #ef4444; margin-bottom: 20px;">
+                        ⚠️ سيتم تخزين هذا المفتاح بشكل آمن في Script Properties الخاص بالـ Bridge.
+                    </p>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>إعلان الموقع (سيظهر لجميع المستخدمين):</label>
+                    <textarea id="announcementInput" class="config-input" rows="4"
+                        style="font-family: 'Cairo'; height: auto;"
+                        placeholder="أهلاً بك في أثر! تم إضافة محرك CV الجديد..."></textarea>
+                </div>
+
+                <button onclick="saveConfig()" class="btn btn-primary"
+                    style="width: 100%; justify-content: center; height: 55px;">
+                    حفظ الإعدادات الجديدة 💾
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
+        const adminUser = JSON.parse(localStorage.getItem('athar_user'));
+        let allUsers = [];
+
+        window.onload = async () => {
+            // تحقق قوي من الصلاحية (بولين أو نص "true")
+            const isAdmin = adminUser && (adminUser.isAdmin === true || adminUser.isAdmin === "true");
+
+            if (!isAdmin) {
+                window.location.href = 'index.html';
+                return;
+            }
+            document.getElementById('adminName').innerText = adminUser.name;
+            loadUsers();
+            loadConfig();
+        };
+
+        function showSection(section) {
+            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+            document.getElementById(section + 'Section').style.display = 'block';
+
+            document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const titles = {
+                'users': 'إدارة المستخدمين',
+                'config': 'إعدادات النظام',
+                'logs': 'سجل النشاط'
+            };
+            document.getElementById('sectionTitle').innerText = titles[section];
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch(`${BRIDGE_URL}?action=admin_get_users&adminEmail=${adminUser.email}`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    allUsers = data.users;
+                    renderUsers(allUsers);
+                    updateStats();
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderUsers(users) {
+            const list = document.getElementById('usersList');
+            list.innerHTML = '';
+
+            users.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight: bold;">${u.name}</div>
+                    </td>
+                    <td style="font-family: monospace; font-size: 0.9rem;">${u.email}</td>
+                    <td>${new Date(u.date).toLocaleDateString('ar-EG')}</td>
+                    <td>
+                        <span class="badge ${u.userType === 'institution' ? 'badge-institution' : 'badge-individual'}">
+                            ${u.userType === 'institution' ? '🏛️ مؤسسة' : '👤 فردي'}
+                        </span>
+                    </td>
+                    <td>
+                        ${u.isAdmin ? '<span class="badge badge-admin">🛠️ مطور</span>' : '<span style="color:#94a3b8">مستخدم</span>'}
+                    </td>
+                    <td>
+                        <button onclick="toggleUserType('${u.email}', '${u.userType}')" class="action-btn" style="background: #eef2ff; color: #4f46e5;">
+                            ${u.userType === 'institution' ? 'تحويل لـ فردي' : 'ترقية لمؤسسة'}
+                        </button>
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+        }
+
+        async function toggleUserType(email, currentType) {
+            const newType = currentType === 'institution' ? 'individual' : 'institution';
+            if (!confirm(`هل أنت متأكد من تغيير نوع حساب ${email} إلى ${newType === 'institution' ? 'مؤسسة' : 'فردي'}؟`)) return;
+
+            try {
+                const res = await fetch(`${BRIDGE_URL}?action=admin_update_user&adminEmail=${adminUser.email}&targetEmail=${email}&userType=${newType}`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    alert("تم تحديث نوع الحساب بنجاح");
+                    loadUsers();
+                }
+            } catch (e) {
+                alert("حدث خطأ أثناء التحديث");
+            }
+        }
+
+        async function loadConfig() {
+            try {
+                const res = await fetch(`${BRIDGE_URL}?action=admin_config&adminEmail=${adminUser.email}&method=get`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    document.getElementById('groqKeyInput').value = data.groqKey || '';
+                    document.getElementById('announcementInput').value = data.announcement || '';
+                }
+            } catch (e) { }
+        }
+
+        async function saveConfig() {
+            const key = document.getElementById('groqKeyInput').value.trim();
+            const announcement = document.getElementById('announcementInput').value.trim();
+
+            try {
+                const res = await fetch(`${BRIDGE_URL}?action=admin_config&adminEmail=${adminUser.email}&method=set&groqKey=${key}&announcement=${encodeURIComponent(announcement)}`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    alert("✅ تم حفظ مفتاح الـ API الجديد بنجاح!");
+                }
+            } catch (e) {
+                alert("فشل الحفظ");
+            }
+        }
+
+        function filterUsers() {
+            const q = document.getElementById('userSearch').value.toLowerCase();
+            const filtered = allUsers.filter(u =>
+                u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+            );
+            renderUsers(filtered);
+        }
+
+        function updateStats() {
+            document.getElementById('totalUsersCount').innerText = allUsers.length;
+            document.getElementById('institutionCount').innerText = allUsers.filter(u => u.userType === 'institution').length;
+        }
+    </script>
+</body>
+
+</html>

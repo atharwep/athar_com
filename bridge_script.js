@@ -4,13 +4,14 @@
 // ==========================================
 
 const CONFIG = {
-    // مفاتيح الذكاء الاصطناعي (ضع مفاتيحك هنا)
-    GROQ_API_KEY: "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",
+    // مفاتيح الربط البرمجي (ضع مفاتيحك هنا)
+    GROQ_API_KEY: "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",
     GEMINI_API_KEY: "AIza...",
 
     // مجلدات Google Drive (اختياري - للبحث في مجلدات محددة)
     LIBRARY_FOLDER_ID: "1e_dZ4Y6DL5z3cSLZn-d0oJQu0LbkumGF", // ضع معرف مجلد المكتبة هنا إذا وجد
-    JOBS_FOLDER_ID: ""    // ضع معرف مجلد الوظائف هنا إذا وجد
+    JOBS_FOLDER_ID: "",    // ضع معرف مجلد الوظائف هنا إذا وجد
+    ADMIN_EMAIL: "jjbb3782@gmail.com" // البريد الافتراضي للمسؤول
 };
 
 function doGet(e) { return handleRequest(e); }
@@ -31,19 +32,49 @@ function handleRequest(e) {
     try {
         // 1. اختبار الاتصال
         if (action === "test") {
-            return sendJSON({ status: "success", message: "Bridge V4 Online" });
+            const props = PropertiesService.getScriptProperties().getProperties();
+            return sendJSON({
+                status: "success",
+                message: "Bridge V4 Online",
+                hasGroqKey: !!(props.GROQ_API_KEY || CONFIG.GROQ_API_KEY)
+            });
         }
 
-        // 2. معالجة الذكاء الاصطناعي (AI Action)
+        // 2. معالجة العمليات المتقدمة (AI Action)
         if (action === "ai") {
-            const prompt = e.parameter.prompt;
-            const model = e.parameter.model || "llama-3.3-70b-versatile";
-            const systemPrompt = e.parameter.systemPrompt || "You are a helpful assistant.";
+            let prompt = e.parameter.prompt;
+            let systemPrompt = e.parameter.systemPrompt || "You are a professional expert that ONLY outputs valid JSON.";
+            let model = e.parameter.model || "llama-3.3-70b-versatile";
 
-            // استدعاء Groq API 
-            // (يمكنك استبدال هذا بأي خدمة أخرى)
-            const aiResponse = callGroqAI(prompt, systemPrompt, model);
-            return ContentService.createTextOutput(aiResponse).setMimeType(ContentService.MimeType.TEXT);
+            if (!prompt && e.parameter.messages) {
+                try {
+                    const msgs = Array.isArray(e.parameter.messages) ? e.parameter.messages : JSON.parse(e.parameter.messages);
+                    const userMsg = msgs.find(m => m.role === "user");
+                    const systemMsg = msgs.find(m => m.role === "system");
+                    if (userMsg) prompt = userMsg.content;
+                    if (systemMsg) systemPrompt = systemMsg.content;
+                } catch (pe) { }
+            }
+
+            if (!prompt) return sendJSON({ status: "error", message: "No prompt provided" });
+
+            let aiResponse = callGroqAI(prompt, systemPrompt, model);
+
+            // Fallback strategy: Try Mixtral then Llama-8b
+            const isError = (res) => res.startsWith("Error") || res.startsWith("BR_ERROR") || res.startsWith("GROQ_");
+
+            if (isError(aiResponse)) {
+                aiResponse = callGroqAI(prompt, systemPrompt, "mixtral-8x7b-32768");
+            }
+            if (isError(aiResponse)) {
+                aiResponse = callGroqAI(prompt, systemPrompt, "llama-3.1-8b-instant");
+            }
+
+            if (isError(aiResponse)) {
+                return sendJSON({ status: "error", message: aiResponse });
+            }
+
+            return sendJSON({ status: "success", data: aiResponse });
         }
 
         // 3. تسجيل كود العملية (Register ID)
@@ -148,7 +179,117 @@ function handleRequest(e) {
             }
         }
 
-        return sendJSON({ status: "error", message: "Unknown Action" });
+        // 7. تحسين: تسجيل مستخدم جديد (Signup)
+        if (action === "signup") {
+            const email = e.parameter.email;
+            const pass = e.parameter.password;
+            const name = e.parameter.name;
+            if (!email || !pass) return sendJSON({ status: "error", message: "بيانات ناقصة" });
+
+            const sheet = getSheet("Users");
+            const usersData = sheet.getDataRange().getValues();
+
+            // التأكد من عدم وجود البريد مسبقاً
+            const exists = usersData.some(row => row[0] === email);
+            if (exists) return sendJSON({ status: "error", message: "البريد الإلكتروني مسجل مسبقاً!" });
+
+            sheet.appendRow([email, pass, name, new Date(), "individual", email === CONFIG.ADMIN_EMAIL ? "true" : "false"]);
+            return sendJSON({ status: "success", message: "تم إنشاء الحساب بنجاح!" });
+        }
+
+        // 8. تحسين: تسجيل الدخول (Login)
+        if (action === "login") {
+            const email = e.parameter.email;
+            const pass = e.parameter.password;
+            if (!email || !pass) return sendJSON({ status: "error", message: "بيانات ناقصة" });
+
+            const sheet = getSheet("Users");
+            const usersData = sheet.getDataRange().getValues();
+
+            const user = usersData.find(row => row[0].toString().toLowerCase() === email.toString().toLowerCase() && row[1].toString() === pass.toString());
+            if (user) {
+                return sendJSON({
+                    status: "success",
+                    user: {
+                        email: user[0],
+                        name: user[2],
+                        userType: user[4] || "individual",
+                        isAdmin: user[5] === "true" || user[0] === CONFIG.ADMIN_EMAIL
+                    }
+                });
+            } else {
+                return sendJSON({ status: "error", message: "البريد أو كلمة المرور غير صحيحة" });
+            }
+        }
+
+        // 9. الإدارة: جلب قائمة المستخدمين (Admin Only)
+        if (action === "admin_get_users") {
+            const adminEmail = e.parameter.adminEmail;
+            const sheet = getSheet("Users");
+            const data = sheet.getDataRange().getValues();
+
+            // تحقق من صلاحية الآدمن
+            const admin = data.find(row => row[0] === adminEmail && (row[5] === "true" || row[0] === CONFIG.ADMIN_EMAIL));
+            if (!admin) return sendJSON({ status: "error", message: "غير مسموح" });
+
+            const users = data.slice(1).map(row => ({
+                email: row[0],
+                name: row[2],
+                date: row[3],
+                userType: row[4] || "individual",
+                isAdmin: row[5] === "true"
+            }));
+            return sendJSON({ status: "success", users: users });
+        }
+
+        // 10. الإدارة: تحديث صلاحية مستخدم (Admin Only)
+        if (action === "admin_update_user") {
+            const adminEmail = e.parameter.adminEmail;
+            const targetEmail = e.parameter.targetEmail;
+            const newType = e.parameter.userType; // individual or institution
+            const newIsAdmin = e.parameter.isAdmin; // true or false
+
+            const sheet = getSheet("Users");
+            const data = sheet.getDataRange().getValues();
+
+            const adminIdx = data.findIndex(row => row[0] === adminEmail && (row[5] === "true" || row[0] === CONFIG.ADMIN_EMAIL));
+            if (adminIdx === -1) return sendJSON({ status: "error", message: "غير مسموح" });
+
+            const targetIdx = data.findIndex(row => row[0] === targetEmail);
+            if (targetIdx === -1) return sendJSON({ status: "error", message: "المستخدم غير موجود" });
+
+            if (newType) sheet.getRange(targetIdx + 1, 5).setValue(newType);
+            if (newIsAdmin !== undefined) sheet.getRange(targetIdx + 1, 6).setValue(newIsAdmin.toString());
+
+            return sendJSON({ status: "success", message: "تم التحديث بنجاح" });
+        }
+
+        // 11. الإدارة: جلب وتحديث الإعدادات (Admin Only)
+        if (action === "admin_config") {
+            const adminEmail = e.parameter.adminEmail;
+            const sheet = getSheet("Users");
+            const data = sheet.getDataRange().getValues();
+            const admin = data.find(row => row[0] === adminEmail && (row[5] === "true" || row[0] === CONFIG.ADMIN_EMAIL));
+            if (!admin) return sendJSON({ status: "error", message: "غير مسموح" });
+
+            if (e.parameter.method === "set") {
+                if (e.parameter.groqKey) PropertiesService.getScriptProperties().setProperty("GROQ_API_KEY", e.parameter.groqKey);
+                if (e.parameter.announcement !== undefined) PropertiesService.getScriptProperties().setProperty("SYSTEM_ANNOUNCEMENT", e.parameter.announcement);
+                return sendJSON({ status: "success", message: "تم حفظ الإعدادات" });
+            } else {
+                const groqKey = PropertiesService.getScriptProperties().getProperty("GROQ_API_KEY") || CONFIG.GROQ_API_KEY;
+                const announcement = PropertiesService.getScriptProperties().getProperty("SYSTEM_ANNOUNCEMENT") || "";
+                return sendJSON({ status: "success", groqKey: groqKey, announcement: announcement });
+            }
+        }
+
+        // 12. جلب الإعلان العام (Public Action)
+        if (action === "get_announcement") {
+            const announcement = PropertiesService.getScriptProperties().getProperty("SYSTEM_ANNOUNCEMENT") || "";
+            return sendJSON({ status: "success", announcement: announcement });
+        }
+
+        return sendJSON({ status: "error", message: "Unknown Action: " + action });
 
     } catch (err) {
         return sendJSON({ status: "error", message: err.toString(), stack: err.stack });
@@ -159,11 +300,17 @@ function handleRequest(e) {
 // AI CALLER (GROQ)
 // ------------------------------------------
 function callGroqAI(userPrompt, systemPrompt, model) {
-    const GROQ_API_KEY = PropertiesService.getScriptProperties().getProperty("GROQ_API_KEY") || CONFIG.GROQ_API_KEY;
+    let GROQ_API_KEY = PropertiesService.getScriptProperties().getProperty("GROQ_API_KEY");
+
+    // Ignore invalid/placeholder properties
+    if (!GROQ_API_KEY || GROQ_API_KEY.length < 20 || GROQ_API_KEY.includes(" ")) {
+        GROQ_API_KEY = CONFIG.GROQ_API_KEY;
+    }
+
     const url = "https://api.groq.com/openai/v1/chat/completions";
 
     if (!GROQ_API_KEY || GROQ_API_KEY.startsWith("gsk_...")) {
-        return "Error: GROQ_API_KEY is missing. Please set it in Script Properties.";
+        return "BR_ERROR: GROQ_API_KEY is missing or invalid in bridge settings.";
     }
 
     const payload = {
@@ -172,29 +319,41 @@ function callGroqAI(userPrompt, systemPrompt, model) {
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt }
         ],
-        temperature: 0.7
+        temperature: 0.6,
+        max_tokens: 8192 // Increased to handle 30 items + answers
     };
 
     const options = {
         method: "post",
         headers: {
-            "Authorization": "Bearer " + GROQ_API_KEY,
+            "Authorization": "Bearer " + GROQ_API_KEY.trim(),
             "Content-Type": "application/json"
         },
         payload: JSON.stringify(payload),
-        muteHttpExceptions: true
+        muteHttpExceptions: true,
+        connectTimeout: 60000,
+        readTimeout: 60000
     };
 
     try {
         const response = UrlFetchApp.fetch(url, options);
-        const json = JSON.parse(response.getContentText());
+        const respCode = response.getResponseCode();
+        const text = response.getContentText();
+
+        if (respCode !== 200) {
+            return `GROQ_HTTP_ERR_${respCode}: ${text}`;
+        }
+
+        const json = JSON.parse(text);
         if (json.choices && json.choices.length > 0) {
             return json.choices[0].message.content;
+        } else if (json.error) {
+            return "GROQ_API_ERR: " + json.error.message;
         } else {
-            return "Error from AI: " + JSON.stringify(json);
+            return "BR_ERROR: Empty choices in AI response.";
         }
     } catch (e) {
-        return "Error calling AI: " + e.toString();
+        return "Error calling AI Bridge: " + e.toString();
     }
 }
 

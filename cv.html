@@ -4,207 +4,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أثر | صانع السيرة الذاتية الإنساني</title>
+    <title>أثر | محرك التوظيف الذكي وATS</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cairo:wght@400;600;700;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';</script>
+    <style>
+        /* Force CV paper to be clean and start from top */
+        .cv-paper {
+            background: white !important;
+            color: black !important;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            min-height: 297mm;
+            font-family: 'Times New Roman', Times, serif !important;
+            display: block !important;
+            /* Block instead of flex to avoid centering issues */
+            text-align: right;
+            box-shadow: none !important;
+        }
+
+        .cv-content-page {
+            padding: 20mm;
+            /* standard resume padding */
+            background: white;
+            min-height: 297mm;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Prevent browser headers/footers if local print is used */
+        @page {
+            margin: 0;
+            size: auto;
+        }
+
+        @media print {
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .container {
+                margin: 0 !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+
+            .glass-card {
+                border: none !important;
+                background: white !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .cv-paper {
+                margin: 0 !important;
+                border: none !important;
+            }
+        }
+
+        .ats-report-card {
+            background: #f8fafc;
+            border-right: 5px solid #4f46e5;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            color: #1e293b;
+        }
+
+        .score-pill {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .cv-paper {
+                box-shadow: none;
+                border: none;
+            }
+        }
+
+        .lang-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .lang-tab {
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #e2e8f0;
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .lang-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="bg-blobs">
+    <script src="protection.js"></script>
+    <div class="bg-blobs no-print">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
     </div>
 
     <div class="container">
-        <nav>
+        <nav class="no-print">
             <div class="logo-container">
                 <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:20px;">
                     <img src="تنزيل.jpg" alt="Logo" id="mainLogo">
                     <div>
                         <div class="logo">أثـــــر</div>
-                        <div class="logo-slogan">صانع السيرة الذاتية الاحترافي (ATS)</div>
+                        <div class="logo-slogan">محرك التوظيف الذكي وATS</div>
                     </div>
                 </a>
             </div>
-            <a href="index.html" class="btn btn-ghost">🏠 الرئيسة</a>
+            <a href="index.html" class="btn btn-ghost">🏠 الرئيسية</a>
         </nav>
 
         <main class="glass-card">
-            <h1>📄 بناء سيرة ذاتية للمنظمات الدولية</h1>
-            <p style="color: var(--text-secondary); margin-bottom: 30px;">
-                قم بتعبئة بياناتك لإنشاء سيرة ذاتية احترافية متوافقة مع أنظمة ATS ومعايير الأمم المتحدة والمنظمات
-                الدولية.
+            <h1 class="no-print">🚀 بناء سيرة ذاتية - محرك ATS الفائق</h1>
+            <p class="no-print" style="color: var(--text-secondary); margin-bottom: 30px;">
+                قم بإدخال بياناتك وربطها بإعلان الوظيفة لتحصل على سيرة ذاتية جاهزة للاختراق والقبول الفوري.
+                <br>
+                <a href="cv_improved.html"
+                    style="color: var(--primary); font-weight: bold; text-decoration: underline;">أو اضغط هنا لاستخدام
+                    القوالب الاحترافية الملونة 🎨</a>
             </p>
 
-            <div class="form-grid" id="cvForm">
-                <h3>1. المعلومات الأساسية</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-grid no-print" id="cvForm">
+                <div style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div class="form-group">
-                        <label>الاسم الكامل</label>
-                        <input type="text" id="fullName" placeholder="Ex: Ahmed Al-Yemen">
+                        <label>⚠️ الاسم الكامل (اختياري)</label>
+                        <input type="text" id="fullName" placeholder="Ex: Ahmed Al-Nabel">
                     </div>
                     <div class="form-group">
-                        <label>الموقع (البلد - المدينة)</label>
-                        <input type="text" id="location" placeholder="Ex: Sana'a, Yemen">
+                        <label>🎯 المسمى الوظيفي المستهدف</label>
+                        <input type="text" id="targetJob" placeholder="Ex: Project Manager, MEAL Officer">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>المسمى الوظيفي المستهدف</label>
-                    <input type="text" id="targetJob" placeholder="Ex: Project Manager, MEAL Officer">
+                    <label>📍 الموقع (البلد - المدينة)</label>
+                    <input type="text" id="location" placeholder="Ex: Sana'a, Yemen">
                 </div>
-
                 <div class="form-group">
-                    <label>عدد سنوات الخبرة</label>
+                    <label>⏳ سنوات الخبرة</label>
                     <input type="number" id="expYears" placeholder="5">
                 </div>
 
-                <h3>2. الخبرات المهنية</h3>
-                <div class="form-group">
-                    <label>المنظمات التي عملت بها (افصل بفاصلة)</label>
-                    <input type="text" id="orgs" placeholder="Ex: UNICEF, Oxfam, Local NGO">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>📂 روابط مهنية (LinkedIn, GitHub, Portfolio)</label>
+                    <input type="text" id="profLinks" placeholder="LinkedIn, Behance, etc.">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>💼 الخبرات العملية (حتى لو كانت تطوعية أو جزئية)</label>
+                    <textarea id="jobsDetails" rows="4"
+                        placeholder="اذكر الوظائف، المنظمات، والمهام الرئيسية..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>تفاصيل الوظائف السابقة (المسمى - المنظمة - الفترة - أبرز المهام باختصار)</label>
-                    <textarea id="jobsDetails" rows="5"
-                        placeholder="Succeed in managing... Led a team of..."></textarea>
+                    <label>🎓 التعليم</label>
+                    <textarea id="education" rows="2" placeholder="الشهادة الجامعية، التخصص، الجامعة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>🛠️ المهارات والأدوات</label>
+                    <textarea id="skills" rows="2" placeholder="المهارات التقنية والسلوكية..."></textarea>
                 </div>
 
-                <h3>3. المهارات والتعليم</h3>
-                <div class="form-group">
-                    <label>المهارات التقنية والسلوكية</label>
-                    <textarea id="skills" rows="3"
-                        placeholder="Project Management, Data Analysis, Leadership..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>الشهادات والدورات</label>
-                    <textarea id="certs" rows="2" placeholder="PMP, PMD Pro..."></textarea>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>🚀 المشاريع والإنجازات الشخصية</label>
+                    <textarea id="projects" rows="3"
+                        placeholder="أبرز الإنجازات أو المشاريع التي قمت بها..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>اللغات ومستوى الإتقان</label>
+                    <label>📜 الشهادات والدورات</label>
+                    <textarea id="certs" rows="2" placeholder="PMP, PMD Pro, etc."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>🌐 اللغات</label>
                     <input type="text" id="languages" placeholder="Arabic (Native), English (Fluent)">
                 </div>
 
-                <div class="form-group">
-                    <label>أبرز الإنجازات (إن وجدت)</label>
-                    <textarea id="achievements" rows="3" placeholder="Managed a budget of $500k..."></textarea>
+                <div class="form-group"
+                    style="grid-column: 1 / -1; background: rgba(0,0,0,0.05); padding: 20px; border-radius: 15px;">
+                    <label style="color: var(--primary); font-weight: 800;">📄 ملف إعلان الوظيفة (PDF / DOCX)</label>
+                    <input type="file" id="jobFile" accept=".docx,.pdf" style="margin-bottom: 10px; width: 100%;">
+                    <textarea id="jobAdText" rows="4"
+                        placeholder="أو الصق نص الإعلان هنا مباشرة لتحليل الكلمات المفتاحية..."></textarea>
                 </div>
 
-                <button id="generateCVBtn" class="btn btn-primary" style="width: 100%; margin-top: 20px;">توليد السيرة
-                    الذاتية (AI) ⚡</button>
+                <button id="generateCVBtn" class="btn btn-primary"
+                    style="width: 100%; margin-top: 20px; font-size: 1.2rem; padding: 18px;">توليد السيرة الذاتية
+                    واختراق ATS ⚡</button>
             </div>
 
             <div id="cvResult"
                 style="display: none; margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                    <h2>النتيجة المهينة</h2>
-                    <button id="downloadPdfBtn" class="btn btn-primary" style="background: #ef4444;">تحميل PDF
-                        📥</button>
+                <div class="lang-tabs no-print">
+                    <div class="lang-tab active" onclick="switchLang('en')">English Version 🇺🇸</div>
+                    <div class="lang-tab" onclick="switchLang('ar')">النسخة العربية 🇸🇦</div>
                 </div>
 
-                <div id="cvPreview"
-                    style="background: white; color: #000; padding: 40px; border-radius: 4px; font-family: 'Times New Roman', serif; line-height: 1.4;">
-                    <!-- CV Content Here -->
+                <div id="cvPreview" class="cv-paper">
+                    <div id="cvEN" class="cv-content-page" style="direction: ltr; text-align: left;"></div>
+                    <div id="cvAR" class="cv-content-page" style="direction: rtl; text-align: right; display: none;">
+                    </div>
+                </div>
+
+                <div class="ats-report-card no-print">
+                    <h3>📊 تقرير توافق ATS</h3>
+                    <div id="atsScore" class="score-pill">0%</div>
+                    <div id="atsReport" style="line-height: 1.6;"></div>
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap;"
+                    class="no-print">
+                    <button id="downloadPdfBtn" class="btn btn-primary" style="background: #10b981;">تحميل PDF (النسخة
+                        الإنجليزية) 📥</button>
+                    <button id="downloadPdfArBtn" class="btn btn-primary" style="background: #4f46e5;">تحميل PDF (النسخة
+                        العربية) 📥</button>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // Use the same key from App.js or hardcode it here since user provided it
-        const API_KEY = "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";
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
+        let generatedData = null;
+
+        // File reading
+        async function readJobFile(file) {
+            const area = document.getElementById('jobAdText');
+            area.value = "⏳ جاري استخراج نص الإعلان...";
+            try {
+                if (file.name.endsWith('.pdf')) {
+                    const doc = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
+                    let text = "";
+                    for (let i = 1; i <= doc.numPages; i++) {
+                        const pg = await doc.getPage(i);
+                        const content = await pg.getTextContent();
+                        text += content.items.map(s => s.str).join(" ") + "\n";
+                    }
+                    area.value = text;
+                } else {
+                    const res = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+                    area.value = res.value;
+                }
+            } catch (e) {
+                area.value = "❌ خطأ في القراءة";
+            }
+        }
+        document.getElementById('jobFile').onchange = (e) => readJobFile(e.target.files[0]);
+
+        function switchLang(lang) {
+            document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+            // Use currentTarget to find which tab was clicked
+            if (event) {
+                event.currentTarget.classList.add('active');
+            }
+            if (lang === 'en') {
+                document.getElementById('cvEN').style.display = 'block';
+                document.getElementById('cvAR').style.display = 'none';
+            } else {
+                document.getElementById('cvEN').style.display = 'none';
+                document.getElementById('cvAR').style.display = 'block';
+            }
+        }
 
         document.getElementById('generateCVBtn').onclick = async () => {
             const btn = document.getElementById('generateCVBtn');
-            btn.innerText = 'جاري الكتابة...';
-            btn.disabled = true;
-
             const data = {
                 name: document.getElementById('fullName').value,
-                location: document.getElementById('location').value,
-                targetJob: document.getElementById('targetJob').value,
+                job: document.getElementById('targetJob').value,
+                loc: document.getElementById('location').value,
                 years: document.getElementById('expYears').value,
-                orgs: document.getElementById('orgs').value,
-                jobs: document.getElementById('jobsDetails').value,
+                links: document.getElementById('profLinks').value,
+                experience: document.getElementById('jobsDetails').value,
+                edu: document.getElementById('education').value,
                 skills: document.getElementById('skills').value,
+                projects: document.getElementById('projects').value,
                 certs: document.getElementById('certs').value,
                 langs: document.getElementById('languages').value,
-                achievements: document.getElementById('achievements').value
+                jobAd: document.getElementById('jobAdText').value
             };
 
-            const prompt = `
-            Act as an International Recruitment Expert for UN/INGOs.
-            Create a professional CV for the following candidate info:
-            ${JSON.stringify(data)}
+            if (!data.job || !data.experience) return alert("يرجى ملء المسمى الوظيفي والخبرات على الأقل.");
 
-            Tasks:
-            1. Analyze target job: ${data.targetJob}. Connect it to humanitarian standards.
-            2. Use strong action verbs (Implemented, Coordinated, Led...).
-            3. Include ATS keywords.
-            4. Highlight impact and measurable results.
+            btn.disabled = true;
+            btn.innerText = "جاري بناء السيرة الذاتية وتحليل ATS... ⏳";
+
+            const prompt = `
+            أنت خبير توظيف دولي ومتخصص في أنظمة تتبع المتقدمين (ATS) وتقييم الموارد البشرية (HR) في المنظمات الدولية (UN, NGOs).
             
-            Format: HTML suitable for PDF export. Clean, no icons, no tables. 
-            Structure:
-            - Header (Name, Location, Target Title)
-            - Professional Summary (Strong, humanitarian focused)
-            - Experience (Enhanced descriptions)
-            - Education & Certs
-            - Skills (ATS optimized)
-            - Languages
+            الهدف: إنشاء سيرة ذاتية احترافية (بالعربية والإنجليزية) متوافقة مع ATS بنسبة +90%.
+            البيانات المدخلة: ${JSON.stringify(data)}
             
-            Return ONLY the HTML code for the CV content div.
-            Default Language: English.
+            القيود والقواعد الصارمة:
+            1. يمنع منعاً باتاً ذكر أي إشارة للذكاء الاصطناعي أو اسم منصة "أثر" داخل الـ CV.
+            2. التنسيق: يجب أن يكون المحتوى بتنسيق ATS-Friendly (عمود واحد، خطوط قياسية، رؤوس أقلام واضحة).
+            3. المواءمة (Keyword Optimization): إذا تم توفير إعلان وظيفة، يجب دمج الكلمات المفتاحية منه بذكاء داخل الخبرات والمهارات لرفع معدل القبول.
+            4. الترتيب: استخدام الترتيب الزمني العكسي (Reverse Chronological).
+            5. اللغة: استخدم أفعال قوية (Action Verbs) ونتائج قابلة للقياس (KPIs) إن أمكن.
+            6. المحاذاة: يجب أن يبدأ الاسم والعناوين في أعلى الصفحة مباشرة (Vertical alignment: Top).
+            
+            التنسيق المطلوب للرد (JSON فقط):
+            {
+              "cv_en": "Modern clean HTML content (En)",
+              "cv_ar": "Content with RTC direction (Ar)",
+              "ats_score": "95%",
+              "report": "HTML summary of strengths and recommendations"
+            }
+            
+            تنبيه هام للـ HTML: لا تستخدم جداول معقدة أو صور. استخدم div و span و p و ul/li فقط لضمان قراءة ATS لها.
             `;
 
-            // استخدام الجسر (Bridge)
-            const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbwIhJM_GeVKTIHKYBLf5qyZT_U-vUD3GMlnQF-mES3MGWoJZiiP0d8ep4GsnmIyakN-/exec";
-
             try {
-                // إعداد الطلب
-                const payload = {
-                    model: "llama-3.3-70b-versatile",
-                    messages: [{ role: "user", content: prompt }],
-                    temperature: 0.5
-                };
-
                 const res = await fetch(BRIDGE_URL + "?action=ai", {
                     method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt + "\nRespond with JSON only." }],
+                        temperature: 0.3
+                    })
                 });
-
                 const json = await res.json();
+                const cleanText = json.choices[0].message.content.replace(/```json|```/g, '').trim();
+                const result = JSON.parse(cleanText);
 
-                // التحقق من الاستجابة سواء كانت مباشرة أو عبر الجسر
-                if (json.choices && json.choices[0]) {
-                    const content = json.choices[0].message.content;
-                    // clean and show
-                    const htmlMatch = content.match(/<div[\s\S]*<\/div>/) || content.match(/<body[\s\S]*<\/body>/) || [content];
-                    document.getElementById('cvPreview').innerHTML = htmlMatch[0].replace(/```html/g, '').replace(/```/g, '');
-                    document.getElementById('cvResult').style.display = 'block';
-                } else {
-                    throw new Error("Invalid AI Response");
-                }
+                generatedData = result;
+                document.getElementById('cvEN').innerHTML = result.cv_en;
+                document.getElementById('cvAR').innerHTML = result.cv_ar;
+                document.getElementById('atsScore').innerText = result.ats_score;
+                document.getElementById('atsReport').innerHTML = result.report;
 
+                document.getElementById('cvResult').style.display = 'block';
+                window.scrollTo({ top: document.getElementById('cvResult').offsetTop, behavior: 'smooth' });
             } catch (e) {
-                alert("حدث خطأ في الاتصال بالذكاء الاصطناعي (Bridge Error).");
+                alert("خطأ في الاتصال بالنظام الرقمي. يرجى المحاولة مرة أخرى.");
                 console.error(e);
             }
 
-            btn.innerText = 'توليد السيرة الذاتية (AI) ⚡';
             btn.disabled = false;
+            btn.innerText = "توليد السيرة الذاتية واختراق ATS ⚡";
         };
 
-        document.getElementById('downloadPdfBtn').onclick = () => {
-            const element = document.getElementById('cvPreview');
-            html2pdf().from(element).save('CV_Athar.pdf');
+        const downloadFunc = (id, filename) => {
+            ProtectionManager.verify(() => {
+                // Temporarily change title to avoid browser adding "أثر | ..." in header
+                const oldTitle = document.title;
+                const userName = document.getElementById('fullName').value || 'Resume';
+                document.title = userName;
+
+                const element = document.getElementById(id);
+                const opt = {
+                    margin: 0,
+                    filename: filename + '.pdf',
+                    image: { type: 'jpeg', quality: 1 },
+                    html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    document.title = oldTitle; // Restore title
+                });
+            });
         };
+
+        document.getElementById('downloadPdfBtn').onclick = () => downloadFunc('cvEN', 'Resume_English');
+        document.getElementById('downloadPdfArBtn').onclick = () => downloadFunc('cvAR', 'Resume_Arabic');
     </script>
 </body>
 

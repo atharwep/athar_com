@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // الإعدادات الافتراضية
-    const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbyJ0h6WymswhfwgB0-zylCW9YfDknGE7oXR2QQE8QlonM36Tw7qCAH-_szOIE2XpaW0eg/exec";
+    const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
     const DEFAULT_CONFIG = {
         provider: 'groq',
         geminiKey: "",
@@ -170,16 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const exportWordBtn = document.getElementById('exportWordBtn');
         if (exportWordBtn) {
             exportWordBtn.onclick = () => {
-                ProtectionManager.verify(() => {
-                    const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style>body { font-family: 'Arial', sans-serif; direction: rtl; text-align: right; } table { border-collapse: collapse; width: 100%; } td, th { border: 1px solid #000; padding: 5px; } h3 { background: #10b981; color: white; padding: 5px; }</style></head><body>`;
-                    const content = document.getElementById("finalPreview").innerHTML;
-                    const blob = new Blob(['\ufeff', header + content + "</body></html>"], { type: 'application/msword' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `مقترح_${state.selectedIdea?.name || 'مشروع'}.doc`;
-                    link.click();
-                });
+                const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style>body { font-family: 'Arial', sans-serif; direction: rtl; text-align: right; } table { border-collapse: collapse; width: 100%; } td, th { border: 1px solid #000; padding: 5px; } h3 { background: #10b981; color: white; padding: 5px; }</style></head><body>`;
+                const content = document.getElementById("finalPreview").innerHTML;
+                const blob = new Blob(['\ufeff', header + content + "</body></html>"], { type: 'application/msword' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `مقترح_${state.selectedIdea?.name || 'مشروع'}.doc`;
+                link.click();
             };
         }
 

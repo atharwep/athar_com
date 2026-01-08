@@ -98,7 +98,7 @@ const ProtectionManager = {
         // 🚀 AUTO-UPLOAD TO SHEET (As requested)
         // Fire and forget (or log error silently)
         try {
-            const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbyJ0h6WymswhfwgB0-zylCW9YfDknGE7oXR2QQE8QlonM36Tw7qCAH-_szOIE2XpaW0eg/exec";
+            const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
             fetch(`${BRIDGE_URL}?action=registerId&id=${this.currentId}`, { mode: 'no-cors' }) // no-cors for speed and to avoid errors if simple trigger
                 .catch(e => console.log("Bg register failed", e));
         } catch (e) {
@@ -172,7 +172,7 @@ const ProtectionManager = {
             btn.disabled = true;
             btn.innerText = "جاري التحقق...⏳";
 
-            const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbyJ0h6WymswhfwgB0-zylCW9YfDknGE7oXR2QQE8QlonM36Tw7qCAH-_szOIE2XpaW0eg/exec";
+            const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
             const pageName = document.title || window.location.pathname;
 
             // Strict Server Verification
@@ -188,32 +188,39 @@ const ProtectionManager = {
                     verified: true
                 }));
 
+                const callbackToExecute = this.currentCallback;
                 this.closeModal();
+
                 alert("✅ تم التفعيل بنجاح! شكراً لك.");
 
-                if (this.currentCallback) this.currentCallback();
+                if (typeof callbackToExecute === 'function') {
+                    callbackToExecute();
+                }
             } else {
                 alert("❌ " + (data.message || "كود غير صالح أو مستخدم مسبقاً"));
             }
         } catch (e) {
             console.error(e);
             if (e.message.includes("Failed to fetch")) {
-                alert("❌ خطأ في الاتصال بالسيرفر!\n\nالأسباب المحتملة:\n1- السكريبت غير منشور بصلاحية 'Anyone' (أي شخص).\n2- توجد مشكلة في الإنترنت.\n3- إضافة حظر الإعلانات تمنع الاتصال.");
+                alert("❌ خطأ في الاتصال بالسيرفر!\n\nالأسباب المحتملة:\n1- السكريبت غير منشور بصلاحية 'Anyone'.\n2- توجد مشكلة في الإنترنت.\n3- إضافة حظر الإعلانات تمنع الاتصال.");
             } else {
                 alert("❌ حدث خطأ: " + e.message);
             }
 
             btn.disabled = false;
-            btn.innerText = "تحقق من الكود 🔓";
+            btn.innerText = "تفعيل الآن ✅";
         }
     },
 
     closeModal() {
-        document.getElementById('atharAuthModal').style.display = 'none';
+        const modal = document.getElementById('atharAuthModal');
+        if (modal) modal.style.display = 'none';
+
+        // Reset inputs
+        const input = document.getElementById('activationCodeInput');
+        if (input) input.value = '';
+
         this.currentCallback = null;
-        if (document.getElementById('activationCodeInput')) {
-            document.getElementById('activationCodeInput').value = '';
-        }
     }
 };
 

@@ -405,7 +405,8 @@
                         <a href="career_path.html">🚀 مسارك المهني</a>
                         <a href="job_prep.html">🎯 استعداد للمقابلات</a>
                         <a href="skill_dev.html">🏗️ بناء القدرات</a>
-                        <a href="cv_improved.html">🤖 سيرة ATS الذكية</a>
+                        <a href="cv.html">🤖 محرك ATS الفائق</a>
+                        <a href="cv_improved.html">🎨 قوالب احترافية</a>
                     </div>
                 </div>
                 <a href="refine_v3.html" class="btn btn-ghost" data-i18n="nav_refine">⚡ المنقح الذكي</a>
@@ -495,8 +496,12 @@
             <!-- Step 2: Data Input (Manual Form) -->
             <div id="step2_input" style="display:none;">
                 <h2 style="color:var(--primary); text-align:center;">2. أدخل بياناتك (تعبئة يدوية)</h2>
-                <p style="text-align:center; color:var(--text-secondary); margin-bottom:20px;">قم بتعبئة الحقول التالية
-                    بدقة لضمان أفضل نتيجة</p>
+                <p style="text-align:center; color:var(--text-secondary); margin-bottom:20px;">
+                    قم بتعبئة الحقول التالية بدقة لضمان أفضل نتيجة
+                    <br>
+                    <a href="cv.html" style="color: var(--primary); font-weight: bold; text-decoration: underline;">أو
+                        اضغط هنا لاستخدام محرك ATS الفائق (توليد تلقائي) 🤖</a>
+                </p>
 
                 <div class="manual-form">
                     <!-- 1. Personal Info -->
@@ -724,16 +729,15 @@
 
                 <div style="display:flex; gap:15px; justify-content:center; margin-top:30px; flex-wrap:wrap;">
                     <button onclick="goToStep(2)" class="btn btn-ghost">تعديل البيانات</button>
-                    <button id="downloadWordBtn" class="btn btn-primary">تحميل Word 📥</button>
-                    <button onclick="ProtectionManager.verify(() => window.print())" class="btn btn-success">طباعة / PDF
-                        🖨️</button>
+                    <button onclick="ProtectionManager.verify(() => window.print())" class="btn btn-primary">تصدير PDF
+                        (مدفوع) 📥</button>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        const BRIDGE = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+        const BRIDGE = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
 
         const RESOURCES = {
             English: { sum: "Professional Summary", exp: "Experience", edu: "Education", ski: "Skills", lan: "Languages & Programs", tra: "Training", cl: "Cover Letter", cont: "Contact", ref: "References", skiComp: "Computer Skills", skiAdmin: "Admin Skills", skiTech: "Technical Skills" },
@@ -917,22 +921,20 @@
 
         // AI Logic with Robust Validation & Cleaning
         async function callAI(prompt) {
-            const strictPrompt = prompt + "\n\nIMPORTANT: Respond with VALID JSON ONLY. Do not include any text before or after the JSON block.";
-
             const payload = {
                 model: "llama-3.3-70b-versatile",
-                messages: [{ role: "user", content: strictPrompt }],
+                messages: [{ role: "user", content: prompt }],
                 temperature: 0.3
             };
 
             const tryParse = (str) => {
+                if (!str) return null;
                 try { return JSON.parse(str); } catch (e) { return null; }
             };
 
             const cleanText = (text) => {
-                // Remove Markdown code blocks if present
+                if (!text) return "";
                 let clean = text.replace(/```json\s*|```\s*/gi, "").trim();
-                // Find the first '{' and last '}' to isolate JSON
                 const start = clean.indexOf('{');
                 const end = clean.lastIndexOf('}');
                 if (start !== -1 && end !== -1 && end > start) {
@@ -944,24 +946,17 @@
             try {
                 const res = await fetch(BRIDGE + "?action=ai", {
                     method: "POST",
-                    headers: { 'Content-Type': 'text/plain' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
 
-                const rawResponse = await res.text();
-                if (!rawResponse) return null;
+                if (!res.ok) throw new Error("NETWORK_RESPONSE_NOT_OK");
 
-                let data = tryParse(rawResponse);
-                let content = "";
+                const bridgeRes = await res.json();
+                if (bridgeRes.status === "error") throw new Error(bridgeRes.message);
 
-                // Case 1: Standard API Response Wrapper
-                if (data && data.choices && data.choices[0] && data.choices[0].message) {
-                    content = data.choices[0].message.content;
-                }
-                // Case 2: Direct text response
-                else {
-                    content = rawResponse;
-                }
+                const content = bridgeRes.data;
+                if (!content) return null;
 
                 // Check for common error signatures in content
                 if (content.toLowerCase().includes("error") || content.toLowerCase().includes("limit reached")) {
@@ -973,10 +968,13 @@
                 const cleanedContent = cleanText(content);
                 const finalJson = tryParse(cleanedContent);
 
-                if (finalJson) return finalJson;
+                if (finalJson) {
+                    if (finalJson.error) throw new Error(finalJson.error.message || "AI_PROVIDER_ERROR");
+                    return finalJson;
+                }
 
                 // Fallback for non-JSON requests (like experience descriptions)
-                if (prompt.includes("responsibilities") || prompt.includes("tasks")) {
+                if (prompt.includes("responsibilities") || prompt.includes("tasks") || prompt.includes("Write")) {
                     return content.trim();
                 }
 
@@ -1071,7 +1069,7 @@
                 renderCV();
                 goToStep(3);
             } else {
-                alert("حدث خطأ أثناء معالجة رد الذكاء الاصطناعي. يرجى المحاولة مرة أخرى أو التأكد من الاتصال.");
+                alert("حدث خطأ أثناء معالجة رد النظام. يرجى المحاولة مرة أخرى أو التأكد من الاتصال.");
             }
 
             btn.innerText = "تحليل وإنشاء السيرة الذاتية ⚡";

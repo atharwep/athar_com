@@ -142,10 +142,47 @@
             color: var(--primary);
             transform: translateX(-5px);
         }
+
+        /* Notification Modal */
+        #siteNotice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4f46e5;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            animation: slideDown 0.5s ease-out;
+            max-width: 90%;
+        }
+
+        @keyframes slideDown {
+            from {
+                top: -100px;
+                opacity: 0;
+            }
+
+            to {
+                top: 20px;
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 
 <body class="light-theme">
+    <div id="siteNotice">
+        <span id="noticeContent">✨ خبر جديد: تم تحديث محرك السيرة الذاتية!</span>
+        <button onclick="document.getElementById('siteNotice').style.display='none'"
+            style="background:none; border:none; color:white; cursor:pointer; font-weight:bold;">✕</button>
+    </div>
+
     <div class="bg-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -165,6 +202,8 @@
                 <a href="ops_dashboard.html" class="btn btn-ghost" style="color:#0f172a; font-weight:bold;">🏢 خدمات
                     المنظمات</a>
                 <a href="library_v3.html" class="btn btn-ghost">المكتبة</a>
+                <a href="admin_console.html" id="adminLink" class="btn btn-ghost"
+                    style="display:none; color:#4f46e5; border:1px solid #4f46e5;">🛠️ لوحة الإدارة</a>
                 <button onclick="logout()" class="btn btn-ghost"
                     style="color:#ef4444; border:none; cursor:pointer;">خروج 🚪</button>
                 <a href="#servicesGrid" class="btn btn-primary">ابدأ الآن 🚀</a>
@@ -206,10 +245,15 @@
                 <h3>بناء المهارات</h3>
                 <p>خارطة طريق لتطوير المهارات التقنية مسبقة (WASH, Protection, MEAL) بناء على مستواك.</p>
             </a>
-            <a href="cv_improved.html" class="service-card">
+            <a href="cv.html" class="service-card" style="border: 2px solid var(--primary);">
                 <span class="icon">🤖</span>
-                <h3>سيرة ATS الذكية</h3>
-                <p>صمم سيرة ذاتية تتخطى أنظمة الفرز الآلي وتبرز نقاط قوتك الحقيقية.</p>
+                <h3>محرك ATS الفائق</h3>
+                <p>سيرة ذاتية "بسيطة" مصممة خصيصاً لاختراق أنظمة الفرز الآلي بنسبة قبول عالية.</p>
+            </a>
+            <a href="cv_improved.html" class="service-card">
+                <span class="icon">🎨</span>
+                <h3>قوالب السيرة الذاتية</h3>
+                <p>اختر من بين 10 قوالب احترافية (Modern, Creative, Pro) بتصاميم بصرية مبهرة.</p>
             </a>
             <a href="proposal_tool.html" class="service-card">
                 <span class="icon">💎</span>
@@ -219,7 +263,7 @@
             <a href="refine_v3.html" class="service-card">
                 <span class="icon">⚡</span>
                 <h3>المنقح الذكي</h3>
-                <p>طور نصوصك المهنية وتقاريرك لتصبح أكثر احترافية بلمسة ذكاء اصطناعي.</p>
+                <p>طور نصوصك المهنية وتقاريرك لتصبح أكثر احترافية بلمسة من الخبرة الرقمية.</p>
             </a>
             <a href="job_errors.html" class="service-card">
                 <span class="icon">⚠️</span>
@@ -279,7 +323,8 @@
                 <div class="footer-links">
                     <h4 style="color:white; margin-bottom:15px;">خدماتنا</h4>
                     <a href="career_path.html">خطة المسار المهني</a>
-                    <a href="cv_improved.html">صانع السيرة الذاتية</a>
+                    <a href="cv.html">محرك ATS الفائق</a>
+                    <a href="cv_improved.html">قوالب السيرة الذاتية</a>
                     <a href="job_prep.html">الاستعداد للمقابلات</a>
                     <a href="refine_v3.html">المنقح الذكي</a>
                 </div>
@@ -302,7 +347,7 @@
         </footer>
     </div>
     <script>
-        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
 
         async function updateVisitors() {
             try {
@@ -335,7 +380,35 @@
             }
         }
 
-        window.onload = updateVisitors;
+        async function checkAnnouncement() {
+            try {
+                const res = await fetch(BRIDGE_URL + "?action=get_announcement");
+                const data = await res.json();
+                if (data.status === 'success' && data.announcement) {
+                    const shown = sessionStorage.getItem('announcement_shown');
+                    if (!shown) {
+                        document.getElementById('noticeContent').innerText = "📢 " + data.announcement;
+                        document.getElementById('siteNotice').style.display = 'flex';
+                        sessionStorage.setItem('announcement_shown', 'true');
+                    }
+                }
+            } catch (e) { }
+        }
+
+        window.onload = () => {
+            if (typeof updateVisitors === 'function') updateVisitors();
+            checkAnnouncement();
+
+            const userRaw = localStorage.getItem('athar_user');
+            if (userRaw) {
+                const user = JSON.parse(userRaw);
+                // تحقق قوي من حالة المطور (بولين أو نص "true")
+                if (user.isAdmin === true || user.isAdmin === "true") {
+                    const link = document.getElementById('adminLink');
+                    if (link) link.style.display = 'inline-block';
+                }
+            }
+        };
     </script>
 </body>
 

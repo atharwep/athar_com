@@ -4,188 +4,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أثر | الاستدامة والوقاية من الاحتراق</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>أثر | الوقاية من الاحتراق والاستدامة المهنية</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="protection.js"></script>
-    <style>
-        .page-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .input-card {
-            background: var(--glass-bg);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            margin-bottom: 30px;
-        }
-
-        textarea,
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-family: 'Cairo';
-        }
-
-        .btn-full {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            border: none;
-            background: #10b981;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .result-card {
-            background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 15px;
-            display: none;
-            line-height: 1.8;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .burnout-indicator {
-            background: #f0fdf4;
-            border-right: 5px solid #10b981;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body class="light-theme">
-    <nav>
-        <div class="logo-container">
-            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
-                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
-                <div class="logo">أثـــــر</div>
-            </a>
-        </div>
-    </nav>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
 
-    <div class="page-container">
-        <header style="text-align:center; margin-bottom:40px;">
-            <h1 style="font-weight:900; color:#10b981; font-size: 2.5rem;">🧘 الاستدامة المهنية والوقاية</h1>
-            <p style="color:var(--text-secondary);">احمِ نفسك من الاحتراق المهني وبنِ مساراً مستداماً في العمل الإنساني
-                الضاغط.</p>
-        </header>
-
-        <div class="input-card">
-            <div class="form-group">
-                <label>طبيعة عملك الحالي (أو الوظيفة التي تتقدم لها):</label>
-                <input type="text" id="jobNature" placeholder="مثال: منسق استجابة طوارئ، حماية طفولة، محاسب...">
+    <div class="container" style="max-width: 900px;">
+        <nav>
+            <div class="logo-container">
+                <div class="ripple-wrapper">
+                    <div class="ripple"></div>
+                    <img src="تنزيل.jpg" id="mainLogo" alt="Athar">
+                </div>
+                <div>
+                    <div class="logo">أثر</div>
+                    <div class="logo-slogan">الاستدامة والرفاه المهني</div>
+                </div>
             </div>
+            <a href="index.html" class="btn btn-ghost">العودة للرئيسية</a>
+        </nav>
+
+        <div class="glass-card anim-fade-in" style="margin-top: 40px; border-top: 4px solid var(--accent);">
+            <h2 style="color: var(--accent); margin-bottom: 20px; font-weight: 900;">🧘 استدامة العمل الإنساني</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">احمِ نفسك من الاحتراق المهني وبنِ مساراً
+                مستداماً يعتمد على التوازن بين الأداء المتميز والرفاه الشخصي.</p>
+
             <div class="form-group">
-                <label>بيئة العمل وكثافة الضغوط:</label>
-                <textarea id="workEnv" rows="3"
-                    placeholder="مثال: عمل ميداني 12 ساعة، ضغط طلبات المانحين، التعامل مع حالات صدمة..."></textarea>
+                <label>طبيعة عملك (أو الوظيفة المستهدفة):</label>
+                <input type="text" id="jobNature" placeholder="مثلاً: منسق حماية، عمل ميداني، ضباط بيانات..."
+                    class="elegant-input">
             </div>
-            <button id="checkBurnoutBtn" class="btn-full">تقييم الاستدامة المهنية ⚡</button>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>توصيف الضغوط التي تواجهها:</label>
+                <textarea id="workEnv" placeholder="مثلاً: ساعات عمل طويلة، التعامل مع صدمات، ضغط مواعيد نهائية..."
+                    style="min-height: 100px;"></textarea>
+            </div>
+
+            <button id="checkBurnoutBtn" class="btn btn-primary"
+                style="width: 100%; justify-content: center; padding: 18px; font-size: 1.1rem; border-radius: 16px; background: var(--accent); border-color: var(--accent);">
+                تقييم الاستدامة الفوري ⚡
+            </button>
         </div>
 
-        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
+        <div id="loader" style="display: none; margin: 40px 0; text-align: center;">
+            <div class="loading-spinner"
+                style="border: 4px solid var(--glass-border); border-top-color: var(--accent); width: 50px; height: 50px; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;">
+            </div>
+            <p style="color: var(--accent); font-weight: 700;">جاري تحليل مؤشرات الضغط والرفاه...</p>
+        </div>
 
-        <div id="resultArea" class="result-card">
-            <div id="burnoutContent"></div>
-            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
-                تحميل تقرير الاستدامة الشخصي</button>
+        <div id="resultArea" style="display: none;" class="anim-slide-up">
+            <div class="glass-card" style="margin-top: 30px;">
+                <div id="burnoutContent"></div>
+                <button onclick="ProtectionManager.verify(() => window.print())" class="btn btn-ghost"
+                    style="width: 100%; margin-top: 40px; justify-content: center;">
+                    <i class="fas fa-file-pdf"></i> تحميل تقرير الوقاية
+                </button>
+            </div>
         </div>
     </div>
 
-    <script>
-        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+    <footer class="main-footer">
+        <div class="footer-credit">تطوير فريق <span class="credit-name">Athar Team</span></div>
+    </footer>
 
+    <style>
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .indicator-box {
+            text-align: center;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .logic-card {
+            background: rgba(0, 0, 0, 0.02);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border-right: 4px solid var(--accent);
+        }
+
+        .tip-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .tip-item i {
+            color: var(--accent);
+            margin-top: 4px;
+        }
+
+        .elegant-input {
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-family: 'Cairo';
+            width: 100%;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        body.light-theme {
+            background-color: #f0f4f8 !important;
+        }
+    </style>
+
+    <script src="protection.js"></script>
+    <script>
         document.getElementById('checkBurnoutBtn').onclick = async () => {
             const nature = document.getElementById('jobNature').value;
             const env = document.getElementById('workEnv').value;
+            if (!nature) return alert("يرجى إدخال طبيعة العمل");
 
             const btn = document.getElementById('checkBurnoutBtn');
-            const status = document.getElementById('statusLog');
-            btn.disabled = true;
-            status.innerText = "⏳ جاري تقليل ضغط العمل... وتحليل مؤشرات الاحتراق...";
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('resultArea');
 
-            const prompt = `
-            أنت مستشار موارد بشرية مختص بالصحة النفسية والاستدامة في المنظمات.
-            المدخلات: الوظيفة ${nature}, البيئة ${env}.
-            
+            btn.disabled = true;
+            loader.style.display = 'block';
+            resultArea.style.display = 'none';
+
+            const prompt = `أنت مستشار رفاه مهني. حلل: الوظيفة "${nature}"، الضغوط: "${env}". 
             المطلوب (JSON حصراً):
             {
                 "burnout_risk": "Low|Medium|High",
-                "risk_ar": "منخفض|متوسط|عالي",
-                "markers": ["مؤشر خفي 1", "مؤشر 2"],
-                "analysis": "تحليل واقعي لمستوى الضغط في هذا الدور",
-                "survival_tips": ["نصيحة للبقاء 1", "نصيحة 2"],
-                "long_term_plan": "خطة للاستمرار لسنوات دون احتراق",
-                "wellness_tools": ["أداة 1", "تطبيق 2"]
+                "risk_ar": "مستوى الخطر بالعربي",
+                "analysis": "تحليل عميق للضغوط",
+                "markers": ["مؤشر 1", "مؤشر 2"],
+                "survival_tips": ["نصيحة 1", "نصيحة 2"],
+                "long_term_plan": "خطة الاستدامة",
+                "wellness_tools": ["أداة 1"]
             }
-            بالعربية.
-            `;
+            اللغة: العربية.`;
+
+            const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
 
             try {
-                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                const res = await fetch(`${BRIDGE_URL}?action=ai`, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: prompt }],
-                        temperature: 0.7
+                        messages: [
+                            { role: "system", content: "You are a wellness consultant that returns ONLY valid JSON in Arabic." },
+                            { role: "user", content: prompt }
+                        ]
                     })
                 });
 
-                const dataText = await res.text();
-                const json = JSON.parse(dataText.match(/\{[\s\S]*\}/)[0]);
+                const bridgeRes = await res.json();
+                if (bridgeRes.status === "error") throw new Error(bridgeRes.message);
 
-                let riskColor = json.burnout_risk === 'High' ? '#ef4444' : (json.burnout_risk === 'Medium' ? '#f59e0b' : '#10b981');
+                const aiResponse = bridgeRes.data;
+                const cleanJson = aiResponse.replace(/```json\s*|```\s*/gi, "").trim();
+                const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
 
-                let html = `
-                    <div class="burnout-indicator" style="border-right-color:${riskColor};">
-                        <h2 style="color:${riskColor}; margin:0;">مستوى خطر الاحتراق: ${json.risk_ar}</h2>
-                        <p style="margin-top:10px;">${json.analysis}</p>
+                if (!jsonMatch) throw new Error("JSON_ERROR");
+                const data = JSON.parse(jsonMatch[0]);
+                if (data.error) throw new Error(data.error.message || "AI_ERROR");
+
+                let riskColor = data.burnout_risk === 'High' ? 'var(--danger)' : (data.burnout_risk === 'Medium' ? '#eab308' : 'var(--accent)');
+
+                document.getElementById('burnoutContent').innerHTML = `
+                    <div class="indicator-box" style="border-top: 5px solid ${riskColor}; background: ${riskColor}05;">
+                        <h2 style="color: ${riskColor}; margin-bottom: 10px;">مستوى الخطر: ${data.risk_ar}</h2>
+                        <p style="color: var(--text-primary); font-weight: 600;">${data.analysis}</p>
                     </div>
 
-                    <h3 style="color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">🚩 مؤشرات يجب الانتباه لها</h3>
-                    <ul>${json.markers.map(m => `<li>${m}</li>`).join('')}</ul>
-
-                    <h3 style="color:#10b981; margin-top:20px;">🛡️ استراتيجيات وقائية فورية</h3>
-                    <ul>${json.survival_tips.map(t => `<li>${t}</li>`).join('')}</ul>
-
-                    <div style="background:#f0fdf4; padding:20px; border-radius:12px; margin-top:20px;">
-                        <h3 style="color:#065f46; margin-top:0;">📅 خطة الاستدامة طويلة الأمد</h3>
-                        <p>${json.long_term_plan}</p>
+                    <h3 style="color: var(--accent); margin-bottom: 20px;">🚩 مؤشرات تستوجب الحذر:</h3>
+                    <div style="margin-bottom: 30px;">
+                        ${(data.markers || []).map(m => `<div class="logic-card">${m}</div>`).join('')}
                     </div>
 
-                    <p style="margin-top:20px;"><strong>🛠️ أدوات مقترحة للصحة المهنية:</strong> ${json.wellness_tools.join(' - ')}</p>
+                    <h3 style="color: var(--accent); margin-bottom: 20px;">🛡️ استراتيجيات الحماية الفورية:</h3>
+                    <div style="margin-bottom: 30px;">
+                        ${(data.survival_tips || []).map(t => `<div class="tip-item"><i class="fas fa-shield-alt"></i><span>${t}</span></div>`).join('')}
+                    </div>
+
+                    <div style="background: var(--accent)08; padding: 25px; border-radius: 20px; border: 1px dashed var(--accent);">
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">📅 رؤية الاستدامة الطويلة:</h3>
+                        <p style="line-height: 1.8;">${data.long_term_plan}</p>
+                    </div>
                 `;
 
-                document.getElementById('burnoutContent').innerHTML = html;
-                document.getElementById('resultArea').style.display = 'block';
-                status.innerText = "✅ اكتمل تحليل الاستدامة!";
+                resultArea.style.display = 'block';
+                window.scrollTo({ top: resultArea.offsetTop - 50, behavior: 'smooth' });
             } catch (e) {
                 console.error(e);
-                status.innerText = "❌ فشل الاتصال.";
+                alert("تعذر إجراء التقييم حالياً. يرجى المحاولة مرة أخرى.");
             } finally {
                 btn.disabled = false;
+                loader.style.display = 'none';
             }
-        };
-        document.getElementById('exportBtn').onclick = () => {
-            ProtectionManager.verify(() => window.print());
         };
     </script>
 </body>

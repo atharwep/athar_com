@@ -4,230 +4,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أثر | الجاهزية الميدانية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>أثر | الاستعداد الميداني الذكي</title>
     <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&family=Outfit:wght@300;600;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="protection.js"></script>
-    <style>
-        .page-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .input-card {
-            background: var(--glass-bg);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            margin-bottom: 30px;
-        }
-
-        textarea,
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-family: 'Cairo';
-        }
-
-        .btn-full {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            border: none;
-            background: #ea580c;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .result-card {
-            background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 15px;
-            display: none;
-            line-height: 1.8;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .scenario-box {
-            background: #fff7ed;
-            border-right: 5px solid #ea580c;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-        }
-    </style>
 </head>
 
 <body class="light-theme">
-    <nav>
-        <div class="logo-container">
-            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
-                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
-                <div class="logo">أثـــــر</div>
-            </a>
-        </div>
-    </nav>
-
-    <div class="page-container">
-        <header style="text-align:center; margin-bottom:40px;">
-            <h1 style="font-weight:900; color:#ea580c; font-size: 2.5rem;">🚜 استعداد للعمل الميداني</h1>
-            <p style="color:var(--text-secondary);">هل أنت مستعد لمواجهة تحديات الميدان؟ لنكتشف ذلك من خلال السيناريوهات
-                الواقعية.</p>
-        </header>
-
-        <div class="input-card">
-            <div class="form-group">
-                <label>تخصصك أو الوظيفة الميدانية المستهدفة:</label>
-                <input type="text" id="targetJob" placeholder="مثال: مسؤول مياه، منسق سبل عيش...">
-            </div>
-            <div class="form-group">
-                <label>صف طبيعة البيئة التي ترغب بالعمل فيها (اختياري):</label>
-                <textarea id="envDesc" rows="3" placeholder="مثال: مخيمات، مناطق نزاع، ريف نائي..."></textarea>
-            </div>
-            <button id="checkReadyBtn" class="btn-full">تقييم الجاهزية الميدانية ⚡</button>
-        </div>
-
-        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
-
-        <div id="resultArea" class="result-card">
-            <div id="readinessContent"></div>
-            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
-                تصدير تقرير الاستعداد المهني</button>
-        </div>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
-    <script>
-        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+    <div class="container" style="max-width: 950px; padding-bottom: 100px;">
+        <nav class="premium-nav">
+            <div class="logo-container">
+                <div class="ripple-wrapper">
+                    <div class="ripple"></div>
+                    <img src="تنزيل.jpg" id="mainLogo" alt="Athar">
+                </div>
+                <div>
+                    <div class="logo">أثـــــر</div>
+                    <div class="logo-slogan">جاهزية ميدانية مطلقة</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost"><i class="fas fa-home"></i> الرئيسية</a>
+            </div>
+        </nav>
 
-        document.getElementById('checkReadyBtn').onclick = async () => {
-            const job = document.getElementById('targetJob').value;
-            const env = document.getElementById('envDesc').value;
+        <main class="anim-fade-in" style="margin-top: 50px;">
+            <div class="glass-card main-input-card" style="border-top-color: var(--accent);">
+                <div class="card-header-icon" style="color: var(--accent);">
+                    <i class="fas fa-helicopter"></i>
+                </div>
+                <h1>دليل الجاهزية الميدانية</h1>
+                <p class="subtitle">أدخل طبيعة مهمتك الميدانية لنقوم ببناء 30 نصيحة تقنية وخطة عمل ميدانية شاملة لضمان
+                    الكفاءة والسلامة.</p>
 
-            const btn = document.getElementById('checkReadyBtn');
-            const status = document.getElementById('statusLog');
-            btn.disabled = true;
-            status.innerText = "⏳ جاري محاكاة بيئة العمل الميداني...";
+                <div class="input-wrapper">
+                    <input type="text" id="fieldMission"
+                        placeholder="مثلاً: توزيع مساعدات، مسح ميداني، تقييم احتياجات..." class="premium-input"
+                        oninput="handleAutoTrigger(this)">
+                    <div id="aiPulse" class="ai-pulse" style="display: none;">
+                        <span style="background: var(--accent);"></span>
+                        <span style="background: var(--accent);"></span>
+                        <span style="background: var(--accent);"></span>
+                    </div>
+                </div>
+            </div>
 
-            const prompt = `
-            أنت مدير برامج ميداني بخبرة طويلة في المنظمات الدولية.
-            المدخلات: الوظيفة ${job}, البيئة ${env}.
-            
-            المطلوب (JSON حصراً):
-            {
-                "requirements": ["متطلب 1", "متطلب 2", "متطلب 3", "متطلب 4"],
-                "office_vs_field": "الفرق الجوهري لهذا المنصب (100 كلمة)",
-                "scenarios": [
-                    {"case": "سيناريو ميداني حقيقي ومفصل", "solution": "كيف تتعامل معه باحترافية؟ (إجابة مفصلة 80-100 كلمة)"}
-                ],
-                "risks": ["خطر 1", "خطر 2", "خطر 3"],
-                "mental_prep": "كيف تستعد نفسياً؟ (150 كلمة)",
-                "ready_score": "80%"
+            <div id="loader" class="premium-loader" style="display: none;">
+                <div class="loader-spinner" style="border-top-color: var(--accent);"></div>
+                <h3>جاري إعداد 30 استراتيجية ميدانية دقيقة...</h3>
+                <div class="loader-bar">
+                    <div class="loader-progress" style="background: var(--accent);"></div>
+                </div>
+            </div>
+
+            <div id="resultArea" style="display: none;" class="anim-slide-up">
+                <div class="glass-card result-card">
+                    <div class="wisdom-section"
+                        style="background: rgba(16, 185, 129, 0.05); border-color: var(--accent); margin-top: 0; margin-bottom: 40px;">
+                        <div class="wisdom-header" style="color: var(--accent);">
+                            <i class="fas fa-toolbox"></i>
+                            <h3>أدوات وتقنيات موصى بها للمهمة</h3>
+                        </div>
+                        <p id="toolsText" style="line-height: 1.8; font-weight: 700; color: var(--text-main);"></p>
+                    </div>
+
+                    <h3 class="section-title" style="color: var(--accent);"><i class="fas fa-clipboard-list"></i>
+                        البروتوكول الميداني (30 نقطة):</h3>
+                    <div id="fieldContent" class="steps-grid"></div>
+
+                    <button onclick="ProtectionManager.verify(() => window.print())" class="btn btn-primary"
+                        style="width: 100%; margin-top: 50px; justify-content: center; background: var(--accent); border-color: var(--accent); height: 60px;">
+                        <i class="fas fa-file-pdf"></i> تصدير دليل المهمة
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-logo">أثر</div>
+            <div class="footer-credit">تطوير فريق <span class="credit-name">Athar Team</span> &copy; 2025</div>
+        </div>
+    </footer>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #10b981;
+            --bg-body: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background: var(--bg-body);
+            font-family: 'Cairo', sans-serif;
+            color: var(--text-main);
+        }
+
+        .premium-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 0;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 50px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
+        }
+
+        .main-input-card {
+            text-align: center;
+            border-top: 8px solid var(--accent);
+        }
+
+        .card-header-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-weight: 950;
+            font-size: 2.6rem;
+            letter-spacing: -1px;
+        }
+
+        .premium-input {
+            width: 100%;
+            padding: 25px 35px;
+            border-radius: 20px;
+            border: 2px solid var(--glass-border);
+            background: white;
+            font-size: 1.3rem;
+            font-family: 'Cairo';
+            text-align: center;
+            transition: 0.4s;
+        }
+
+        .premium-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.15);
+            outline: none;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .step-card {
+            display: flex;
+            gap: 22px;
+            padding: 28px;
+            background: white;
+            border-radius: 22px;
+            border: 1px solid var(--glass-border);
+            border-right: 6px solid var(--accent);
+            transition: 0.3s;
+        }
+
+        .step-num {
+            color: var(--accent);
+            font-weight: 900;
+            font-size: 1.6rem;
+            font-family: 'Outfit';
+            min-width: 45px;
+        }
+
+        .step-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .step-desc {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .premium-loader {
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .loader-spinner {
+            width: 70px;
+            height: 70px;
+            border: 6px solid var(--glass-border);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
-            
-            ⚠️ مهم جداً: يجب أن يحتوي مصفوفة scenarios على 20 سيناريو بالضبط.
-            نوّع السيناريوهات لتشمل: تحديات لوجستية، مشاكل أمنية، صراعات مجتمعية، 
-            ضغوط العمل، التعامل مع الشركاء، إدارة الأزمات، التواصل مع المستفيدين، إلخ.
-            اجعل كل حل مفصلاً وعملياً.
-            بالعربية.
-            `;
+        }
 
-            const tryParse = (str) => {
-                try { return JSON.parse(str); } catch (e) { return null; }
-            };
+        .ai-pulse {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 5px;
+        }
 
-            const cleanText = (text) => {
-                let clean = text.replace(/```json\s*|```\s*/gi, "").trim();
-                const start = clean.indexOf('{');
-                const end = clean.lastIndexOf('}');
-                if (start !== -1 && end !== -1 && end > start) {
-                    return clean.substring(start, end + 1);
-                }
-                return clean;
-            };
+        .ai-pulse span {
+            width: 5px;
+            height: 18px;
+            animation: ai-pulse 0.8s infinite ease-in-out;
+        }
+
+        @keyframes ai-pulse {
+
+            0%,
+            100% {
+                transform: scaleY(0.4);
+            }
+
+            50% {
+                transform: scaleY(1.4);
+            }
+        }
+    </style>
+
+    <script>
+        let timeout = null;
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
+
+        function handleAutoTrigger(input) {
+            clearTimeout(timeout);
+            const val = input.value.trim();
+            const pulse = document.getElementById('aiPulse');
+            if (val.length < 5) { pulse.style.display = 'none'; return; }
+            pulse.style.display = 'flex';
+            timeout = setTimeout(() => { startFieldPlanning(val); }, 1800);
+        }
+
+        async function startFieldPlanning(mission) {
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('resultArea');
+            const pulse = document.getElementById('aiPulse');
+
+            pulse.style.display = 'none';
+            loader.style.display = 'block';
+            resultArea.style.display = 'none';
+
+            const prompt = `Task: Create a 30-point field readiness strategy for the mission: "${mission}".
+            Return ONLY a JSON object:
+            {
+                "tools": ["Tool 1 (Arabic)", "Tool 2 (Arabic)"],
+                "strategies": [
+                    {"title": "Strategy title (Arabic)", "desc": "Practical implementation details (Arabic)"}
+                ]
+            }
+            Ensure exactly 30 points. Use professional Arabic. No intro text.`;
 
             try {
-                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                const res = await fetch(`${BRIDGE_URL}?action=ai`, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: prompt + "\n\nIMPORTANT: Return ONLY valid JSON." }],
-                        temperature: 0.3
+                        messages: [
+                            { role: "system", content: "You are a humanitarian field expert that returns ONLY valid JSON. Output in Arabic." },
+                            { role: "user", content: prompt }
+                        ]
                     })
                 });
 
-                const dataText = await res.text();
-                if (!dataText) throw new Error("Empty response");
+                const bridgeRes = await res.json();
+                if (bridgeRes.status === "error") throw new Error(bridgeRes.message);
 
-                let parsed = tryParse(dataText);
-                let content = "";
+                const aiResponse = bridgeRes.data;
+                const cleanJson = aiResponse.replace(/```json\s*|```\s*/gi, "").trim();
+                const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
 
-                if (parsed && parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
-                    content = parsed.choices[0].message.content;
-                } else {
-                    content = dataText;
-                }
+                if (!jsonMatch) throw new Error("JSON_ERROR");
+                const data = JSON.parse(jsonMatch[0]);
+                if (data.error) throw new Error(data.error.message || "AI_ERROR");
 
-                // (Fixed) Removed false positive error check
-                if (content.startsWith("Error:") || content.includes("Rate limit exceeded")) {
-                    status.innerText = "⚠️ عذراً، الخادم مشغول حالياً.";
-                    return;
-                }
+                document.getElementById('toolsText').innerText = (data.tools || data.skills || []).join(' • ');
 
-                const json = tryParse(cleanText(content));
-                if (!json) throw new Error("JSON Parsing failed");
-
-                let html = `
-                    <div style="text-align:center; margin-bottom:20px;">
-                        <div style="font-size:3rem;">🚜</div>
-                        <h2 style="color:#ea580c;">جاهزيتك الميدانية: ${json.ready_score || '0%'}</h2>
-                    </div>
-
-                    <h3 style="color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">📋 متطلبات الواقع الميداني</h3>
-                    <ul>${(json.requirements || []).map(r => `<li>${r}</li>`).join('')}</ul>
-
-                    <p><strong>الفرق الجوهري:</strong> ${json.office_vs_field || ''}</p>
-
-                    <h3 style="color:#ea580c; margin-top:20px;">🏟️ سيناريوهات ميدانية واقعية</h3>
-                    ${(json.scenarios || []).map(s => `
-                        <div class="scenario-box">
-                            <strong>⚠️ الحالة:</strong> ${s.case || ''}
-                            <div style="margin-top:10px; color:#166534;"><strong>💡 الحل المهني:</strong> ${s.solution || ''}</div>
+                const container = document.getElementById('fieldContent');
+                const list = data.strategies || data.points || data.items || data.steps || [];
+                container.innerHTML = list.map((s, idx) => `
+                    <div class="step-card anim-slide-up" style="animation-delay: ${idx * 0.05}s">
+                        <span class="step-num">${idx + 1}</span>
+                        <div>
+                            <span class="step-title">${s.title}</span>
+                            <div class="step-desc">${s.desc || s.description}</div>
                         </div>
-                    `).join('')}
-
-                    <h3 style="color:#ef4444; margin-top:20px;">⚠️ المخاطر وكيفية إدارتها</h3>
-                    <ul>${(json.risks || []).map(rk => `<li>${rk}</li>`).join('')}</ul>
-
-                    <div style="padding:15px; background:#f0f9ff; border-radius:10px; margin-top:20px;">
-                        <strong>🧠 الاستعداد النفسي:</strong> ${json.mental_prep || ''}
                     </div>
-                `;
+                `).join('');
 
-                document.getElementById('readinessContent').innerHTML = html;
-                document.getElementById('resultArea').style.display = 'block';
-                status.innerText = "✅ اكتمل التقييم!";
+                resultArea.style.display = 'block';
+                window.scrollTo({ top: resultArea.offsetTop - 50, behavior: 'smooth' });
+
             } catch (e) {
-                console.error("AI Error:", e);
-                status.innerText = "❌ حدث خطأ في معالجة البيانات. يرجى إعادة المحاولة.";
-            } finally {
-                btn.disabled = false;
-            }
-        };
-        document.getElementById('exportBtn').onclick = () => {
-            ProtectionManager.verify(() => window.print());
-        };
+                console.error(e);
+                alert(`تعذر بناء الدليل الميداني حالياً.\n\nالتفاصيل: ${e.message}`);
+            } finally { loader.style.display = 'none'; }
+        }
     </script>
 </body>
 

@@ -4,229 +4,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أثر | الأخطاء القاتلة في التوظيف</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>أثر | محلل الأخطاء المهنية</title>
     <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&family=Outfit:wght@300;600;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="protection.js"></script>
-    <style>
-        .page-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .input-card {
-            background: var(--glass-bg);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            margin-bottom: 30px;
-        }
-
-        textarea,
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-family: 'Cairo';
-        }
-
-        .btn-full {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            border: none;
-            background: #e11d48;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .result-card {
-            background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 15px;
-            display: none;
-            line-height: 1.8;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .error-item {
-            background: #fff1f2;
-            border-right: 5px solid #e11d48;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
-        .solution-item {
-            background: #f0fdf4;
-            border-right: 5px solid #10b981;
-            padding: 10px 15px;
-            margin-top: 10px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
-    </style>
 </head>
 
 <body class="light-theme">
-    <nav>
-        <div class="logo-container">
-            <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
-                <img src="تنزيل.jpg" alt="Logo" style="width:40px; border-radius:5px;">
-                <div class="logo">أثـــــر</div>
-            </a>
-        </div>
-        <div class="nav-actions">
-            <a href="index.html" class="btn btn-ghost">الرئيسية</a>
-            <a href="career_path.html" class="btn btn-ghost">مسارك المهني</a>
-        </div>
-    </nav>
-
-    <div class="page-container">
-        <header style="text-align:center; margin-bottom:40px;">
-            <h1 style="font-weight:900; color:#e11d48; font-size: 2.5rem;">⚠️ محلل الأخطاء والرفض الوظيفي</h1>
-            <p style="color:var(--text-secondary);">اكتشف لماذا يتم رفض طلباتك في المنظمات وكيف تصحح المسار فوراً.</p>
-        </header>
-
-        <div class="input-card">
-            <div class="form-group">
-                <label>ارفع سيرتك الذاتية أو الصق محتواها:</label>
-                <textarea id="cvContent" rows="6" placeholder="الصق محتوى الـ CV هنا للتحليل..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>كم مرة قمت بالتقديم ولم يتم الرد عليك؟</label>
-                <input type="number" id="applyCount" placeholder="مثال: 10">
-            </div>
-            <button id="analyzeErrorsBtn" class="btn-full">كشف الأخطاء القاتلة ⚡</button>
-        </div>
-
-        <div id="statusLog" style="text-align:center; margin-bottom:20px; font-weight:bold;"></div>
-
-        <div id="resultArea" class="result-card">
-            <h3 style="color:#e11d48; border-bottom: 2px solid #eee; padding-bottom:10px;">تقرير الرفض والحلول التصحيحية
-            </h3>
-            <div id="errorsContainer"></div>
-            <button id="exportBtn" class="btn btn-ghost" style="margin-top:20px; width:100%; border:1px solid #ddd;">📥
-                حفظ التقرير التصحيحي</button>
-        </div>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
+    <div class="container" style="max-width: 950px; padding-bottom: 100px;">
+        <nav class="premium-nav">
+            <div class="logo-container">
+                <div class="ripple-wrapper">
+                    <div class="ripple"></div>
+                    <img src="تنزيل.jpg" id="mainLogo" alt="Athar">
+                </div>
+                <div>
+                    <div class="logo">أثـــــر</div>
+                    <div class="logo-slogan">عين الخبير للكشف عن الثغرات</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost"><i class="fas fa-home"></i> الرئيسية</a>
+            </div>
+        </nav>
+
+        <main class="anim-fade-in" style="margin-top: 50px;">
+            <div class="glass-card main-input-card" style="border-top-color: var(--danger);">
+                <div class="card-header-icon" style="color: var(--danger);">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h1>كاشف الأخطاء المهنية</h1>
+                <p class="subtitle">أدخل المسمى الوظيفي لنقوم بتحليل 30 خطأ شائعاً وكيفية تجنبها باحترافية لتضمن التميز
+                    والمصداقية.</p>
+
+                <div class="input-wrapper">
+                    <input type="text" id="jobTitle" placeholder="مثلاً: منسق لوجستي، مدير حالة، مراقب بيانات..."
+                        class="premium-input" oninput="handleAutoTrigger(this)">
+                    <div id="aiPulse" class="ai-pulse" style="display: none;">
+                        <span style="background: var(--danger);"></span>
+                        <span style="background: var(--danger);"></span>
+                        <span style="background: var(--danger);"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loader" class="premium-loader" style="display: none;">
+                <div class="loader-spinner" style="border-top-color: var(--danger);"></div>
+                <h3 style="color: var(--danger);">جاري فحص 30 ثغرة مهنية محتملة...</h3>
+                <div class="loader-bar">
+                    <div class="loader-progress" style="background: var(--danger);"></div>
+                </div>
+            </div>
+
+            <div id="resultArea" style="display: none;" class="anim-slide-up">
+                <div class="glass-card result-card">
+                    <h3 class="section-title" style="color: var(--danger);"><i class="fas fa-shield-virus"></i> مصفوفة
+                        الحماية من الأخطاء:</h3>
+                    <div id="errorsContainer" class="steps-grid"></div>
+
+                    <button onclick="ProtectionManager.verify(() => window.print())" class="btn btn-primary"
+                        style="width: 100%; margin-top: 50px; justify-content: center; background: var(--danger); border-color: var(--danger); height: 60px;">
+                        <i class="fas fa-file-pdf"></i> تصدير تقرير الحماية
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-logo">أثر</div>
+            <div class="footer-credit">تطوير فريق <span class="credit-name">Athar Team</span> &copy; 2025</div>
+        </div>
+    </footer>
+
+    <style>
+        :root {
+            --danger: #ef4444;
+            --bg-body: #fdf2f2;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(239, 68, 68, 0.1);
+            --text-main: #111827;
+            --text-muted: #4b5563;
+        }
+
+        body {
+            background: var(--bg-body);
+            font-family: 'Cairo', sans-serif;
+            color: var(--text-main);
+        }
+
+        .premium-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 0;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(239, 68, 68, 0.05);
+        }
+
+        .main-input-card {
+            text-align: center;
+            border-top: 8px solid var(--danger);
+        }
+
+        .card-header-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-weight: 950;
+            font-size: 2.6rem;
+            color: #111827;
+        }
+
+        .premium-input {
+            width: 100%;
+            padding: 25px 35px;
+            border-radius: 20px;
+            border: 2px solid var(--glass-border);
+            background: white;
+            font-size: 1.3rem;
+            font-family: 'Cairo';
+            text-align: center;
+            transition: 0.4s;
+        }
+
+        .premium-input:focus {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.08);
+            outline: none;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .step-card {
+            padding: 30px;
+            background: white;
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+            border-right: 6px solid var(--danger);
+            transition: 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--danger);
+        }
+
+        .step-title {
+            color: var(--danger);
+            font-weight: 900;
+            font-size: 1.25rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .step-desc {
+            background: #fef2f2;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px dashed var(--danger);
+            color: var(--text-main);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .step-desc::before {
+            content: '💡 الحل الوقائي: ';
+            font-weight: 900;
+            color: #b91c1c;
+        }
+
+        .ai-pulse {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 5px;
+        }
+
+        .ai-pulse span {
+            width: 5px;
+            height: 18px;
+            animation: ai-pulse 0.8s infinite ease-in-out;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
     <script>
-        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzCic7XWHobosbwc4PR7_zoS1aZqO6u2UO2-C5Sjm1Nrk7S_iKiCekYa-2Mz84tz-RC/exec";
+        let timeout = null;
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
 
-        document.getElementById('analyzeErrorsBtn').onclick = async () => {
-            const cv = document.getElementById('cvContent').value;
-            const count = document.getElementById('applyCount').value;
+        function handleAutoTrigger(input) {
+            clearTimeout(timeout);
+            const val = input.value.trim();
+            const pulse = document.getElementById('aiPulse');
+            if (val.length < 5) { pulse.style.display = 'none'; return; }
+            pulse.style.display = 'flex';
+            timeout = setTimeout(() => { startErrorAnalysis(val); }, 1800);
+        }
 
-            const btn = document.getElementById('analyzeErrorsBtn');
-            const status = document.getElementById('statusLog');
-            btn.disabled = true;
-            status.innerText = "⏳ جاري تشريح ملفك المهني لكشف الثغرات...";
+        async function startErrorAnalysis(job) {
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('resultArea');
+            const pulse = document.getElementById('aiPulse');
 
-            const prompt = `
-            أنت مسؤول توظيف خبير (Senior Recruiter) في الأمم المتحدة.
-            المدخلات: CV: ${cv}, عدد مرات الرفض: ${count}.
-            
+            pulse.style.display = 'none';
+            loader.style.display = 'block';
+            resultArea.style.display = 'none';
+
+            const prompt = `أنت خبير جودة وتدقيق مؤسسي. الوظيفة: "${job}".
             المطلوب (JSON حصراً):
             {
-                "fatal_errors": [
-                    {"error": "وصف دقيق للخطأ القاتل (50 كلمة)", "reason": "لماذا يسبب الرفض الفوري؟", "fix": "خطوات التصحيح العملي"}
-                ],
-                "hidden_issues": ["مشكلة خفية 1", "مشكلة خفية 2", "مشكلة خفية 3", "مشكلة خفية 4"],
-                "cv_score": "نسبة مئوية",
-                "urgent_advice": "خطة إنقاذ عاجلة (100 كلمة)"
+                "points": [
+                    {"error": "الخطأ المرصود", "improvement": "كيف يتم تجنبه والحل العملي"}
+                ]
             }
-
-            ⚠️ تعليمات صارمة:
-            1. استخرج **7 أخطاء قاتلة على الأقل**.
-            2. كن صريحاً وقاسياً في النقد (Brutal Honesty) لمصلحة المرشح.
-            3. ركز على: الـ ATS، الكلمات المفتاحية المفقودة، التنسيق، صياغة الإنجازات.
-            4. المخرجات باللغة العربية.
-            `;
-
-            const tryParse = (str) => {
-                try { return JSON.parse(str); } catch (e) { return null; }
-            };
-
-            const cleanText = (text) => {
-                let clean = text.replace(/```json\s*|```\s*/gi, "").trim();
-                const start = clean.indexOf('{');
-                const end = clean.lastIndexOf('}');
-                if (start !== -1 && end !== -1 && end > start) {
-                    return clean.substring(start, end + 1);
-                }
-                return clean;
-            };
+            ملاحظة إجبارية: يجب توليد 30 نقطة تحليلية عميقة. اللغة: العربية.`;
 
             try {
-                const res = await fetch(BRIDGE_URL + "?action=ai", {
+                const res = await fetch(`${BRIDGE_URL}?action=ai`, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: prompt + "\n\nIMPORTANT: Return ONLY valid JSON." }],
-                        temperature: 0.3
+                        messages: [
+                            { role: "system", content: "You are a quality auditor that returns ONLY valid JSON. Output in Arabic." },
+                            { role: "user", content: prompt }
+                        ]
                     })
                 });
 
-                const dataText = await res.text();
-                if (!dataText) throw new Error("Empty response");
+                const bridgeRes = await res.json();
+                if (bridgeRes.status === "error") throw new Error(bridgeRes.message);
 
-                let parsed = tryParse(dataText);
-                let content = "";
+                const aiResponse = bridgeRes.data;
+                const cleanJson = aiResponse.replace(/```json\s*|```\s*/gi, "").trim();
+                const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
 
-                if (parsed && parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
-                    content = parsed.choices[0].message.content;
-                } else {
-                    content = dataText;
-                }
+                if (!jsonMatch) throw new Error("JSON_ERROR");
+                const data = JSON.parse(jsonMatch[0]);
+                if (data.error) throw new Error(data.error.message || "AI_ERROR");
 
-                // (REMOVED generic error check to avoid false positives)
-                if (content.startsWith("Error:") || content.includes("Rate limit exceeded")) {
-                    status.innerText = "⚠️ عذراً، الخادم مشغول حالياً. يرجى المحاولة بعد قليل.";
-                    return;
-                }
+                const container = document.getElementById('errorsContainer');
+                const list = data.points || data.errors || data.items || data.analysis || [];
+                container.innerHTML = list.map((p, idx) => `
+                    <div class="step-card anim-slide-up" style="animation-delay: ${idx * 0.05}s">
+                        <span class="step-title">${idx + 1}. ${p.error || p.title}</span>
+                        <div class="step-desc">${p.improvement || p.solution || p.desc}</div>
+                    </div>
+                `).join('');
 
-                const json = tryParse(cleanText(content));
-                if (!json) throw new Error("JSON Parsing failed");
+                resultArea.style.display = 'block';
+                window.scrollTo({ top: resultArea.offsetTop - 50, behavior: 'smooth' });
 
-                let html = `<div style="text-align:center; font-size:1.5rem; font-weight:bold; margin-bottom:20px;">درجة جودة ملفك الحالية: <span style="color:#e11d48;">${json.cv_score || '0%'}</span></div>`;
-
-                (json.fatal_errors || []).forEach(e => {
-                    html += `
-                        <div class="error-item">
-                            <strong style="color:#e11d48; font-size:1.1rem;">❌ الخطأ: ${e.error || ''}</strong>
-                            <p style="margin:5px 0;"><strong>السبب:</strong> ${e.reason || ''}</p>
-                            <div class="solution-item"><strong>✅ التصحيح:</strong> ${e.fix || ''}</div>
-                        </div>
-                    `;
-                });
-
-                html += `<div style="margin-top:20px; padding:15px; background:#fff7ed; border-radius:10px;"><strong>💡 مشاكل إضافية:</strong> ${(json.hidden_issues || []).join(' | ')}</div>`;
-                html += `<div style="margin-top:20px; font-weight:bold; color:#1e40af;">📌 نصيحة عاجلة: ${json.urgent_advice || ''}</div>`;
-
-                document.getElementById('errorsContainer').innerHTML = html;
-                document.getElementById('resultArea').style.display = 'block';
-                status.innerText = "✅ اكتمل الفحص!";
             } catch (e) {
-                console.error("AI Error:", e);
-                status.innerText = "❌ حدث خطأ في استخراج البيانات. يرجى إعادة المحاولة.";
-            } finally {
-                btn.disabled = false;
-            }
-        };
-        document.getElementById('exportBtn').onclick = () => {
-            ProtectionManager.verify(() => window.print());
-        };
+                console.error(e);
+                alert(`تعذر إجراء التحليل الوقائي حالياً.\n\nالتفاصيل: ${e.message}`);
+            } finally { loader.style.display = 'none'; }
+        }
     </script>
 </body>
 
