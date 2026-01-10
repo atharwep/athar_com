@@ -5,7 +5,7 @@
 
 const CONFIG = {
     // مفاتيح الربط البرمجي (ضع مفاتيحك هنا)
-    GROQ_API_KEY: "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",
+    GROQ_API_KEY: "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",
     GEMINI_API_KEY: "AIza...",
 
     // مجلدات Google Drive (اختياري - للبحث في مجلدات محددة)

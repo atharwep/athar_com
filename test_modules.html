@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار وحدات منصة أثر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-card h2 {
+            color: #4f46e5;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .status.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .status.pending {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .test-result {
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: 0.3s;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .log {
+            background: #1e293b;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+        }
+
+        .log-entry.error {
+            color: #ef4444;
+        }
+
+        .log-entry.success {
+            color: #10b981;
+        }
+
+        .log-entry.info {
+            color: #3b82f6;
+        }
+
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: 'Cairo', Arial, sans-serif;
+            margin-top: 10px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🧪 اختبار وحدات منصة أثر</h1>
+
+        <!-- Test 1: Modules Loading -->
+        <div class="test-card">
+            <h2>
+                <span>1️⃣</span>
+                <span>تحميل الوحدات</span>
+                <span class="status pending" id="status-modules">قيد الانتظار...</span>
+            </h2>
+            <div class="actions">
+                <button onclick="testModulesLoading()">اختبار التحميل</button>
+            </div>
+            <div class="test-result" id="result-modules"></div>
+        </div>
+
+        <!-- Test 2: Security Layer -->
+        <div class="test-card">
+            <h2>
+                <span>2️⃣</span>
+                <span>طبقة الأمان</span>
+                <span class="status pending" id="status-security">قيد الانتظار...</span>
+            </h2>
+            <div class="actions">
+                <button onclick="testSecurity()">اختبار التشفير</button>
+                <button onclick="testRateLimit()">اختبار Rate Limiting</button>
+            </div>
+            <div class="test-result" id="result-security"></div>
+        </div>
+
+        <!-- Test 3: ATS Engine -->
+        <div class="test-card">
+            <h2>
+                <span>3️⃣</span>
+                <span>محرك ATS</span>
+                <span class="status pending" id="status-ats">قيد الانتظار...</span>
+            </h2>
+            <textarea id="cv-text" placeholder="الصق نص السيرة الذاتية هنا..."></textarea>
+            <div class="actions">
+                <button onclick="testATSQuick()">تحليل سريع</button>
+                <button onclick="testATSFull()">تحليل شامل</button>
+            </div>
+            <div class="test-result" id="result-ats"></div>
+        </div>
+
+        <!-- Test 4: Job Description Generator -->
+        <div class="test-card">
+            <h2>
+                <span>4️⃣</span>
+                <span>مولد الأوصاف الوظيفية</span>
+                <span class="status pending" id="status-jobdesc">قيد الانتظار...</span>
+            </h2>
+            <input type="text" id="job-title" placeholder="المسمى الوظيفي (مثال: WASH Officer)">
+            <input type="text" id="organization" placeholder="المنظمة (مثال: UNICEF)">
+            <div class="actions">
+                <button onclick="testJobDescription()">توليد الوصف الوظيفي</button>
+            </div>
+            <div class="test-result" id="result-jobdesc"></div>
+        </div>
+
+        <!-- Test 5: File Processor -->
+        <div class="test-card">
+            <h2>
+                <span>5️⃣</span>
+                <span>معالج الملفات</span>
+                <span class="status pending" id="status-file">قيد الانتظار...</span>
+            </h2>
+            <input type="file" id="file-input" accept=".pdf,.docx,.doc,.txt">
+            <div class="actions">
+                <button onclick="testFileProcessor()">معالجة الملف</button>
+            </div>
+            <div class="test-result" id="result-file"></div>
+        </div>
+
+        <!-- Test 6: PDF Exporter -->
+        <div class="test-card">
+            <h2>
+                <span>6️⃣</span>
+                <span>مصدّر PDF</span>
+                <span class="status pending" id="status-pdf">قيد الانتظار...</span>
+            </h2>
+            <div class="actions">
+                <button onclick="testPDFExport()">تصدير هذه الصفحة إلى PDF</button>
+            </div>
+            <div class="test-result" id="result-pdf"></div>
+        </div>
+
+        <!-- Console Log -->
+        <div class="log" id="console-log">
+            <div class="log-entry success">✅ Console Log - جاهز للاختبار</div>
+        </div>
+    </div>
+
+    <!-- Load Modules -->
+    <script src="js/modules/modules_loader.js"></script>
+
+    <script>
+        // Console Logger
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('console-log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString('ar')}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // Update Status
+        function updateStatus(testId, status, message = '') {
+            const statusEl = document.getElementById(`status-${testId}`);
+            const resultEl = document.getElementById(`result-${testId}`);
+
+            statusEl.className = `status ${status}`;
+            statusEl.textContent = status === 'success' ? '✅ نجح' :
+                status === 'error' ? '❌ فشل' :
+                    '⏳ قيد التنفيذ...';
+
+            if (message) {
+                resultEl.innerHTML = `<pre>${message}</pre>`;
+            }
+        }
+
+        // Test 1: Modules Loading
+        function testModulesLoading() {
+            log('بدء اختبار تحميل الوحدات...', 'info');
+            updateStatus('modules', 'pending');
+
+            try {
+                const modules = window.AtharModules;
+
+                if (!modules) {
+                    throw new Error('AtharModules not found');
+                }
+
+                const results = {
+                    'Security Layer': modules.isModuleLoaded('security'),
+                    'API Proxy': modules.isModuleLoaded('apiProxy'),
+                    'ATS Engine': modules.isModuleLoaded('atsEngine'),
+                    'Job Description Generator': modules.isModuleLoaded('jobDescriptionGenerator'),
+                    'File Processor': modules.isModuleLoaded('fileProcessor'),
+                    'PDF Exporter': modules.isModuleLoaded('pdfExporter')
+                };
+
+                const allLoaded = Object.values(results).every(v => v);
+
+                updateStatus('modules', allLoaded ? 'success' : 'error',
+                    JSON.stringify(results, null, 2));
+
+                log(allLoaded ? '✅ جميع الوحدات محملة بنجاح' : '❌ بعض الوحدات فشلت في التحميل',
+                    allLoaded ? 'success' : 'error');
+            } catch (error) {
+                updateStatus('modules', 'error', error.message);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        // Test 2: Security Layer
+        function testSecurity() {
+            log('بدء اختبار طبقة الأمان...', 'info');
+            updateStatus('security', 'pending');
+
+            try {
+                const { security } = window.AtharModules;
+
+                if (!security) {
+                    throw new Error('Security module not loaded');
+                }
+
+                // Test encryption
+                const testData = { username: 'test', password: '123456' };
+                const encrypted = security.encrypt(testData);
+                const decrypted = security.decrypt(encrypted);
+
+                const results = {
+                    'Original Data': testData,
+                    'Encrypted': encrypted.substring(0, 50) + '...',
+                    'Decrypted': decrypted,
+                    'Match': JSON.stringify(testData) === JSON.stringify(decrypted)
+                };
+
+                updateStatus('security', 'success', JSON.stringify(results, null, 2));
+                log('✅ اختبار التشفير نجح', 'success');
+            } catch (error) {
+                updateStatus('security', 'error', error.message);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        function testRateLimit() {
+            log('بدء اختبار Rate Limiting...', 'info');
+
+            try {
+                const { security } = window.AtharModules;
+
+                const results = [];
+                for (let i = 0; i < 15; i++) {
+                    const allowed = security.rateLimit('test', 10, 60000);
+                    results.push(`Request ${i + 1}: ${allowed ? '✅ Allowed' : '❌ Blocked'}`);
+                }
+
+                updateStatus('security', 'success', results.join('\n'));
+                log('✅ اختبار Rate Limiting نجح', 'success');
+            } catch (error) {
+                updateStatus('security', 'error', error.message);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        // Test 3: ATS Engine
+        function testATSQuick() {
+            log('بدء التحليل السريع...', 'info');
+            updateStatus('ats', 'pending');
+
+            try {
+                const { atsEngine } = window.AtharModules;
+                const cvText = document.getElementById('cv-text').value;
+
+                if (!cvText) {
+                    throw new Error('يرجى إدخال نص السيرة الذاتية');
+                }
+
+                const analysis = atsEngine.quickAnalyze(cvText);
+
+                updateStatus('ats', 'success', JSON.stringify(analysis, null, 2));
+                log(`✅ التحليل السريع: النتيجة ${analysis.score}/100`, 'success');
+            } catch (error) {
+                updateStatus('ats', 'error', error.message);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        async function testATSFull() {
+            log('بدء التحليل الشامل...', 'info');
+            updateStatus('ats', 'pending');
+
+            try {
+                const { atsEngine } = window.AtharModules;
+                const cvText = document.getElementById('cv-text').value;
+
+                if (!cvText) {
+                    throw new Error('يرجى إدخال نص السيرة الذاتية');
+                }
+
+                const analysis = await atsEngine.analyzeCVAsync(cvText);
+
+                updateStatus('ats', 'success', JSON.stringify(analysis, null, 2));
+                log(`✅ التحليل الشامل: النتيجة ${analysis.score}/100 - ${analysis.levelText}`, 'success');
+            } catch (error) {
+                updateStatus('ats', 'error', error.message);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        // Test 4: Job Description Generator
+        async function testJobDescription() {
+            log('بدء توليد الوصف الوظيفي...', 'info');
+            updateStatus('jobdesc', 'pending');
+
+            try {
+                const { jobDescriptionGenerator } = window.AtharModules;
+                const jobTitle = document.getElementById('job-title').value;
+                const organization = document.getElementById('organization').value;
+
+                if (!jobTitle || !organization) {
+                    throw new Error('يرجى إدخال المسمى الوظيفي والمنظمة');
+                }
+
+                const result = await jobDescriptionGenerator.generate(jobTitle, organization);
+
+                updateStatus('jobdesc', 'success', JSON.stringify(result, null, 2));
+                log(`✅ تم توليد ${result.responsibilities.length} مهام`, 'success');
+            } catch (error) {
+                updateStatus('jobdesc', 'error', error.message);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        // Test 5: File Processor
+        async function testFileProcessor() {
+            log('بدء معالجة الملف...', 'info');
+            updateStatus('file', 'pending');
+
+            try {
+                const { fileProcessor } = window.AtharModules;
+                const fileInput = document.getElementById('file-input');
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    throw new Error('يرجى اختيار ملف');
+                }
+
+                const result = await fileProcessor.processFile(file, {
+                    extractText: true,
+                    detectLanguage: true,
+                    cleanText: true,
+                    storeFile: false
+                });
+
+                const summary = {
+                    fileName: result.fileName,
+                    fileType: result.fileType,
+                    fileSize: fileProcessor.formatFileSize(result.fileSize),
+                    language: result.language,
+                    wordCount: result.wordCount,
+                    charCount: result.charCount,
+                    textPreview: result.text.substring(0, 200) + '...'
+                };
+
+                updateStatus('file', 'success', JSON.stringify(summary, null, 2));
+                log(`✅ تمت معالجة الملف: ${result.wordCount} كلمة`, 'success');
+            } catch (error) {
+                updateStatus('file', 'error', error.message);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        // Test 6: PDF Exporter
+        async function testPDFExport() {
+            log('بدء تصدير PDF...', 'info');
+            updateStatus('pdf', 'pending');
+
+            try {
+                const { pdfExporter } = window.AtharModules;
+                const element = document.querySelector('.container');
+
+                const result = await pdfExporter.exportToPDF(element, {
+                    fileName: 'Test_Export.pdf',
+                    showPreview: true,
+                    autoDownload: false
+                });
+
+                updateStatus('pdf', 'success', JSON.stringify({
+                    fileName: result.fileName,
+                    pages: result.pages,
+                    success: result.success
+                }, null, 2));
+
+                log(`✅ تم تصدير PDF: ${result.pages} صفحة`, 'success');
+            } catch (error) {
+                updateStatus('pdf', 'error', error.message);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-test on load
+        window.addEventListener('athar-modules-ready', () => {
+            log('✅ جميع الوحدات محملة وجاهزة!', 'success');
+            testModulesLoading();
+        });
+    </script>
+</body>
+
+</html>

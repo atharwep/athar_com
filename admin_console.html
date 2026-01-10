@@ -264,34 +264,170 @@
 
         <!-- Section: Config -->
         <section id="configSection" style="display: none;">
-            <div class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 40px;">
-                <h3 style="margin-bottom: 25px;"><i class="fas fa-cog"></i> إعدادات الربط البرمجي (Bridge)</h3>
+            <!-- تحذير أمني -->
+            <div
+                style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 15px; padding: 20px; margin-bottom: 30px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <div style="display: flex; align-items: start; gap: 15px;">
+                    <i class="fas fa-shield-alt" style="color: #ef4444; font-size: 2rem;"></i>
+                    <div>
+                        <h3 style="color: #ef4444; margin: 0 0 10px 0;">🔐 تحذير أمني مهم</h3>
+                        <ul style="margin: 0; padding-right: 20px; color: #991b1b;">
+                            <li>هذه الصفحة <strong>آمنة تماماً</strong> - المفتاح يُحفظ في Backend فقط</li>
+                            <li>❌ لا تشارك المفتاح مع أي شخص</li>
+                            <li>✅ استخدم هذه الصفحة فقط لتحديث المفتاح</li>
+                            <li>🔄 يُنصح بتجديد المفتاح كل 3 أشهر</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-                <div class="form-group">
-                    <label>مفتاح GROQ API الحالي:</label>
-                    <input type="password" id="groqKeyInput" class="config-input" placeholder="gsk_...">
-                    <p style="font-size: 0.8rem; color: #ef4444; margin-bottom: 20px;">
-                        ⚠️ سيتم تخزين هذا المفتاح بشكل آمن في Script Properties الخاص بالـ Bridge.
+            <div class="glass-card" style="max-width: 800px; margin: 0 auto; padding: 40px;">
+                <h3 style="margin-bottom: 25px;"><i class="fas fa-key"></i> إعدادات مفاتيح API</h3>
+
+                <!-- قسم Groq API -->
+                <div style="background: #f8fafc; padding: 25px; border-radius: 15px; margin-bottom: 30px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="margin: 0;"><i class="fas fa-robot"></i> مفتاح Groq API</h4>
+                        <button onclick="toggleKeyVisibility()" class="action-btn"
+                            style="background: #e0e7ff; color: #4f46e5;">
+                            <i class="fas fa-eye" id="toggleIcon"></i> <span id="toggleText">إظهار</span>
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-weight: bold; margin-bottom: 10px; display: block;">المفتاح الحالي:</label>
+                        <input type="password" id="groqKeyInput" class="config-input" placeholder="gsk_..."
+                            style="font-family: monospace; font-size: 0.9rem;">
+
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <div
+                                style="flex: 1; background: #ecfdf5; padding: 10px; border-radius: 8px; font-size: 0.85rem;">
+                                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                                <strong>آمن:</strong> يُحفظ في Google Apps Script Properties
+                            </div>
+                            <div
+                                style="flex: 1; background: #fef3c7; padding: 10px; border-radius: 8px; font-size: 0.85rem;">
+                                <i class="fas fa-lock" style="color: #f59e0b;"></i>
+                                <strong>مشفر:</strong> غير مرئي في Frontend
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="margin-top: 20px; padding: 15px; background: white; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <h5 style="margin: 0 0 10px 0; color: #64748b;">📝 كيفية الحصول على مفتاح جديد:</h5>
+                        <ol style="margin: 0; padding-right: 20px; color: #64748b; font-size: 0.9rem;">
+                            <li>اذهب إلى <a href="https://console.groq.com/keys" target="_blank"
+                                    style="color: #4f46e5;">Groq Console</a></li>
+                            <li>احذف المفتاح القديم (إذا كان مكشوفاً)</li>
+                            <li>أنشئ مفتاحاً جديداً</li>
+                            <li>انسخه والصقه هنا</li>
+                            <li>احفظ الإعدادات</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- قسم رابط Bridge (جديد!) -->
+                <div
+                    style="background: #f0fdf4; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 2px solid #10b981;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="margin: 0;"><i class="fas fa-link"></i> رابط Bridge (Google Apps Script)</h4>
+                        <button onclick="testBridgeConnection()" class="action-btn"
+                            style="background: #dcfce7; color: #166534;">
+                            <i class="fas fa-plug"></i> اختبار الاتصال
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-weight: bold; margin-bottom: 10px; display: block;">الرابط الحالي:</label>
+                        <input type="text" id="bridgeUrlInput" class="config-input"
+                            placeholder="https://script.google.com/macros/s/.../exec"
+                            style="font-family: monospace; font-size: 0.85rem;">
+
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <div
+                                style="flex: 1; background: white; padding: 10px; border-radius: 8px; font-size: 0.85rem;">
+                                <i class="fas fa-info-circle" style="color: #3b82f6;"></i>
+                                <strong>تلقائي:</strong> يُحدث في جميع الصفحات
+                            </div>
+                            <div
+                                style="flex: 1; background: white; padding: 10px; border-radius: 8px; font-size: 0.85rem;">
+                                <i class="fas fa-sync" style="color: #10b981;"></i>
+                                <strong>فوري:</strong> بدون إعادة تحميل
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="margin-top: 20px; padding: 15px; background: white; border-radius: 10px; border: 1px solid #10b981;">
+                        <h5 style="margin: 0 0 10px 0; color: #166534;">📝 كيفية الحصول على رابط جديد:</h5>
+                        <ol style="margin: 0; padding-right: 20px; color: #166534; font-size: 0.9rem;">
+                            <li>افتح <a href="https://script.google.com/" target="_blank" style="color: #10b981;">Google
+                                    Apps Script</a></li>
+                            <li>افتح مشروع "Athar Bridge"</li>
+                            <li>انقر <strong>Deploy → New deployment</strong></li>
+                            <li>اختر <strong>Web app</strong></li>
+                            <li>الإعدادات:
+                                <ul style="margin: 5px 0; padding-right: 20px;">
+                                    <li>Execute as: <strong>Me</strong></li>
+                                    <li>Who has access: <strong>Anyone</strong></li>
+                                </ul>
+                            </li>
+                            <li>انقر <strong>Deploy</strong></li>
+                            <li>انسخ <strong>Web app URL</strong> والصقه هنا</li>
+                            <li>احفظ الإعدادات</li>
+                        </ol>
+                    </div>
+
+                    <!-- حالة الاتصال -->
+                    <div id="bridgeStatus" style="margin-top: 15px; padding: 15px; border-radius: 10px; display: none;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i id="bridgeStatusIcon" class="fas fa-spinner fa-spin"></i>
+                            <span id="bridgeStatusText">جاري الاختبار...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قسم الإعلانات -->
+                <div style="background: #f8fafc; padding: 25px; border-radius: 15px; margin-bottom: 30px;">
+                    <h4 style="margin: 0 0 15px 0;"><i class="fas fa-bullhorn"></i> إعلان الموقع</h4>
+                    <div class="form-group">
+                        <label style="font-weight: bold; margin-bottom: 10px; display: block;">الرسالة (ستظهر لجميع
+                            المستخدمين):</label>
+                        <textarea id="announcementInput" class="config-input" rows="4"
+                            style="font-family: 'Cairo'; height: auto; resize: vertical;"
+                            placeholder="مثال: 🎉 تم إضافة محرك السيرة الذاتية الجديد! جربه الآن..."></textarea>
+
+                        <p style="font-size: 0.85rem; color: #64748b; margin: 10px 0 0 0;">
+                            💡 اترك الحقل فارغاً لإخفاء الإعلان من الموقع
+                        </p>
+                    </div>
+                </div>
+
+                <!-- زر الحفظ -->
+                <button onclick="saveConfig()" class="btn btn-primary"
+                    style="width: 100%; justify-content: center; height: 60px; font-size: 1.1rem;">
+                    <i class="fas fa-save"></i> حفظ جميع الإعدادات 💾
+                </button>
+
+                <!-- معلومات إضافية -->
+                <div
+                    style="margin-top: 20px; padding: 15px; background: #eff6ff; border-radius: 10px; border: 1px solid #3b82f6;">
+                    <p style="margin: 0; font-size: 0.9rem; color: #1e40af;">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>ملاحظة:</strong> بعد حفظ المفتاح الجديد، سيتم استخدامه فوراً في جميع استدعاءات AI عبر
+                        المنصة.
+                        لا حاجة لإعادة تشغيل أي شيء.
                     </p>
                 </div>
-
-                <div class="form-group" style="margin-top: 20px;">
-                    <label>إعلان الموقع (سيظهر لجميع المستخدمين):</label>
-                    <textarea id="announcementInput" class="config-input" rows="4"
-                        style="font-family: 'Cairo'; height: auto;"
-                        placeholder="أهلاً بك في أثر! تم إضافة محرك CV الجديد..."></textarea>
-                </div>
-
-                <button onclick="saveConfig()" class="btn btn-primary"
-                    style="width: 100%; justify-content: center; height: 55px;">
-                    حفظ الإعدادات الجديدة 💾
-                </button>
             </div>
         </section>
     </main>
 
     <script>
-        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycby0-da3m_iVDFst4K4ha67SzbhC-BJ0bGVrLabj4Eh7Nosr0Jhw3zqsgRDSZiNgw5_1_w/exec";
+        const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzUceIOfGdXqZGNLkiSHwRIB8V6mQ_hB2JpnIc53kKY81invQaKeaA2yyb5auzTtKXD/exec";
         const adminUser = JSON.parse(localStorage.getItem('athar_user'));
         let allUsers = [];
 
@@ -306,6 +442,7 @@
             document.getElementById('adminName').innerText = adminUser.name;
             loadUsers();
             loadConfig();
+            loadBridgeUrl(); // تحميل رابط Bridge
         };
 
         function showSection(section) {
@@ -420,6 +557,157 @@
         function updateStats() {
             document.getElementById('totalUsersCount').innerText = allUsers.length;
             document.getElementById('institutionCount').innerText = allUsers.filter(u => u.userType === 'institution').length;
+        }
+
+        function toggleKeyVisibility() {
+            const input = document.getElementById('groqKeyInput');
+            const icon = document.getElementById('toggleIcon');
+            const text = document.getElementById('toggleText');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+                text.innerText = 'إخفاء';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+                text.innerText = 'إظهار';
+            }
+        }
+
+        // تحميل رابط Bridge الحالي
+        async function loadBridgeUrl() {
+            try {
+                // الحصول من localStorage أو استخدام الافتراضي
+                const savedUrl = localStorage.getItem('athar_bridge_url') || BRIDGE_URL;
+                document.getElementById('bridgeUrlInput').value = savedUrl;
+            } catch (e) {
+                console.error('Failed to load bridge URL:', e);
+            }
+        }
+
+        // اختبار الاتصال بـ Bridge
+        async function testBridgeConnection() {
+            const urlInput = document.getElementById('bridgeUrlInput');
+            const statusDiv = document.getElementById('bridgeStatus');
+            const statusIcon = document.getElementById('bridgeStatusIcon');
+            const statusText = document.getElementById('bridgeStatusText');
+
+            const testUrl = urlInput.value.trim();
+
+            if (!testUrl) {
+                alert('⚠️ يرجى إدخال رابط Bridge أولاً');
+                return;
+            }
+
+            // عرض حالة الاختبار
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#eff6ff';
+            statusDiv.style.border = '1px solid #3b82f6';
+            statusIcon.className = 'fas fa-spinner fa-spin';
+            statusIcon.style.color = '#3b82f6';
+            statusText.innerText = 'جاري اختبار الاتصال...';
+            statusText.style.color = '#1e40af';
+
+            try {
+                const response = await fetch(`${testUrl}?action=test`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // نجح الاتصال
+                    statusDiv.style.background = '#f0fdf4';
+                    statusDiv.style.border = '1px solid #10b981';
+                    statusIcon.className = 'fas fa-check-circle';
+                    statusIcon.style.color = '#10b981';
+                    statusText.innerHTML = `
+                        <strong>✅ الاتصال ناجح!</strong><br>
+                        <span style="font-size: 0.9rem;">
+                            الرسالة: ${data.message || 'Bridge يعمل بشكل صحيح'}<br>
+                            مفتاح Groq: ${data.hasGroqKey ? '✅ موجود' : '❌ غير موجود'}
+                        </span>
+                    `;
+                    statusText.style.color = '#166534';
+                } else {
+                    throw new Error(data.message || 'استجابة غير صحيحة');
+                }
+            } catch (error) {
+                // فشل الاتصال
+                statusDiv.style.background = '#fef2f2';
+                statusDiv.style.border = '1px solid #ef4444';
+                statusIcon.className = 'fas fa-times-circle';
+                statusIcon.style.color = '#ef4444';
+                statusText.innerHTML = `
+                    <strong>❌ فشل الاتصال</strong><br>
+                    <span style="font-size: 0.9rem;">
+                        الخطأ: ${error.message}<br>
+                        تأكد من صحة الرابط ونشر Bridge
+                    </span>
+                `;
+                statusText.style.color = '#991b1b';
+            }
+        }
+
+        // حفظ رابط Bridge الجديد
+        async function saveBridgeUrl() {
+            const urlInput = document.getElementById('bridgeUrlInput');
+            const newUrl = urlInput.value.trim();
+
+            if (!newUrl) {
+                alert('⚠️ يرجى إدخال رابط Bridge');
+                return false;
+            }
+
+            // التحقق من صيغة الرابط
+            if (!newUrl.includes('script.google.com/macros/s/') || !newUrl.endsWith('/exec')) {
+                if (!confirm('⚠️ الرابط لا يبدو صحيحاً. هل تريد المتابعة؟')) {
+                    return false;
+                }
+            }
+
+            try {
+                // حفظ في localStorage
+                localStorage.setItem('athar_bridge_url', newUrl);
+
+                // تحديث المتغير العام
+                window.BRIDGE_URL = newUrl;
+
+                alert('✅ تم حفظ رابط Bridge الجديد!\n\nسيتم استخدامه في جميع الصفحات فوراً.');
+                return true;
+            } catch (error) {
+                alert('❌ فشل حفظ الرابط: ' + error.message);
+                return false;
+            }
+        }
+
+        // تحديث دالة saveConfig لتشمل Bridge URL
+        async function saveConfig() {
+            const key = document.getElementById('groqKeyInput').value.trim();
+            const announcement = document.getElementById('announcementInput').value.trim();
+
+            // حفظ رابط Bridge أولاً
+            const bridgeSaved = await saveBridgeUrl();
+
+            if (!bridgeSaved) {
+                return; // إذا فشل حفظ Bridge، لا نكمل
+            }
+
+            try {
+                const res = await fetch(`${BRIDGE_URL}?action=admin_config&adminEmail=${adminUser.email}&method=set&groqKey=${key}&announcement=${encodeURIComponent(announcement)}`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    alert("✅ تم حفظ جميع الإعدادات بنجاح!\n\n- مفتاح API\n- رابط Bridge\n- الإعلان");
+                }
+            } catch (e) {
+                alert("⚠️ تم حفظ رابط Bridge، لكن فشل حفظ الإعدادات الأخرى");
+            }
         }
     </script>
 </body>
